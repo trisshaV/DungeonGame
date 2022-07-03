@@ -1,4 +1,4 @@
-package dungeonmania;
+package dungeonmania.dynamic_entity;
 
 /**
  * Are among the enemy entities that will harm Player INITIALLY, however if bribed they will NOT. Has following properties:

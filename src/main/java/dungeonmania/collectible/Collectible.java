@@ -1,8 +1,8 @@
-package dungeonmania;
+package dungeonmania.collectible;
 
 /**
  * Entities that are "collected" by the Player and are stored in inventory.
  */
-public class Collectible extends Inventory {
+public abstract class Collectible {
     
 }

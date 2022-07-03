@@ -1,4 +1,4 @@
-package dungeonmania;
+package dungeonmania.static_entity;
 
 /**
  * Acts like spawn points for zombie toasts. Has following properties:

@@ -1,4 +1,4 @@
-package dungeonmania;
+package dungeonmania.collectible;
 
 /**
  * Are among the collectible entities and is stored as Player inventory. Has following properties:

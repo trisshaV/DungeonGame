@@ -1,4 +1,4 @@
-package dungeonmania;
+package dungeonmania.dynamic_entity;
 
 /**
  * Are among the enemy entities that WILL harm Player. Has following properties:

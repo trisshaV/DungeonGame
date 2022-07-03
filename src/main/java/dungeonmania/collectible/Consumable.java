@@ -1,4 +1,4 @@
-package dungeonmania;
+package dungeonmania.collectible;
 
 /**
  * An interface for the consumables (invincibility and invisibility potions). Has following properties:
