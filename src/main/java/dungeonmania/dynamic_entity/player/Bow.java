@@ -1,4 +1,4 @@
-package dungeonmania;
+package dungeonmania.dynamic_entity.player;
 
 /**
  * Among the buildable entities and hence can be built by Player using a recipe. Has following properties:

@@ -1,4 +1,4 @@
-package dungeonmania;
+package dungeonmania.static_entity;
 
 /**
  * Acts like empty squares and can ONLY be activated by boulders. Has following properties:

@@ -1,4 +1,4 @@
-package dungeonmania;
+package dungeonmania.static_entity;
 
 /**
  * A door co-exists with a corresponding key. Has following properties:

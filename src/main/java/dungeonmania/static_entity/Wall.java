@@ -1,4 +1,4 @@
-package dungeonmania;
+package dungeonmania.static_entity;
 
 /**
  * Acts like barriers and will prohibit movement of certian entities. Has following properties: 

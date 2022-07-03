@@ -1,4 +1,4 @@
-package dungeonmania;
+package dungeonmania.dynamic_entity.player;
 
 /**
  * An interface for buildable entities (Complex and useful entities that are built by Player using a "recipe"). Has following properties:

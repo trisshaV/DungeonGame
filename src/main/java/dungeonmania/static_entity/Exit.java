@@ -1,4 +1,4 @@
-package dungeonmania;
+package dungeonmania.static_entity;
 
 /**
  * A square that indicates the end of the game. Has following properties:

@@ -1,4 +1,4 @@
-package dungeonmania;
+package dungeonmania.static_entity;
 
 /**
  * Each portal has a corresponding portal that allows entities to be teleported. Has following properties:
