@@ -16,7 +16,7 @@ public class PlayerTests {
     @DisplayName("Test the player can move down")
     public void testMovementDown() {
         DungeonManiaController dmc = new DungeonManiaController();
-        DungeonResponse initDungonRes = dmc.newGame("/dungeons/d_standardMovementTest", "/configs/c_standard_movement");
+        DungeonResponse initDungonRes = dmc.newGame("d_standardMovementTest", "c_standard_movement");
         EntityResponse initPlayer = getPlayer(initDungonRes).get();
 
         // create the expected result
@@ -34,7 +34,7 @@ public class PlayerTests {
     @DisplayName("Test the player can move up")
     public void testMovementUp() {
         DungeonManiaController dmc = new DungeonManiaController();
-        DungeonResponse initDungonRes = dmc.newGame("/dungeons/d_standardMovementTest", "/configs/c_standard_movement");
+        DungeonResponse initDungonRes = dmc.newGame("d_standardMovementTest", "c_standard_movement");
         EntityResponse initPlayer = getPlayer(initDungonRes).get();
 
         // create the expected result
@@ -52,7 +52,7 @@ public class PlayerTests {
     @DisplayName("Test the player can move left")
     public void testMovementLeft() {
         DungeonManiaController dmc = new DungeonManiaController();
-        DungeonResponse initDungonRes = dmc.newGame("/dungeons/d_standardMovementTest", "/configs/c_standard_movement");
+        DungeonResponse initDungonRes = dmc.newGame("d_standardMovementTest", "c_standard_movement");
         EntityResponse initPlayer = getPlayer(initDungonRes).get();
 
         // create the expected result
@@ -70,7 +70,7 @@ public class PlayerTests {
     @DisplayName("Test the player can move right")
     public void testMovementRight() {
         DungeonManiaController dmc = new DungeonManiaController();
-        DungeonResponse initDungonRes = dmc.newGame("/dungeons/d_standardMovementTest", "/configs/c_standard_movement");
+        DungeonResponse initDungonRes = dmc.newGame("d_standardMovementTest", "c_standard_movement");
         EntityResponse initPlayer = getPlayer(initDungonRes).get();
 
         // create the expected result
@@ -88,7 +88,7 @@ public class PlayerTests {
     @DisplayName("Test the player can move all directions with repeated directions")
     public void testMovementAllDirections() {
         DungeonManiaController dmc = new DungeonManiaController();
-        DungeonResponse initDungonRes = dmc.newGame("/dungeons/d_standardMovementTest", "/configs/c_standard_movement");
+        DungeonResponse initDungonRes = dmc.newGame("d_standardMovementTest", "c_standard_movement");
         EntityResponse initPlayer = getPlayer(initDungonRes).get();
 
         // create the expected result

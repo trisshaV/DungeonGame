@@ -32,7 +32,7 @@ public class ExampleTests {
     @DisplayName("Test the player can move down")
     public void testMovementDown() {
         DungeonManiaController dmc = new DungeonManiaController();
-        DungeonResponse initDungonRes = dmc.newGame("/dungeons/d_movementTest_testMovementDown", "/configs/c_movementTest_testMovementDown");
+        DungeonResponse initDungonRes = dmc.newGame("d_movementTest_testMovementDown", "c_movementTest_testMovementDown");
         EntityResponse initPlayer = getPlayer(initDungonRes).get();
 
         // create the expected result
