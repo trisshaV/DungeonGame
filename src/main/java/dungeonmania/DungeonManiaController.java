@@ -56,10 +56,10 @@ public class DungeonManiaController {
     	try {
 			
     		//content of config file
-    		String confContent = FileLoader.loadResourceFile(configName + ".json");
+    		String confContent = FileLoader.loadResourceFile("/configs/" + configName + ".json");
 			
     		//content of dungeon file
-    		String dungeonContent = FileLoader.loadResourceFile(dungeonName + ".json");   		
+    		String dungeonContent = FileLoader.loadResourceFile("/dungeons/" + dungeonName + ".json");   		
     		
             
             //parse json
