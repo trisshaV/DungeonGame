@@ -23,6 +23,7 @@ public class DungeonManiaController {
 
     private List<Entity> entities = new ArrayList<>();
 	private String dungeonId = "1";	
+    private String goal;
 	private String dungeonName;
 
     public String getSkin() {
@@ -52,38 +53,46 @@ public class DungeonManiaController {
      */
     public DungeonResponse newGame(String dungeonName, String configName) throws IllegalArgumentException {
         this.dungeonName = dungeonName;
-    	
-    	try {
-			
-    		//content of config file
-    		String confContent = FileLoader.loadResourceFile("/configs/" + configName + ".json");
-			
-    		//content of dungeon file
-    		String dungeonContent = FileLoader.loadResourceFile("/dungeons/" + dungeonName + ".json");   		
-    		
-            
-            //parse json
-            JSONObject json = new JSONObject(dungeonContent);
-    		JSONArray jsonArray = json.getJSONArray("entities");
-    		
-    		for (int i = 0; i < jsonArray.length(); i++) {  
-    			JSONObject jsonEntity = (JSONObject)jsonArray.get(i);
-    			
-    			if (jsonEntity.getString("type").equals("player")) {
-    				
-    				Player player = new Player();
-    				player.setId(String.valueOf(i));
-    				player.setPosition(new Position(jsonEntity.getInt("x"), jsonEntity.getInt("y")));
-    				entities.add(player);
-    			}
-    		}
-    		
-    		return createDungeonResponse();
 
-		} catch (Exception e) {
-			e.printStackTrace();
-			throw new IllegalArgumentException();
-		}
+        String confContent;
+        String dungeonContent;
+        try {
+            confContent = FileLoader.loadResourceFile("/configs/" + configName + ".json");
+            dungeonContent = FileLoader.loadResourceFile("/dungeons/" + dungeonName + ".json");
+        } catch (IOException e) {
+            e.printStackTrace();
+            throw new IllegalArgumentException();
+        }
+
+        JSONObject json = new JSONObject(dungeonContent);
+        JSONObject jsonConfig = new JSONObject(confContent);
+        JSONArray jsonEntities = json.getJSONArray("entities");
+
+        goal = json.getJSONObject("goal-condition").getString("goal");
+
+        for (int i = 0; i < jsonEntities.length(); i++) {
+            JSONObject jsonEntity = jsonEntities.getJSONObject(i);
+            addEntity(String.valueOf(i), jsonEntity, jsonConfig);
+        }
+
+        return createDungeonResponse();
+
+    }
+
+    private void addEntity(String id, JSONObject jsonEntity, JSONObject jsonConfig) {
+        String type = jsonEntity.getString("type");
+        Position position = new Position(jsonEntity.getInt("x"), jsonEntity.getInt("y"));
+        Entity newEntity = null;
+        switch(type) {
+        case "player":
+            newEntity = new Player();
+            break;
+        default:
+            return;
+        }
+        newEntity.setId(id);
+        newEntity.setPosition(position);
+        entities.add(newEntity);
     }
 
     /**
