@@ -1,5 +1,6 @@
 package dungeonmania;
 
+import dungeonmania.collectible.Key;
 import dungeonmania.dynamic_entity.Player;
 import dungeonmania.exceptions.InvalidActionException;
 import dungeonmania.response.models.EntityResponse;
@@ -7,6 +8,8 @@ import dungeonmania.response.models.ItemResponse;
 import dungeonmania.response.models.DungeonResponse;
 import dungeonmania.response.models.EntityResponse;
 import dungeonmania.response.models.ItemResponse;
+import dungeonmania.static_entity.Door;
+import dungeonmania.static_entity.Wall;
 import dungeonmania.util.Direction;
 import dungeonmania.util.FileLoader;
 import dungeonmania.util.Position;
@@ -15,6 +18,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -75,7 +79,7 @@ public class DungeonManiaController {
             addEntity(String.valueOf(i), jsonEntity, jsonConfig);
         }
 
-        return createDungeonResponse();
+        return getDungeonResponseModel();
 
     }
 
@@ -84,9 +88,18 @@ public class DungeonManiaController {
         Position position = new Position(jsonEntity.getInt("x"), jsonEntity.getInt("y"));
         Entity newEntity = null;
         switch(type) {
-        case "player":
-            newEntity = new Player();
-            break;
+            case "player":
+                newEntity = new Player();
+                break;
+            case "wall":
+                newEntity = new Wall();
+                break;
+            case "key":
+                newEntity = new Key();
+                break;
+            case "door":
+                newEntity = new Door();
+                break;
         default:
             return;
         }
@@ -99,7 +112,19 @@ public class DungeonManiaController {
      * /game/dungeonResponseModel
      */
     public DungeonResponse getDungeonResponseModel() {
-        return null;
+        List<EntityResponse> entityResponseList = new ArrayList<>();
+
+        entities.stream().filter(it -> it instanceof Player).forEach(
+                x -> {
+                    entityResponseList.add(new EntityResponse(x.getId(),
+                            "player",
+                            x.getPosition(), false));
+                }
+        );
+//         entityResponseList = entities.stream().map(x -> x.entityResponse()).collect(Collectors.toList());
+
+        return new DungeonResponse(dungeonId, dungeonName, entityResponseList, new ArrayList<>(),
+                new ArrayList<>(), new ArrayList<>(), goal, new ArrayList<>());
     }
 
     /**
@@ -120,7 +145,7 @@ public class DungeonManiaController {
             }
         );
     
-        return createDungeonResponse();
+        return getDungeonResponseModel();
     }
 
     /**
@@ -135,22 +160,5 @@ public class DungeonManiaController {
      */
     public DungeonResponse interact(String entityId) throws IllegalArgumentException, InvalidActionException {
         return null;
-    }
-
-    /**
-     * create DungeonResponse object
-     */
-    private DungeonResponse createDungeonResponse() {
-    	List<EntityResponse> entityResponseList = new ArrayList<>();
-		entities.stream().filter(it -> it instanceof Player).forEach(
-    			x -> {
-    				entityResponseList.add(new EntityResponse(x.getId(), 
-    						"player", 
-    						x.getPosition(), false));
-    			}
-    	);
-        
-        return new DungeonResponse(dungeonId, dungeonName, entityResponseList, new ArrayList<>(), 
-        		new ArrayList<>(), new ArrayList<>(), "", new ArrayList<>());
     }
 }

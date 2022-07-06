@@ -5,7 +5,7 @@ import dungeonmania.util.Position;
 /**
  * The collection of all entities that are present in dungeon.
  */
-public class Entity {
+public abstract class Entity {
 
     /**
 	 * ID
