@@ -1,5 +1,6 @@
 package dungeonmania;
 
+import dungeonmania.response.models.EntityResponse;
 import dungeonmania.util.Position;
 
 /**
@@ -7,15 +8,18 @@ import dungeonmania.util.Position;
  */
 public abstract class Entity {
 
-    /**
-	 * ID
-	 */
 	private String id;
-    
-	/**
-	 * position
-	 */
 	private Position position;
+
+	public abstract String getType();
+
+	/**
+	 * default EntityResponse. 
+	 * Always returns false for isInteractable unless overridden.
+	 */
+	public EntityResponse getEntityResponse() {
+		return new EntityResponse(id, getType(), position, false);
+	}
 
 	/**
 	 * @return the position

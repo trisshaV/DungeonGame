@@ -112,19 +112,11 @@ public class DungeonManiaController {
      * /game/dungeonResponseModel
      */
     public DungeonResponse getDungeonResponseModel() {
-        List<EntityResponse> entityResponseList = new ArrayList<>();
+        List<EntityResponse> entityResponseList = entities.stream().map(x -> x.getEntityResponse()).collect(Collectors.toList());
 
-        entities.stream().filter(it -> it instanceof Player).forEach(
-                x -> {
-                    entityResponseList.add(new EntityResponse(x.getId(),
-                            "player",
-                            x.getPosition(), false));
-                }
-        );
-//         entityResponseList = entities.stream().map(x -> x.entityResponse()).collect(Collectors.toList());
-
-        return new DungeonResponse(dungeonId, dungeonName, entityResponseList, new ArrayList<>(),
-                new ArrayList<>(), new ArrayList<>(), goal, new ArrayList<>());
+        return new DungeonResponse(
+            dungeonId, dungeonName, entityResponseList, new ArrayList<>(),
+            new ArrayList<>(), new ArrayList<>(), goal, new ArrayList<>());
     }
 
     /**
