@@ -36,7 +36,7 @@ public class Door extends StaticEntity {
     }
 
     public String getName() {
-        return "Door";
+        return "door";
     }
 
     public Key getKey() {
