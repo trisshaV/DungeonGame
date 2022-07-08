@@ -44,5 +44,9 @@ public class Entity {
 	public void setId(String id) {
 		this.id = id;
 	}
+
+    public Object getType() {
+        return null;
+    }
     
 }
