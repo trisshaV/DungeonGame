@@ -9,6 +9,7 @@ import dungeonmania.response.models.DungeonResponse;
 import dungeonmania.response.models.EntityResponse;
 import dungeonmania.response.models.ItemResponse;
 import dungeonmania.static_entity.Door;
+import dungeonmania.static_entity.Exit;
 import dungeonmania.static_entity.Wall;
 import dungeonmania.util.Direction;
 import dungeonmania.util.FileLoader;
@@ -100,6 +101,9 @@ public class DungeonManiaController {
             case "door":
                 newEntity = new Door();
                 break;
+            case "exit":
+                newEntity = new Exit();
+                break;
         default:
             return;
         }
@@ -112,11 +116,13 @@ public class DungeonManiaController {
      * /game/dungeonResponseModel
      */
     public DungeonResponse getDungeonResponseModel() {
-        List<EntityResponse> entityResponseList = entities.stream().map(x -> x.getEntityResponse()).collect(Collectors.toList());
+        List<EntityResponse> entityResponseList = entities.stream()
+                .map(Entity::getEntityResponse)
+                .collect(Collectors.toList());
 
         return new DungeonResponse(
             dungeonId, dungeonName, entityResponseList, new ArrayList<>(),
-            new ArrayList<>(), new ArrayList<>(), goal, new ArrayList<>());
+            new ArrayList<>(), new ArrayList<>(), goal);
     }
 
     /**
