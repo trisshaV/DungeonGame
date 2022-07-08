@@ -33,7 +33,36 @@ public class WallTests {
         DungeonManiaController dmc = new DungeonManiaController();
         DungeonResponse res = dmc.newGame("d_spiderTest_basicMovement", "c_spiderTest_basicMovement");
         Position pos = getEntities(res, "player").get(0).getPosition();
-        res = dmc.tick(Direction.DOWN);
+        res = dmc.tick(Direction.UP);
         assertEquals(pos, getEntities(res, "player").get(0).getPosition());
+    }
+    @Test
+    @DisplayName("Can't push boulder through wall")
+    public void testBoulderIntoWall() {
+        DungeonManiaController dmc = new DungeonManiaController();
+        DungeonResponse res = dmc.newGame("d_boulderIntoWall", "c_spiderTest_basicMovement");
+        Position pos = getEntities(res, "boulder").get(0).getPosition();
+        res = dmc.tick(Direction.DOWN);
+        assertEquals(pos, getEntities(res, "boulder").get(0).getPosition());
+    }
+    @Test
+    @DisplayName("Enemies can't walk through wall")
+    public void testEnemiesIntoWall() {
+        DungeonManiaController dmc = new DungeonManiaController();
+        DungeonResponse res = dmc.newGame("d_enemyIntoWall", "c_spiderTest_basicMovement");
+        Position posMerc = getEntities(res, "mercenary").get(0).getPosition();
+        Position posWall = getEntities(res, "wall").get(0).getPosition();
+        res = dmc.tick(Direction.UP);
+        assertNotEquals(posMerc, posWall);
+        
+    }
+    @Test
+    @DisplayName("Spider can walk through wall")
+    public void testSpiderIntoWall() {
+        DungeonManiaController dmc = new DungeonManiaController();
+        DungeonResponse res = dmc.newGame("d_wallSpiderTest", "c_spiderTest_basicMovement");
+        Position pos = getEntities(res, "spider").get(0).getPosition();
+        res = dmc.tick(Direction.UP);
+        assertNotEquals(pos, getEntities(res, "spider").get(0).getPosition());
     }
 }
