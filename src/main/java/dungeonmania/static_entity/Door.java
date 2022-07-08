@@ -6,5 +6,9 @@ package dungeonmania.static_entity;
  *      - Once it is opened, it remains opened.
  */
 public class Door extends StaticEntity {
-    
+
+    @Override
+    public String getType() {
+        return "door";
+    }
 }
