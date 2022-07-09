@@ -1,21 +1,25 @@
 package dungeonmania;
 
+import dungeonmania.response.models.EntityResponse;
 import dungeonmania.util.Position;
 
 /**
  * The collection of all entities that are present in dungeon.
  */
-public class Entity {
+public abstract class Entity {
 
-    /**
-	 * ID
-	 */
 	private String id;
-    
-	/**
-	 * position
-	 */
 	private Position position;
+
+	public abstract String getType();
+
+	/**
+	 * default EntityResponse. 
+	 * Always returns false for isInteractable unless overridden.
+	 */
+	public EntityResponse getEntityResponse() {
+		return new EntityResponse(id, getType(), position, false);
+	}
 
 	/**
 	 * @return the position
