@@ -80,7 +80,7 @@ public class Player extends DynamicEntity {
         Position curr = this.getPosition();
         int x = curr.getX();
         int y = curr.getY();
-        
+
         switch(d) {
             case DOWN:
                 y += 1;
@@ -95,7 +95,7 @@ public class Player extends DynamicEntity {
                 x += 1;
                 break;
         }
-
+        Position nextPosition = new Position(x, y);
         // Check next position for obstacles/issues
 
         // Is there a wall
@@ -103,6 +103,6 @@ public class Player extends DynamicEntity {
         // is there a portal
         // etc
 
-        this.setPosition(new Position(x, y));
+        this.setPosition(nextPosition);
     }
 }
