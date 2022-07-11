@@ -25,6 +25,7 @@ public class Player extends DynamicEntity {
         super(id, xy);
         attack = config.getInt("player_attack");
         health = config.getInt("player_health");
+        inventory = new ArrayList<>();
     }
 
     @Override
