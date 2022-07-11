@@ -80,8 +80,7 @@ public class Player extends DynamicEntity {
         Position curr = this.getPosition();
         int x = curr.getX();
         int y = curr.getY();
-
-        Position nextPos = null;
+        
         switch(d) {
             case DOWN:
                 y += 1;
