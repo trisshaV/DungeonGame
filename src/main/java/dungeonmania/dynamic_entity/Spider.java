@@ -23,7 +23,8 @@ public class Spider extends DynamicEntity {
 
     private int currentPosition;
 
-    public Spider() {
+    public Spider(String id, Position xy) {
+        super(id, xy);
         this.direction = "clockwise";
         cyclePositions = generatePositions(this.getPosition());
     }
@@ -111,5 +112,4 @@ public class Spider extends DynamicEntity {
          */
         return 1;
     }
-    
 }

@@ -1,5 +1,7 @@
 package dungeonmania.dynamic_entity;
 
+import dungeonmania.util.Position;
+
 /**
  * Are among the enemy entities that will harm Player INITIALLY, however if bribed they will NOT. Has following properties:
  *      - Are NOT spawned and must be initialised at time of dungeon creation.
@@ -22,8 +24,9 @@ public class Mercenary extends DynamicEntity {
     public String getType() {
         return "mercenary";
     }
-
-    public Mercenary() {
+    
+    public Mercenary(String id, Position xy) {
+        super(id, xy);
     }
 
     private void updatePos() {

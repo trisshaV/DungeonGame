@@ -17,7 +17,8 @@ public class ZombieToast extends DynamicEntity {
         return "zombie_toast";
     }
 
-    public ZombieToast() {
+    public ZombieToast(String id, Position xy) {
+        super(id, xy);
     }
     
     private void updatePos() {

@@ -1,5 +1,8 @@
 package dungeonmania.dynamic_entity.player;
 
+import dungeonmania.collectible.Collectible;
+import dungeonmania.util.Position;
+
 /**
  * Among the buildable entities and hence can be built by Player using a recipe. Has following properties:
  *      - RECIPE: 1 wood + 3 arrows
@@ -8,6 +11,10 @@ package dungeonmania.dynamic_entity.player;
  *      - Gives the Player DOUBLE damage in a single round. 
  *          NOTE: it only simulates ranged attacks by providing more damage, however it CANNOT be used at range.
  */
-public class Bow extends Inventory {
+public class Bow extends Collectible implements Buildable {
+
+    public Bow(String id, Position xy) {
+        super(id, xy);
+    }
     
 }
