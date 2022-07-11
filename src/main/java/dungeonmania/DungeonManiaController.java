@@ -91,26 +91,24 @@ public class DungeonManiaController {
         Entity newEntity = null;
         switch(type) {
             case "player":
-                newEntity = new Player(id, position, jsonConfig);
-                player = newEntity;
+                player = new Player(id, position, jsonConfig);
+                newEntity = player;
                 break;
             case "wall":
-                newEntity = new Wall();
+                newEntity = new Wall(id, position);
                 break;
             case "key":
-                newEntity = new Key();
+                newEntity = new Key(id, position);
                 break;
             case "door":
-                newEntity = new Door();
+                newEntity = new Door(id, position);
                 break;
             case "exit":
-                newEntity = new Exit();
+                newEntity = new Exit(id, position);
                 break;
-        default:
-            return;
+            default:
+                return;
         }
-        newEntity.setId(id);
-        newEntity.setPosition(position);
         entities.add(newEntity);
     }
 
