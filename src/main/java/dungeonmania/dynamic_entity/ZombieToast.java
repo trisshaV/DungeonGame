@@ -1,5 +1,11 @@
 package dungeonmania.dynamic_entity;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
+
+import dungeonmania.util.Position;
+
 /**
  * Are among the enemy entities that WILL harm Player. Has following properties:
  *      - Spawn only at Zombie Toast spawners.
@@ -14,4 +20,23 @@ public class ZombieToast extends DynamicEntity {
     public ZombieToast() {
     }
     
+    private void updatePos() {
+        List <Position> newPositions = new ArrayList<>();
+        // Check up
+
+        // Check down
+
+        // Check left
+        
+        // Check right
+        
+        // All cardinal directions are invalid
+        if (newPositions.size() == 0) {
+            return;
+        }
+        Random rand = new Random();
+        int result = rand.nextInt(newPositions.size());
+        
+        this.setPosition(newPositions.get(result));
+    }
 }

@@ -14,7 +14,10 @@ package dungeonmania.dynamic_entity;
  */
 public class Mercenary extends DynamicEntity {
 
-    
+    private String status = "HOSTILE";
+
+    private boolean behindPlayer = false;
+
     @Override
     public String getType() {
         return "mercenary";
@@ -22,5 +25,33 @@ public class Mercenary extends DynamicEntity {
 
     public Mercenary() {
     }
+
+    private void updatePos() {
+        if (status.equals("HOSTILE")) {
+            // Check potion status
+            /*
+            if () {
+                // do something
+                randomHostile();
+            } else {
+                chaseHostile();
+            }
+            */
+        } else if (status.equals("ALLY")) {
+            moveAlly();
+        }
+    }
     
+    private void chaseHostile() {
+        // BFS
+        // Ask for help
+    }
+
+    private void moveAlly() {
+        // Check behind player
+    }
+
+    private void randomHostile() {
+
+    }
 }
