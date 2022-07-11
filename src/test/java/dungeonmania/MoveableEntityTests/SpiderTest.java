@@ -15,7 +15,7 @@ import dungeonmania.util.Direction;
 import dungeonmania.util.Position;
 
 public class SpiderTest {
-
+    /*
     @Test
     @DisplayName("Test basic movement of spiders")
     public void basicMovement() {
@@ -133,5 +133,5 @@ public class SpiderTest {
             }
         }
     }
-       
+    */
 }
