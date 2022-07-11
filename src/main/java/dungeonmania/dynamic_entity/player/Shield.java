@@ -1,6 +1,7 @@
 package dungeonmania.dynamic_entity.player;
 
 import dungeonmania.collectible.Collectible;
+import dungeonmania.util.Position;
 
 /**
  * Among the buildable entities and hence can be built by Player using a recipe. Has following properties:
@@ -10,5 +11,9 @@ import dungeonmania.collectible.Collectible;
  *      - Decreases the effects of enemy attacks. 
  */
 public class Shield extends Collectible implements Buildable {
+
+    public Shield(String id, Position xy) {
+        super(id, xy);
+    }
     
 }
