@@ -1,5 +1,9 @@
 package dungeonmania.dynamic_entity;
 
+import java.util.List;
+
+import dungeonmania.Entity;
+import dungeonmania.util.Direction;
 import dungeonmania.util.Position;
 
 /**
@@ -29,7 +33,7 @@ public class Mercenary extends DynamicEntity {
         super(id, xy);
     }
 
-    private void updatePos() {
+    public void updatePos(Direction d, List<Entity> l) {
         if (status.equals("HOSTILE")) {
             // Check potion status
             /*

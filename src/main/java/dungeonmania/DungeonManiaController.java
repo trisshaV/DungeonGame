@@ -1,6 +1,7 @@
 package dungeonmania;
 
 import dungeonmania.collectible.Key;
+import dungeonmania.dynamic_entity.DynamicEntity;
 import dungeonmania.dynamic_entity.Mercenary;
 import dungeonmania.dynamic_entity.Player;
 import dungeonmania.dynamic_entity.Spider;
@@ -23,6 +24,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import javax.servlet.FilterRegistration.Dynamic;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -153,7 +156,16 @@ public class DungeonManiaController {
         //move player
     	entities.stream().filter(it -> it instanceof Player).forEach(
             x -> {
-                x.setPosition(x.getPosition().translateBy(movementDirection));
+                Player p = (Player) x;
+                p.updatePos(movementDirection, entities);
+            }
+        );
+
+        // move entities
+        entities.stream().filter(it -> (it instanceof DynamicEntity) && (it instanceof Player == false)).forEach(
+            x -> {
+                DynamicEntity y = (DynamicEntity) x;
+                y.updatePos(movementDirection, entities);
             }
         );
     

@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+import dungeonmania.Entity;
+import dungeonmania.util.Direction;
 import dungeonmania.util.Position;
 
 /**
@@ -21,7 +23,7 @@ public class ZombieToast extends DynamicEntity {
         super(id, xy);
     }
     
-    private void updatePos() {
+    public void updatePos(Direction d, List<Entity> l) {
         List <Position> newPositions = new ArrayList<>();
         // Check up
 

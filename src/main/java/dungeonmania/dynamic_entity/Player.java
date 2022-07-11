@@ -8,9 +8,11 @@ import java.util.stream.Collectors;
 
 import org.json.JSONObject;
 
+import dungeonmania.Entity;
 import dungeonmania.collectible.Collectible;
 import dungeonmania.collectible.Key;
 import dungeonmania.response.models.ItemResponse;
+import dungeonmania.util.Direction;
 import dungeonmania.util.Position;
 
 /**
@@ -69,5 +71,39 @@ public class Player extends DynamicEntity {
     */
     public Optional<Collectible> getKey() {
         return inventory.stream().filter(x -> x.getType().equals("key")).findFirst();
+    }
+    /**
+     * Updates the new position of Player given a direction
+     */
+    public void updatePos(Direction d, List<Entity> l) {
+
+        Position curr = this.getPosition();
+        int x = curr.getX();
+        int y = curr.getY();
+
+        Position nextPos = null;
+        switch(d) {
+            case DOWN:
+                y += 1;
+                break;
+            case UP:
+                y -= 1;
+                break;
+            case LEFT:
+                x -= 1;
+                break;
+            case RIGHT: 
+                x += 1;
+                break;
+        }
+
+        // Check next position for obstacles/issues
+
+        // Is there a wall
+        // Is there a boulder
+        // is there a portal
+        // etc
+
+        this.setPosition(new Position(x, y));
     }
 }

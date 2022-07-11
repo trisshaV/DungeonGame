@@ -3,6 +3,8 @@ package dungeonmania.dynamic_entity;
 import java.util.ArrayList;
 import java.util.List;
 
+import dungeonmania.Entity;
+import dungeonmania.util.Direction;
 import dungeonmania.util.Position;
 
 /**
@@ -46,7 +48,7 @@ public class Spider extends DynamicEntity {
         }
     }
     
-    private Position updatePos() {
+    public void updatePos(Direction d, List<Entity> l) {
 
         // boulder
         // call change Direction
@@ -54,7 +56,7 @@ public class Spider extends DynamicEntity {
             // Check for boulder
 
             currentPosition = 0;
-            return cyclePositions.get(currentPosition);
+            this.setPosition(cyclePositions.get(currentPosition));
         }
 
         int result = checkBoulders();
@@ -66,7 +68,7 @@ public class Spider extends DynamicEntity {
         } else if (currentPosition < 0) {
             currentPosition = 7;
         }
-        return cyclePositions.get(currentPosition);
+        this.setPosition(cyclePositions.get(currentPosition));
     }
     
     private List<Position> generatePositions(Position centre) {
