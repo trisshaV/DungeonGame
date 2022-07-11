@@ -9,5 +9,9 @@ package dungeonmania;
  *      - Can be moved onto collectible entities.
  */
 public class Boulder extends Entity {
-    
+
+    @Override
+    public String getType() {
+        return "boulder";
+    }
 }

@@ -5,5 +5,8 @@ package dungeonmania.static_entity;
  *      - The puzzle is completed when the Player reaches this square.
  */
 public class Exit extends StaticEntity {
-    
+    @Override
+    public String getType() {
+        return "exit";
+    }
 }

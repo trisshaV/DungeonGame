@@ -7,5 +7,9 @@ package dungeonmania.static_entity;
  *      - Blocks the movement of Boulders.
  */
 public class Wall extends StaticEntity {
-    
+
+    @Override
+    public String getType() {
+        return "wall";
+    }
 }
