@@ -1,7 +1,10 @@
 package dungeonmania;
 
 import dungeonmania.collectible.Key;
+import dungeonmania.dynamic_entity.Mercenary;
 import dungeonmania.dynamic_entity.Player;
+import dungeonmania.dynamic_entity.Spider;
+import dungeonmania.dynamic_entity.ZombieToast;
 import dungeonmania.exceptions.InvalidActionException;
 import dungeonmania.response.models.EntityResponse;
 import dungeonmania.response.models.ItemResponse;
@@ -104,6 +107,17 @@ public class DungeonManiaController {
             case "exit":
                 newEntity = new Exit();
                 break;
+            case "spider":
+                newEntity = new Spider();
+                break;
+            case "zombie_toast":
+                newEntity = new ZombieToast();
+                break;
+            case "mercenary":
+                newEntity = new Mercenary();
+                break;
+            case "boulder":
+                newEntity = new Boulder();
         default:
             return;
         }
