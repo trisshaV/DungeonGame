@@ -1,6 +1,7 @@
 package dungeonmania.dynamic_entity;
 
 import java.util.List;
+import java.util.Optional;
 
 import dungeonmania.Entity;
 import dungeonmania.util.Direction;
@@ -37,28 +38,50 @@ public class Mercenary extends DynamicEntity {
         if (status.equals("HOSTILE")) {
             // Check potion status
             /*
-            if () {
-                // do something
-                randomHostile();
+            if (Potion status is invisible) {
+                randomHostile(l);
+            } else if (Potion status is invunerable) {
+                runHostile(l);
             } else {
-                chaseHostile();
+                chaseHostile(l);
             }
             */
-        } else if (status.equals("ALLY")) {
-            moveAlly();
         }
     }
     
-    private void chaseHostile() {
-        // BFS
-        // Ask for help
+    private void chaseHostile(List <Entity> l) {
+        Entity p = l.stream().filter(x -> x instanceof Player).findFirst().orElse(null);
+        if (p == null) {
+            // Player has deceased
+            return;
+        }
+        Position playerPos = p.getPosition();
+        int x1 = playerPos.getX();
+        int y1 = playerPos.getY();
+
+        Position current = this.getPosition();
+        int x2 = current.getX();
+        int y2 = current.getY();
+
+        if (x1 > x2) {
+            l.stream().filter(e -> e.getPosition().equals(new Position(x2 + 1, y2))).forEach(
+                e -> {
+                    /*
+                    if (!e.collide(this) && !e.equals(null)) {
+                        break;
+                    }
+                     */
+                }
+            );
+        }
     }
 
-    private void moveAlly() {
-        // Check behind player
-    }
 
-    private void randomHostile() {
-
+    private void randomHostile(List<Entity> l) {
+        RandomMovement move = new RandomMovement();
+        Position nextPosition = move.randPosition(this, l);
+        if (!nextPosition.equals(null)) {
+            this.setPosition(nextPosition);
+        }
     }
 }

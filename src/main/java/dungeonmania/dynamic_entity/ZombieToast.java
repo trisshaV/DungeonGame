@@ -24,22 +24,12 @@ public class ZombieToast extends DynamicEntity {
     }
     
     public void updatePos(Direction d, List<Entity> l) {
-        List <Position> newPositions = new ArrayList<>();
-        // Check up
 
-        // Check down
+        RandomMovement move = new RandomMovement();
 
-        // Check left
-        
-        // Check right
-        
-        // All cardinal directions are invalid
-        if (newPositions.size() == 0) {
-            return;
+        Position nextPosition = move.randPosition(this, l);
+        if (!nextPosition.equals(null)) {
+            this.setPosition(nextPosition);
         }
-        Random rand = new Random();
-        int result = rand.nextInt(newPositions.size());
-        
-        this.setPosition(newPositions.get(result));
     }
 }

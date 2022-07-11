@@ -97,11 +97,25 @@ public class Player extends DynamicEntity {
         }
         Position nextPosition = new Position(x, y);
         // Check next position for obstacles/issues
+        /*
+        List <Entity> listEntities = entity.stream().filter(x -> x.getPosition().equals(nextPosition)).collect(Collectors.toList());
 
-        // Is there a wall
-        // Is there a boulder
-        // is there a portal
-        // etc
+        { Wall, Spider }
+        { Portal, Spider}
+
+        listEntities.stream().filter(x -> x instanceof StaticEntity).forEach(
+            x -> {
+                if (!x.collide(this) && !x.equals(null)) {
+                    return;
+                }
+            }
+        )
+        
+        { Potion, Spider}
+        { Mercenary, sword}
+
+        // collide into each of them (assumption: can go into them any order)
+        */
 
         this.setPosition(nextPosition);
     }

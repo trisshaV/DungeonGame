@@ -39,27 +39,26 @@ public class Spider extends DynamicEntity {
     public void setDirection(String direction) {
         this.direction = direction;
     }
-
-    private void changeDirection() {
-        if (this.direction == "clockwise") {
-            this.direction = "anticlockwise";
-        } else {
-            this.direction = "clockwise";
-        }
-    }
     
     public void updatePos(Direction d, List<Entity> l) {
 
         // boulder
         // call change Direction
         if (cycleStart == false) {
-            // Check for boulder
-
+            Position curr = this.getPosition();
+            Position nextPosition = new Position(curr.getX(), curr.getY() - 1);
+            /* 
+             Entity e = entity.stream().filter(x -> x.getPosition().equals(nextPosition)).filter(x -> x instanceof Boulder);
+             if (e == null) {
+                return;
+             }
+             */
+             
             currentPosition = 0;
             this.setPosition(cyclePositions.get(currentPosition));
         }
 
-        int result = checkBoulders();
+        int result = checkCycle();
 
         currentPosition += result;
 
@@ -87,7 +86,7 @@ public class Spider extends DynamicEntity {
         return result;
     }
 
-    private int checkBoulders() {
+    private int checkCycle() {
 
         Position checkClockwise = null;
         Position checkAnticlockwise = null;
@@ -104,14 +103,45 @@ public class Spider extends DynamicEntity {
             checkAnticlockwise = cyclePositions.get(currentPosition - 1);
         }
 
-        // Check if boulder
         /* 
-        if (check boulder (checkPos)) {
+        List <Entity> listEntities1 = entity.stream().filter(x -> x.getPosition().equals(checkClockwise)).collect(Collectors.toList());
+        List <Entity> listEntities2 = entity.stream().filter(x -> x.getPosition().equals(checkAnticlockwise)).collect(Collectors.toList());
 
-            //reverse direction
-            //
+        listEntities1.stream().forEach(
+            x -> {
+                if (!x.collide(this) && !x.equals(null)) {
+                    checkClockwise = null;
+                    break;
+                }
+            }
+        )
+        listEntities2.stream().forEach(
+            x -> {
+                if (!x.collide(this) && !x.equals(null)) {
+                    checkAnticlockwise = null;
+                    break;
+                }
+            }
+        )
+
+        if (direction.equals("clockwise")) {
+            if (checkClockwise.equals(null)) {
+                if (!checkAnticlockwise.equals(null)) {
+                    setDirection("anticlockwise");
+                    return -1;
+                } 
+                return 0;
+            } 
+            return 1;
+        } 
+        if (checkAnticlockwise.equals(null)) {
+            if (!checkClockwise.equals(null)) {
+                setDirection("clockwise");
+                return 1;
+            }
+            return 0;
         }
-         */
-        return 1;
+        */
+        return -1;
     }
 }
