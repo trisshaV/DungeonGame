@@ -27,6 +27,7 @@ import org.json.JSONObject;
 public class DungeonManiaController {
 
     private List<Entity> entities = new ArrayList<>();
+    private Player player = null;
 	private String dungeonId = "1";	
     private String goal;
 	private String dungeonName;
@@ -90,25 +91,24 @@ public class DungeonManiaController {
         Entity newEntity = null;
         switch(type) {
             case "player":
-                newEntity = new Player();
+                player = new Player(id, position, jsonConfig);
+                newEntity = player;
                 break;
             case "wall":
-                newEntity = new Wall();
+                newEntity = new Wall(id, position);
                 break;
             case "key":
-                newEntity = new Key();
+                newEntity = new Key(id, position);
                 break;
             case "door":
-                newEntity = new Door();
+                newEntity = new Door(id, position);
                 break;
             case "exit":
-                newEntity = new Exit();
+                newEntity = new Exit(id, position);
                 break;
-        default:
-            return;
+            default:
+                return;
         }
-        newEntity.setId(id);
-        newEntity.setPosition(position);
         entities.add(newEntity);
     }
 
@@ -121,8 +121,8 @@ public class DungeonManiaController {
                 .collect(Collectors.toList());
 
         return new DungeonResponse(
-            dungeonId, dungeonName, entityResponseList, new ArrayList<>(),
-            new ArrayList<>(), new ArrayList<>(), goal);
+            dungeonId, dungeonName, entityResponseList, player.getInventory(),
+            new ArrayList<>(), player.getBuildables(), goal);
     }
 
     /**

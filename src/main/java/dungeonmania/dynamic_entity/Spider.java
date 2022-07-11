@@ -1,5 +1,7 @@
 package dungeonmania.dynamic_entity;
 
+import dungeonmania.util.Position;
+
 /**
  * Are among the eneny entities that WILL harm Player. Has following properties:
  *      - Spawn at RANDOM locations ANYWHERE on the map at time of dungeon creation. However, it is RECOMMENDED that we 
@@ -10,5 +12,9 @@ package dungeonmania.dynamic_entity;
  *          ONLY boulders will effect the movement path and this is noted in previous point.
  */
 public class Spider extends DynamicEntity {
+
+    public Spider(String id, Position xy) {
+        super(id, xy);
+    }
     
 }
