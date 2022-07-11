@@ -6,5 +6,12 @@ package dungeonmania.dynamic_entity;
  *      - Move in RANDOM directions and are constricted to same conditions as Player movement, however CANNOT use portals.
  */
 public class ZombieToast extends DynamicEntity {
+    @Override
+    public String getType() {
+        return "zombie_toast";
+    }
+
+    public ZombieToast() {
+    }
     
 }

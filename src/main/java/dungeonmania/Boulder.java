@@ -14,4 +14,9 @@ public class Boulder extends Entity {
     public String getType() {
         return "boulder";
     }
+
+    public Boulder() {
+    }
+
+    
 }

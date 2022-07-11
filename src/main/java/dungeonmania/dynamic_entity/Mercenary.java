@@ -13,5 +13,14 @@ package dungeonmania.dynamic_entity;
  *                          occuping the previous square the Player was on and are constricted to same conditions as Player movement.
  */
 public class Mercenary extends DynamicEntity {
+
+    
+    @Override
+    public String getType() {
+        return "mercenary";
+    }
+
+    public Mercenary() {
+    }
     
 }
