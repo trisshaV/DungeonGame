@@ -8,8 +8,13 @@ import dungeonmania.util.Position;
  */
 public abstract class Entity {
 
-	private String id;
+	private final String id;
 	private Position position;
+
+	public Entity(String id, Position xy) {
+		this.id = id;
+		position = xy;
+	}
 
 	public abstract String getType();
 
@@ -41,12 +46,4 @@ public abstract class Entity {
 	public String getId() {
 		return id;
 	}
-
-	/**
-	 * @param id the id to set
-	 */
-	public void setId(String id) {
-		this.id = id;
-	}
-    
 }

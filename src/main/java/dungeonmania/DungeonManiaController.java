@@ -27,6 +27,7 @@ import org.json.JSONObject;
 public class DungeonManiaController {
 
     private List<Entity> entities = new ArrayList<>();
+    private Player player = null;
 	private String dungeonId = "1";	
     private String goal;
 	private String dungeonName;
@@ -90,7 +91,8 @@ public class DungeonManiaController {
         Entity newEntity = null;
         switch(type) {
             case "player":
-                newEntity = new Player();
+                newEntity = new Player(id, position, jsonConfig);
+                player = newEntity;
                 break;
             case "wall":
                 newEntity = new Wall();
@@ -121,8 +123,8 @@ public class DungeonManiaController {
                 .collect(Collectors.toList());
 
         return new DungeonResponse(
-            dungeonId, dungeonName, entityResponseList, new ArrayList<>(),
-            new ArrayList<>(), new ArrayList<>(), goal);
+            dungeonId, dungeonName, entityResponseList, player.getInventory(),
+            new ArrayList<>(), player.getBuildables(), goal);
     }
 
     /**
