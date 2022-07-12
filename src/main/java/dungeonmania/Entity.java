@@ -1,5 +1,6 @@
 package dungeonmania;
 
+import dungeonmania.dynamic_entity.Player;
 import dungeonmania.response.models.EntityResponse;
 import dungeonmania.util.Position;
 
@@ -46,4 +47,8 @@ public abstract class Entity {
 	public String getId() {
 		return id;
 	}
+
+    public boolean collide(Player player) {
+        return false;
+    }
 }
