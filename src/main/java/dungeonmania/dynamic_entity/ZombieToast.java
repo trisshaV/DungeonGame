@@ -26,11 +26,10 @@ public class ZombieToast extends DynamicEntity {
     }
     
     public void updatePos(Direction d, List<Entity> l) {
-
+        
         RandomMovement move = new RandomMovement();
-
         Position nextPosition = move.randPosition(this, l);
-        if (!nextPosition.equals(null)) {
+        if (nextPosition != null) {
             this.setPosition(nextPosition);
         }
     }

@@ -14,7 +14,7 @@ import dungeonmania.util.Direction;
 import dungeonmania.util.Position;
 
 public class ZombieToastTest {
-    /*
+    
     @Test
     @DisplayName("Test random movement of zombie toast")
     public void randomMovement() {
@@ -69,5 +69,5 @@ public class ZombieToastTest {
         res = dmc.tick(Direction.UP);
         assertEquals(nextPos, getEntities(res, "zombie_toast").get(0).getPosition());
     }
-    */
+    
 }
