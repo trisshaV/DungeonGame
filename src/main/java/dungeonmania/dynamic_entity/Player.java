@@ -116,6 +116,11 @@ public class Player extends DynamicEntity {
                 return;
             }}
         );
+        collides.stream().filter(entity -> entity instanceof Collectible).forEach(
+            entity -> {if (!entity.collide(this) & !entity.equals(null)) {
+                return;
+            }}
+        );
         this.setPosition(nextPosition);
     }
 }
