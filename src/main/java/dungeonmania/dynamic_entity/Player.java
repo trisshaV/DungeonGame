@@ -8,10 +8,12 @@ import java.util.stream.Collectors;
 
 import org.json.JSONObject;
 
+import dungeonmania.Boulder;
 import dungeonmania.Entity;
 import dungeonmania.collectible.Collectible;
 import dungeonmania.collectible.Key;
 import dungeonmania.response.models.ItemResponse;
+import dungeonmania.static_entity.StaticEntity;
 import dungeonmania.util.Direction;
 import dungeonmania.util.Position;
 
@@ -97,26 +99,28 @@ public class Player extends DynamicEntity {
         }
         Position nextPosition = new Position(x, y);
         // Check next position for obstacles/issues
-        /*
-        List <Entity> listEntities = entity.stream().filter(x -> x.getPosition().equals(nextPosition)).collect(Collectors.toList());
-
-        { Wall, Spider }
-        { Portal, Spider}
-
-        listEntities.stream().filter(x -> x instanceof StaticEntity).forEach(
-            x -> {
-                if (!x.collide(this) && !x.equals(null)) {
-                    return;
-                }
-            }
-        )
         
-        { Potion, Spider}
-        { Mercenary, sword}
-
-        // collide into each of them (assumption: can go into them any order)
-        */
-
+        List <Entity> collides = l.stream().filter(entity -> entity.getPosition().equals(nextPosition)).collect(Collectors.toList());
+        collides.stream().filter(entity -> entity instanceof Boulder).forEach(
+            entity -> {if (!entity.collide(this) && !entity.equals(null)) {
+                return;
+            }}
+        );
+        collides.stream().filter(entity -> entity instanceof StaticEntity).forEach(
+            entity -> {if (!entity.collide(this) & !entity.equals(null)) {
+                return;
+            }}
+        );
+        collides.stream().filter(entity -> entity instanceof DynamicEntity).forEach(
+            entity -> {if (!entity.collide(this) & !entity.equals(null)) {
+                return;
+            }}
+        );
+        collides.stream().filter(entity -> entity instanceof Collectible).forEach(
+            entity -> {if (!entity.collide(this) & !entity.equals(null)) {
+                return;
+            }}
+        );
         this.setPosition(nextPosition);
     }
 }
