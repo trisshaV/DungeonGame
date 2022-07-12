@@ -16,7 +16,10 @@ public class Boulder extends Entity {
         super(id, xy);
     }
 
-    @Override
+    public boolean collide(Entity entity) {
+        return false;
+    }
+
     public String getType() {
         return "boulder";
     }
