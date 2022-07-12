@@ -98,7 +98,6 @@ public class Player extends DynamicEntity {
         }
         Position nextPosition = new Position(x, y);
         // Check next position for obstacles/issues
-        boolean temp = true;
         List <Entity> collides = l.stream().filter(entity -> entity.getPosition().equals(nextPosition)).collect(Collectors.toList());
         if (collides.stream().filter(entity -> entity instanceof Boulder).anyMatch(entity -> !entity.collide(this) && !entity.equals(null) == true)) {
             return;
