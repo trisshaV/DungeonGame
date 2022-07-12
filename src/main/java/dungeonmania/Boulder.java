@@ -1,5 +1,8 @@
 package dungeonmania;
 
+import dungeonmania.dynamic_entity.Player;
+import dungeonmania.static_entity.FloorSwitch;
+import dungeonmania.static_entity.Wall;
 import dungeonmania.util.Position;
 
 /**
@@ -12,10 +15,28 @@ import dungeonmania.util.Position;
  */
 public class Boulder extends Entity {
 
-    public Boulder(String id, Position xy) {
+    private DungeonManiaController dungeon;
+
+    public Boulder(DungeonManiaController dungeon, String id, Position xy) {
         super(id, xy);
+        this.dungeon = dungeon;
     }
 
+    boolean collide(Entity entity) {
+        if (entity.getType().equals("player")) {
+            Player player = (Player) entity;
+            Position pos = player.getPosition();
+            int changeX = pos.getX() - this.getPosition().getX();
+            int changeY = pos.getY() - this.getPosition().getY();
+
+            Entity collision = dungeon.checkBoulderCollision(new Position(this.getPosition().getX() - changeX, this.getPosition().getY() - changeY));
+            if (collision.equals(null) || collision instanceof FloorSwitch) {
+                this.setPosition(new Position(this.getPosition().getX() - changeX, this.getPosition().getY() - changeY));
+                return true;
+            }
+        }
+        return false;
+    }
     @Override
     public String getType() {
         return "boulder";
