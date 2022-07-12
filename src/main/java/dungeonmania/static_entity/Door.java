@@ -1,5 +1,6 @@
 package dungeonmania.static_entity;
 
+import dungeonmania.Entity;
 import dungeonmania.util.Position;
 
 /**
@@ -16,5 +17,9 @@ public class Door extends StaticEntity {
     @Override
     public String getType() {
         return "door";
+    }
+
+    public boolean collide(Entity entity) {
+        return false;
     }
 }

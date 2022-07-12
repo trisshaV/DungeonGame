@@ -22,7 +22,7 @@ public class Boulder extends Entity {
         this.dungeon = dungeon;
     }
 
-    boolean collide(Entity entity) {
+    public boolean collide(Entity entity) {
         if (entity.getType().equals("player")) {
             Player player = (Player) entity;
             Position pos = player.getPosition();
@@ -42,8 +42,9 @@ public class Boulder extends Entity {
         }
         return false;
     }
-    @Override
+    
     public String getType() {
         return "boulder";
     }
+    
 }

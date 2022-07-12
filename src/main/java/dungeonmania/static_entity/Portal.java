@@ -1,5 +1,6 @@
 package dungeonmania.static_entity;
 
+import dungeonmania.Entity;
 import dungeonmania.util.Position;
 
 /**
@@ -11,6 +12,10 @@ public class Portal extends StaticEntity {
 
     public Portal(String id, Position xy) {
         super(id, xy);
+    }
+
+    public boolean collide(Entity entity) {
+        return false;
     }
     
 }

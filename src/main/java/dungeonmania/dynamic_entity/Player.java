@@ -8,9 +8,13 @@ import java.util.stream.Collectors;
 
 import org.json.JSONObject;
 
+import dungeonmania.Boulder;
+import dungeonmania.Entity;
 import dungeonmania.collectible.Collectible;
 import dungeonmania.collectible.Key;
 import dungeonmania.response.models.ItemResponse;
+import dungeonmania.static_entity.StaticEntity;
+import dungeonmania.util.Direction;
 import dungeonmania.util.Position;
 
 /**
@@ -69,5 +73,45 @@ public class Player extends DynamicEntity {
     */
     public Optional<Collectible> getKey() {
         return inventory.stream().filter(x -> x.getType().equals("key")).findFirst();
+    }
+    /**
+     * Updates the new position of Player given a direction
+     */
+    public void updatePos(Direction d, List<Entity> l) {
+        Position curr = this.getPosition();
+        int x = curr.getX();
+        int y = curr.getY();
+
+        switch(d) {
+            case DOWN:
+                y += 1;
+                break;
+            case UP:
+                y -= 1;
+                break;
+            case LEFT:
+                x -= 1;
+                break;
+            case RIGHT: 
+                x += 1;
+                break;
+        }
+        Position nextPosition = new Position(x, y);
+        // Check next position for obstacles/issues
+        boolean temp = true;
+        List <Entity> collides = l.stream().filter(entity -> entity.getPosition().equals(nextPosition)).collect(Collectors.toList());
+        if (collides.stream().filter(entity -> entity instanceof Boulder).anyMatch(entity -> !entity.collide(this) && !entity.equals(null) == true)) {
+            return;
+        }
+        if (collides.stream().filter(entity -> entity instanceof StaticEntity).anyMatch(entity -> !entity.collide(this) && !entity.equals(null) == true)) {
+            return;
+        }
+        if (collides.stream().filter(entity -> entity instanceof DynamicEntity).anyMatch(entity -> !entity.collide(this) && !entity.equals(null) == true)) {
+            return;
+        }
+        if (collides.stream().filter(entity -> entity instanceof Collectible).anyMatch(entity -> !entity.collide(this) && !entity.equals(null) == true)) {
+            return;
+        }
+        this.setPosition(nextPosition);
     }
 }

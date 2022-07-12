@@ -1,5 +1,6 @@
 package dungeonmania;
 
+import dungeonmania.dynamic_entity.Player;
 import dungeonmania.response.models.EntityResponse;
 import dungeonmania.util.Position;
 
@@ -17,7 +18,7 @@ public abstract class Entity {
 	}
 
 	public abstract String getType();
-
+	public abstract boolean collide(Entity entity); 
 	/**
 	 * default EntityResponse. 
 	 * Always returns false for isInteractable unless overridden.
@@ -46,4 +47,6 @@ public abstract class Entity {
 	public String getId() {
 		return id;
 	}
+
+    
 }

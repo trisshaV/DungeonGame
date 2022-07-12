@@ -11,6 +11,7 @@ public abstract class StaticEntity extends Entity {
         super(id, xy);
     }
 
+    public abstract boolean collide(Entity entity);
     /**
      * TODO: Remove or make abstract
      * @return
