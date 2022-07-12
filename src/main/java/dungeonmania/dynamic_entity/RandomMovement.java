@@ -22,27 +22,22 @@ public class RandomMovement {
         newPositions.add(new Position(x, y + 1));
         newPositions.add(new Position(x + 1, y));
         newPositions.add(new Position(x - 1, y));
-        Position nextPosition = null;
         // Repeat until a direction is successful
-        /*
         while(true) {
-
             if (newPositions.size() == 0) {
-                return null;
-            }
+                break;
+            } 
             Random rand = new Random();
             int result = rand.nextInt(newPositions.size());
-            Position nextPosition = newPositions.remove(result);
-            List <Entity> temp = l.stream().filter(e -> e.getPosition().equals(nextPosition)).collect(Collectors.toList());
 
-            temp.stream().forEach(
-                x -> {
-                    if (x.collide(d) || x.equals(null)) {
-                        return nextPosition;
-                    }
-                }
-            );
-        */
+            List <Entity> temp = l.stream().filter(e -> e.getPosition().equals(newPositions.get(result))).collect(Collectors.toList());
+            Position nextPosition = newPositions.remove(result);
+            if (temp.size() == 0) {
+                return nextPosition;
+            } else if (temp.stream().filter(e -> e == null).anyMatch(entity -> entity.collide(d) || entity.collide(null))) {
+                return nextPosition;
+            }
+        }
         return null;
     }
 }
