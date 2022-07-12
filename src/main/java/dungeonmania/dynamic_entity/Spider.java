@@ -2,6 +2,10 @@ package dungeonmania.dynamic_entity;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
+import org.json.JSONObject;
 
 import dungeonmania.Entity;
 import dungeonmania.util.Direction;
@@ -25,8 +29,10 @@ public class Spider extends DynamicEntity {
 
     private int currentPosition;
 
-    public Spider(String id, Position xy) {
+    public Spider(String id, Position xy, JSONObject config) {
         super(id, xy);
+        this.attack = config.getInt("spider_attack");
+        this.health = config.getInt("spider_health");
         this.direction = "clockwise";
         cyclePositions = generatePositions(this.getPosition());
     }
@@ -50,18 +56,19 @@ public class Spider extends DynamicEntity {
         if (cycleStart == false) {
             Position curr = this.getPosition();
             Position nextPosition = new Position(curr.getX(), curr.getY() - 1);
-            /* 
-             Entity e = entity.stream().filter(x -> x.getPosition().equals(nextPosition)).filter(x -> x instanceof Boulder);
-             if (e == null) {
+            
+            List <Entity> listEntities = l.stream().filter(x -> x.getPosition().equals(nextPosition)).collect(Collectors.toList());
+            if (listEntities.stream().anyMatch(entity -> !entity.collide(this) && !entity.equals(null) == true)) {
                 return;
-             }
-             */
+            }
              
             currentPosition = 0;
+            cycleStart = true;
             this.setPosition(cyclePositions.get(currentPosition));
+            return;
         }
 
-        int result = checkCycle();
+        int result = checkCycle(l);
 
         currentPosition += result;
 
@@ -89,47 +96,37 @@ public class Spider extends DynamicEntity {
         return result;
     }
 
-    private int checkCycle() {
+    private int checkCycle(List<Entity> l) {
 
-        Position checkClockwise = null;
-        Position checkAnticlockwise = null;
-
-        if (currentPosition == 7) {
-            checkClockwise = cyclePositions.get(0);
-        } else {
-            checkClockwise = cyclePositions.get(currentPosition + 1);
-        }
-
+        int clockwiseIndex = currentPosition + 1;
+        int anticlockwiseIndex = currentPosition -1;
+        
         if (currentPosition == 0) {
-            checkAnticlockwise = cyclePositions.get(7);
-        } else {
-            checkAnticlockwise = cyclePositions.get(currentPosition - 1);
+            anticlockwiseIndex = 0;
+        } else if (currentPosition == 7) {
+            clockwiseIndex = 0;
+        }
+        
+        final Position checkClockwise = cyclePositions.get(clockwiseIndex);
+        final Position checkAnticlockwise = cyclePositions.get(anticlockwiseIndex);
+        boolean clockwise = true;
+        boolean anticlockwise = true;
+         
+        List <Entity> listEntities1 = l.stream().filter(x -> x.getPosition().equals(checkClockwise)).collect(Collectors.toList());
+        List <Entity> listEntities2 = l.stream().filter(x -> x.getPosition().equals(checkAnticlockwise)).collect(Collectors.toList());
+
+
+        if (listEntities1.stream().anyMatch(entity -> !entity.collide(this) && !entity.equals(null) == true)) {
+            clockwise = false;
         }
 
-        /* 
-        List <Entity> listEntities1 = entity.stream().filter(x -> x.getPosition().equals(checkClockwise)).collect(Collectors.toList());
-        List <Entity> listEntities2 = entity.stream().filter(x -> x.getPosition().equals(checkAnticlockwise)).collect(Collectors.toList());
-
-        listEntities1.stream().forEach(
-            x -> {
-                if (!x.collide(this) && !x.equals(null)) {
-                    checkClockwise = null;
-                    break;
-                }
-            }
-        )
-        listEntities2.stream().forEach(
-            x -> {
-                if (!x.collide(this) && !x.equals(null)) {
-                    checkAnticlockwise = null;
-                    break;
-                }
-            }
-        )
+        if (listEntities2.stream().anyMatch(entity -> !entity.collide(this) && !entity.equals(null) == true)) {
+            anticlockwise = false;
+        }
 
         if (direction.equals("clockwise")) {
-            if (checkClockwise.equals(null)) {
-                if (!checkAnticlockwise.equals(null)) {
+            if (clockwise == false) {
+                if (anticlockwise == true) {
                     setDirection("anticlockwise");
                     return -1;
                 } 
@@ -137,14 +134,14 @@ public class Spider extends DynamicEntity {
             } 
             return 1;
         } 
-        if (checkAnticlockwise.equals(null)) {
-            if (!checkClockwise.equals(null)) {
+        if (anticlockwise == false) {
+            if (clockwise == true) {
                 setDirection("clockwise");
                 return 1;
             }
             return 0;
         }
-        */
+        
         return -1;
     }
 }

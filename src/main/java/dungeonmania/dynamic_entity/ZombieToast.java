@@ -1,8 +1,8 @@
 package dungeonmania.dynamic_entity;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
+
+import org.json.JSONObject;
 
 import dungeonmania.Entity;
 import dungeonmania.util.Direction;
@@ -19,16 +19,17 @@ public class ZombieToast extends DynamicEntity {
         return "zombie_toast";
     }
 
-    public ZombieToast(String id, Position xy) {
+    public ZombieToast(String id, Position xy, JSONObject config) {
         super(id, xy);
+        this.attack = config.getInt("player_attack");
+        this.health = config.getInt("player_health");
     }
     
     public void updatePos(Direction d, List<Entity> l) {
-
+        
         RandomMovement move = new RandomMovement();
-
         Position nextPosition = move.randPosition(this, l);
-        if (!nextPosition.equals(null)) {
+        if (nextPosition != null) {
             this.setPosition(nextPosition);
         }
     }

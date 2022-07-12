@@ -115,13 +115,13 @@ public class DungeonManiaController {
                 newEntity = new Exit(id, position);
                 break;
             case "spider":
-                newEntity = new Spider(id, position);
+                newEntity = new Spider(id, position, jsonConfig);
                 break;
             case "zombie_toast":
-                newEntity = new ZombieToast(id, position);
+                newEntity = new ZombieToast(id, position, jsonConfig);
                 break;
             case "mercenary":
-                newEntity = new Mercenary(id, position);
+                newEntity = new Mercenary(id, position, jsonConfig);
                 break;
             case "boulder":
                 newEntity = new Boulder(this, id, position);

@@ -21,14 +21,12 @@ import dungeonmania.util.Position;
  * Entity that is controlled by the Player.
  */
 public class Player extends DynamicEntity {
-    private int health;
-    private int attack;
     private List<Collectible> inventory;
 
     public Player(String id, Position xy, JSONObject config) {
         super(id, xy);
-        attack = config.getInt("player_attack");
-        health = config.getInt("player_health");
+        this.attack = config.getInt("zombie_attack");
+        this.health = config.getInt("zombie_health");
         inventory = new ArrayList<>();
     }
 
@@ -98,7 +96,6 @@ public class Player extends DynamicEntity {
         }
         Position nextPosition = new Position(x, y);
         // Check next position for obstacles/issues
-        boolean temp = true;
         List <Entity> collides = l.stream().filter(entity -> entity.getPosition().equals(nextPosition)).collect(Collectors.toList());
         if (collides.stream().filter(entity -> entity instanceof Boulder).anyMatch(entity -> (!entity.collide(this) && entity != null) == true)) {
             return;

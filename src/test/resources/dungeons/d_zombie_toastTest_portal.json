@@ -36,6 +36,11 @@
             "colour": "red",
             "x": 5,
             "y": 5
+        },
+        {
+            "type": "player",
+            "x": 20,
+            "y": 20
         }
     ],
     "goal-condition": {

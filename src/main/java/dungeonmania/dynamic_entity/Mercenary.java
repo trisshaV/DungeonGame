@@ -3,6 +3,8 @@ package dungeonmania.dynamic_entity;
 import java.util.List;
 import java.util.Optional;
 
+import org.json.JSONObject;
+
 import dungeonmania.Entity;
 import dungeonmania.util.Direction;
 import dungeonmania.util.Position;
@@ -22,7 +24,6 @@ import dungeonmania.util.Position;
 public class Mercenary extends DynamicEntity {
 
     private String status = "HOSTILE";
-
     private boolean behindPlayer = false;
 
     @Override
@@ -30,8 +31,11 @@ public class Mercenary extends DynamicEntity {
         return "mercenary";
     }
     
-    public Mercenary(String id, Position xy) {
+    public Mercenary(String id, Position xy, JSONObject config) {
         super(id, xy);
+        this.attack = config.getInt("mercenary_attack");
+        this.health = config.getInt("mercenary_health");
+
     }
 
     public void updatePos(Direction d, List<Entity> l) {

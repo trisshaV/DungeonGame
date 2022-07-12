@@ -12,6 +12,8 @@ import dungeonmania.util.Position;
 public abstract class DynamicEntity extends Entity {
 
     public abstract void updatePos(Direction d, List<Entity> l);
+    public int health;
+    public int attack;
 
     public boolean collide(Entity entity) {
         return false;
