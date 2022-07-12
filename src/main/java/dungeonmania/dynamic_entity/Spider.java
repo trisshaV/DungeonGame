@@ -3,6 +3,8 @@ package dungeonmania.dynamic_entity;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.json.JSONObject;
+
 import dungeonmania.Entity;
 import dungeonmania.util.Direction;
 import dungeonmania.util.Position;
@@ -25,8 +27,10 @@ public class Spider extends DynamicEntity {
 
     private int currentPosition;
 
-    public Spider(String id, Position xy) {
+    public Spider(String id, Position xy, JSONObject config) {
         super(id, xy);
+        this.attack = config.getInt("spider_attack");
+        this.health = config.getInt("spider_health");
         this.direction = "clockwise";
         cyclePositions = generatePositions(this.getPosition());
     }

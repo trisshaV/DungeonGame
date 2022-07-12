@@ -21,14 +21,12 @@ import dungeonmania.util.Position;
  * Entity that is controlled by the Player.
  */
 public class Player extends DynamicEntity {
-    private int health;
-    private int attack;
     private List<Collectible> inventory;
 
     public Player(String id, Position xy, JSONObject config) {
         super(id, xy);
-        attack = config.getInt("player_attack");
-        health = config.getInt("player_health");
+        this.attack = config.getInt("zombie_attack");
+        this.health = config.getInt("zombie_health");
         inventory = new ArrayList<>();
     }
 
