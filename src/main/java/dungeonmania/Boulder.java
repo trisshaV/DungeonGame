@@ -35,7 +35,7 @@ public class Boulder extends Entity {
                 activateSwitch.collide(this);
                 this.setPosition(new Position(this.getPosition().getX() - changeX, this.getPosition().getY() - changeY));
             }
-            else if (collision.equals(null)) {
+            else if (collision == null) {
                 this.setPosition(new Position(this.getPosition().getX() - changeX, this.getPosition().getY() - changeY));
                 return true;
             }
