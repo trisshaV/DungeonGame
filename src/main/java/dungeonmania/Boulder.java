@@ -1,5 +1,7 @@
 package dungeonmania;
 
+import dungeonmania.util.Position;
+
 /**
  * Acts like a wall in most cases that is it prohibits the movement of Player, enemies and other boulders. 
  *  At other times, it can be moved by the Player. Has following properties:
@@ -9,5 +11,14 @@ package dungeonmania;
  *      - Can be moved onto collectible entities.
  */
 public class Boulder extends Entity {
+
+    public Boulder(String id, Position xy) {
+        super(id, xy);
+    }
+
+    @Override
+    public String getType() {
+        return "boulder";
+    }
     
 }

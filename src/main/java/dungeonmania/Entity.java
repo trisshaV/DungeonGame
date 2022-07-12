@@ -1,21 +1,31 @@
 package dungeonmania;
 
+import dungeonmania.dynamic_entity.Player;
+import dungeonmania.response.models.EntityResponse;
 import dungeonmania.util.Position;
 
 /**
  * The collection of all entities that are present in dungeon.
  */
-public class Entity {
+public abstract class Entity {
 
-    /**
-	 * ID
-	 */
-	private String id;
-    
-	/**
-	 * position
-	 */
+	private final String id;
 	private Position position;
+
+	public Entity(String id, Position xy) {
+		this.id = id;
+		position = xy;
+	}
+
+	public abstract String getType();
+
+	/**
+	 * default EntityResponse. 
+	 * Always returns false for isInteractable unless overridden.
+	 */
+	public EntityResponse getEntityResponse() {
+		return new EntityResponse(id, getType(), position, false);
+	}
 
 	/**
 	 * @return the position
@@ -38,15 +48,7 @@ public class Entity {
 		return id;
 	}
 
-	/**
-	 * @param id the id to set
-	 */
-	public void setId(String id) {
-		this.id = id;
-	}
-
-    public Object getType() {
-        return null;
+    public boolean collide(Player player) {
+        return false;
     }
-    
 }
