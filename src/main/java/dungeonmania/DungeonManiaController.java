@@ -164,7 +164,7 @@ public class DungeonManiaController {
         return null;
     }
 
-    public Entity checkBoulderCollision(Position pos) {
+    public Entity checkStaticCollision(Position pos) {
         List<Entity> colliders =  this.entities.stream().filter(x -> x.getPosition().equals(pos)).collect(Collectors.toList());
         if (colliders.stream().filter(x -> x instanceof Boulder).findFirst().orElse(null).equals(null)) {
             return colliders.stream().filter(x -> x instanceof StaticEntity).findFirst().orElse(null);

@@ -29,7 +29,7 @@ public class Boulder extends Entity {
             int changeX = pos.getX() - this.getPosition().getX();
             int changeY = pos.getY() - this.getPosition().getY();
 
-            Entity collision = dungeon.checkBoulderCollision(new Position(this.getPosition().getX() - changeX, this.getPosition().getY() - changeY));
+            Entity collision = dungeon.checkStaticCollision(new Position(this.getPosition().getX() - changeX, this.getPosition().getY() - changeY));
             if (collision instanceof FloorSwitch) {
                 FloorSwitch activateSwitch = (FloorSwitch) collision;
                 activateSwitch.collide(this);
