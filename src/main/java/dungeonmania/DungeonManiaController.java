@@ -104,7 +104,7 @@ public class DungeonManiaController {
                 newEntity = new Door(id, position);
                 break;
             case "exit":
-                newEntity = new Exit(id, position);
+                newEntity = new Exit(id, position, this);
                 break;
             default:
                 return;
@@ -158,5 +158,10 @@ public class DungeonManiaController {
      */
     public DungeonResponse interact(String entityId) throws IllegalArgumentException, InvalidActionException {
         return null;
+    }
+
+    public boolean exitReached() {
+        Exit exit = (Exit) entities.stream().filter(x -> x instanceof Exit).findFirst().orElse(null);
+        return exit.getActive();
     }
 }
