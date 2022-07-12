@@ -100,18 +100,18 @@ public class Player extends DynamicEntity {
         Position nextPosition = new Position(x, y);
         // Check next position for obstacles/issues
         
-        List <Entity> listEntities = l.stream().filter(entity -> entity.getPosition().equals(nextPosition)).collect(Collectors.toList());
-        l.stream().filter(entity -> entity instanceof Boulder).forEach(
+        List <Entity> collides = l.stream().filter(entity -> entity.getPosition().equals(nextPosition)).collect(Collectors.toList());
+        collides.stream().filter(entity -> entity instanceof Boulder).forEach(
             entity -> {if (!entity.collide(this) && !entity.equals(null)) {
                 return;
             }}
         );
-        l.stream().filter(entity -> entity instanceof StaticEntity).forEach(
+        collides.stream().filter(entity -> entity instanceof StaticEntity).forEach(
             entity -> {if (!entity.collide(this) & !entity.equals(null)) {
                 return;
             }}
         );
-        l.stream().filter(entity -> entity instanceof DynamicEntity).forEach(
+        collides.stream().filter(entity -> entity instanceof DynamicEntity).forEach(
             entity -> {if (!entity.collide(this) & !entity.equals(null)) {
                 return;
             }}
