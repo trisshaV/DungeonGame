@@ -14,10 +14,12 @@ import dungeonmania.response.models.EntityResponse;
 import dungeonmania.response.models.ItemResponse;
 import dungeonmania.static_entity.Door;
 import dungeonmania.static_entity.Exit;
+import dungeonmania.static_entity.StaticEntity;
 import dungeonmania.static_entity.Wall;
 import dungeonmania.util.Direction;
 import dungeonmania.util.FileLoader;
 import dungeonmania.util.Position;
+import javassist.expr.Instanceof;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -122,7 +124,7 @@ public class DungeonManiaController {
                 newEntity = new Mercenary(id, position);
                 break;
             case "boulder":
-                newEntity = new Boulder(id, position);
+                newEntity = new Boulder(this, id, position);
                 break;
         default:
             return;
@@ -185,5 +187,13 @@ public class DungeonManiaController {
      */
     public DungeonResponse interact(String entityId) throws IllegalArgumentException, InvalidActionException {
         return null;
+    }
+
+    public Entity checkStaticCollision(Position pos) {
+        List<Entity> colliders =  this.entities.stream().filter(x -> x.getPosition().equals(pos)).collect(Collectors.toList());
+        if (colliders.stream().filter(x -> x instanceof Boulder).findFirst().orElse(null) == null) {
+            return colliders.stream().filter(x -> x instanceof StaticEntity).findFirst().orElse(null);
+        }
+        return colliders.stream().filter(x -> x instanceof Boulder).findFirst().orElse(null);
     }
 }

@@ -100,16 +100,16 @@ public class Player extends DynamicEntity {
         // Check next position for obstacles/issues
         boolean temp = true;
         List <Entity> collides = l.stream().filter(entity -> entity.getPosition().equals(nextPosition)).collect(Collectors.toList());
-        if (collides.stream().filter(entity -> entity instanceof Boulder).anyMatch(entity -> !entity.collide(this) && !entity.equals(null) == true)) {
+        if (collides.stream().filter(entity -> entity instanceof Boulder).anyMatch(entity -> (!entity.collide(this) && entity != null) == true)) {
             return;
         }
-        if (collides.stream().filter(entity -> entity instanceof StaticEntity).anyMatch(entity -> !entity.collide(this) && !entity.equals(null) == true)) {
+        if (collides.stream().filter(entity -> entity instanceof StaticEntity).anyMatch(entity -> (!entity.collide(this) && entity != null) == true)) {
             return;
         }
-        if (collides.stream().filter(entity -> entity instanceof DynamicEntity).anyMatch(entity -> !entity.collide(this) && !entity.equals(null) == true)) {
+        if (collides.stream().filter(entity -> entity instanceof DynamicEntity).anyMatch(entity -> (!entity.collide(this) && entity != null) == true)) {
             return;
         }
-        if (collides.stream().filter(entity -> entity instanceof Collectible).anyMatch(entity -> !entity.collide(this) && !entity.equals(null) == true)) {
+        if (collides.stream().filter(entity -> entity instanceof Collectible).anyMatch(entity -> (!entity.collide(this) && entity != null) == true)) {
             return;
         }
         this.setPosition(nextPosition);
