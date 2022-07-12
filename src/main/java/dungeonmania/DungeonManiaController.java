@@ -10,6 +10,7 @@ import dungeonmania.response.models.EntityResponse;
 import dungeonmania.response.models.ItemResponse;
 import dungeonmania.static_entity.Door;
 import dungeonmania.static_entity.Exit;
+import dungeonmania.static_entity.FloorSwitch;
 import dungeonmania.static_entity.Wall;
 import dungeonmania.util.Direction;
 import dungeonmania.util.FileLoader;
@@ -105,6 +106,9 @@ public class DungeonManiaController {
                 break;
             case "exit":
                 newEntity = new Exit(id, position);
+                break;
+            case "switch":
+                newEntity = new FloorSwitch(id, position);
                 break;
             default:
                 return;
