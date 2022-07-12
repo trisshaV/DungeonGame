@@ -31,9 +31,9 @@ public class WallTests {
     @DisplayName("Player can't walk through wall")
     public void testWalkIntoWall() {
         DungeonManiaController dmc = new DungeonManiaController();
-        DungeonResponse res = dmc.newGame("d_spiderTest_basicMovement", "c_spiderTest_basicMovement");
+        DungeonResponse res = dmc.newGame("d_enemyIntoWall", "c_spiderTest_basicMovement");
         Position pos = getEntities(res, "player").get(0).getPosition();
-        res = dmc.tick(Direction.UP);
+        res = dmc.tick(Direction.DOWN);
         assertEquals(pos, getEntities(res, "player").get(0).getPosition());
     }
     @Test

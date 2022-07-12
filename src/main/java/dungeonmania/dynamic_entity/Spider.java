@@ -31,6 +31,9 @@ public class Spider extends DynamicEntity {
         cyclePositions = generatePositions(this.getPosition());
     }
 
+    public String getType() {
+        return "spider";
+    }
     public String getDirection() {
         return direction;
     }
