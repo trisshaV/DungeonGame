@@ -1,5 +1,6 @@
 package dungeonmania.static_entity;
 
+import dungeonmania.Entity;
 import dungeonmania.util.Position;
 
 /**
@@ -14,5 +15,9 @@ public class Exit extends StaticEntity {
     @Override
     public String getType() {
         return "exit";
+    }
+
+    public boolean collide(Entity entity) {
+        return false;
     }
 }

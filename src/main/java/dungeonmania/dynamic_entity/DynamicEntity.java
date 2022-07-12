@@ -15,16 +15,13 @@ public abstract class DynamicEntity extends Entity {
     public int health;
     public int attack;
 
+    public boolean collide(Entity entity) {
+        return false;
+    }
+
     public DynamicEntity(String id, Position xy) {
         super(id, xy);
     }
 
-    /**
-     * TODO: Remove and make abstract
-     * @return
-     */
-    @Override
-    public String getType() {
-        return null;
-    }
+    public abstract String getType();
 }

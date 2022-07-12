@@ -1,5 +1,6 @@
 package dungeonmania.static_entity;
 
+import dungeonmania.Entity;
 import dungeonmania.util.Position;
 
 /**
@@ -14,4 +15,7 @@ public class FloorSwitch extends StaticEntity {
         super(id, xy);
     }
     
+    public boolean collide(Entity entity) {
+        return false;
+    }
 }

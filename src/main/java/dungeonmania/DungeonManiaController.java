@@ -123,6 +123,7 @@ public class DungeonManiaController {
                 break;
             case "boulder":
                 newEntity = new Boulder(id, position);
+                break;
         default:
             return;
         }

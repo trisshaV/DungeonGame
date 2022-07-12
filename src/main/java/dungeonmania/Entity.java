@@ -18,7 +18,7 @@ public abstract class Entity {
 	}
 
 	public abstract String getType();
-
+	public abstract boolean collide(Entity entity); 
 	/**
 	 * default EntityResponse. 
 	 * Always returns false for isInteractable unless overridden.
@@ -48,7 +48,5 @@ public abstract class Entity {
 		return id;
 	}
 
-    public boolean collide(Player player) {
-        return false;
-    }
+    
 }

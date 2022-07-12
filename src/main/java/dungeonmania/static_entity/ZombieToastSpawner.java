@@ -1,5 +1,6 @@
 package dungeonmania.static_entity;
 
+import dungeonmania.Entity;
 import dungeonmania.util.Position;
 
 /**
@@ -11,6 +12,10 @@ public class ZombieToastSpawner extends StaticEntity {
 
     public ZombieToastSpawner(String id, Position xy) {
         super(id, xy);
+    }
+
+    public boolean collide(Entity entity) {
+        return false;
     }
     
 }
