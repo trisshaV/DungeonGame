@@ -26,6 +26,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 import javax.servlet.FilterRegistration.Dynamic;
@@ -128,7 +129,8 @@ public class DungeonManiaController {
                 newEntity = new Boulder(this, id, position);
                 break;
             case "zombie_toast_spawner":
-                newEntity = new ZombieToastSpawner(this, id, position, Integer.valueOf(jsonEntity.getString("zombie_spawn_rate")), Integer.valueOf(jsonConfig.getString("zombie_attack")), Integer.valueOf(jsonConfig.getString("zombie_health")));
+                newEntity = new ZombieToastSpawner(this, id, position, jsonConfig.getInt("zombie_spawn_rate"), jsonConfig.getInt("zombie_attack"), jsonConfig.getInt("zombie_health"));
+                break;
         default:
             return;
         }
@@ -136,7 +138,8 @@ public class DungeonManiaController {
     }
 
     public void spawnToast(int attack, int health, Position position) {
-
+        Entity newEntity = new ZombieToast(UUID.randomUUID().toString(), position, attack, health);
+        entities.add(newEntity);
     }
     /**
      * /game/dungeonResponseModel
@@ -175,6 +178,14 @@ public class DungeonManiaController {
             x -> {
                 DynamicEntity y = (DynamicEntity) x;
                 y.updatePos(movementDirection, entities);
+            }
+        );
+        List <Entity> copy = new ArrayList<>();
+        copy.addAll(entities);
+        copy.stream().filter(x -> x instanceof ZombieToastSpawner).forEach(
+            x -> {
+                ZombieToastSpawner spawner = (ZombieToastSpawner) x;
+                spawner.tick();
             }
         );
     

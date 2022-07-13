@@ -31,7 +31,20 @@ public class ZombieToastSpawner extends StaticEntity {
         if (currentTick == spawnRate) {
             currentTick = 0;
             if (dungeon.checkStaticCollision(new Position(this.getPosition().getX() + 1, this.getPosition().getY())) == null) {
-
+                dungeon.spawnToast(zombieAttack, zombieHealth, new Position(this.getPosition().getX() + 1, this.getPosition().getY()));
+                return;
+            }
+            else if (dungeon.checkStaticCollision(new Position(this.getPosition().getX() - 1, this.getPosition().getY())) == null) {
+                dungeon.spawnToast(zombieAttack, zombieHealth, new Position(this.getPosition().getX() - 1, this.getPosition().getY()));
+                return;
+            }
+            else if (dungeon.checkStaticCollision(new Position(this.getPosition().getX(), this.getPosition().getY() + 1)) == null) {
+                dungeon.spawnToast(zombieAttack, zombieHealth, new Position(this.getPosition().getX(), this.getPosition().getY() + 1));
+                return;
+            }
+            else if (dungeon.checkStaticCollision(new Position(this.getPosition().getX(), this.getPosition().getY() + 1)) == null) {
+                dungeon.spawnToast(zombieAttack, zombieHealth, new Position(this.getPosition().getX(), this.getPosition().getY() - 1));
+                return;
             }
         }
     }
