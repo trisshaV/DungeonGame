@@ -26,7 +26,9 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import javax.servlet.FilterRegistration.Dynamic;
 
@@ -214,10 +216,11 @@ public class DungeonManiaController {
     }
 
     public Entity checkStaticCollision(Position pos) {
-        List<Entity> colliders =  this.entities.stream().filter(x -> x.getPosition().equals(pos)).collect(Collectors.toList());
-        if (colliders.stream().filter(x -> x instanceof Boulder).findFirst().orElse(null) == null) {
-            return colliders.stream().filter(x -> x instanceof StaticEntity).findFirst().orElse(null);
-        }
-        return colliders.stream().filter(x -> x instanceof Boulder).findFirst().orElse(null);
+        Stream<Entity> colliders = this.entities.stream().filter(x -> x.getPosition().equals(pos));
+
+        return colliders.filter(x -> x instanceof Boulder)
+                .findFirst()
+                .orElseGet(() -> colliders.filter(x -> x instanceof StaticEntity).findFirst()
+                .orElse(null));
     }
 }
