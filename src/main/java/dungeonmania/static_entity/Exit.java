@@ -14,7 +14,7 @@ public class Exit extends StaticEntity {
     boolean active;
 
     public Exit(String id, Position xy, DungeonManiaController dungeon) {
-        super(id, xy);
+        super(id, "exit", xy);
         this.dungeon = dungeon;
         active = false;
     }

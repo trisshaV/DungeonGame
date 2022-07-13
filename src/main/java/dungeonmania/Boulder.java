@@ -18,7 +18,7 @@ public class Boulder extends Entity {
     private DungeonManiaController dungeon;
 
     public Boulder(DungeonManiaController dungeon, String id, Position xy) {
-        super(id, xy);
+        super(id, "boulder", xy);
         this.dungeon = dungeon;
     }
 

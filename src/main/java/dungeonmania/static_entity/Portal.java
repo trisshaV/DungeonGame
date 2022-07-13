@@ -16,7 +16,7 @@ public class Portal extends StaticEntity {
     String colour;
 
     public Portal(DungeonManiaController dungeon, String id, Position xy, String colour) {
-        super(id, xy);
+        super(id, "portal", xy);
         this.dungeon = dungeon;
         this.colour = colour;
     }

@@ -18,7 +18,7 @@ public class ZombieToastSpawner extends StaticEntity {
     int zombieHealth;
 
     public ZombieToastSpawner(DungeonManiaController dungeon, String id, Position xy, int spawnRate, int zombieAttack, int zombieHealth) {
-        super(id, xy);
+        super(id, "zombie_toast_spawner", xy);
         this.dungeon = dungeon;
         currentTick = 0;
         this.spawnRate = spawnRate;

@@ -3,7 +3,7 @@ package dungeonmania.static_entity;
 import dungeonmania.Boulder;
 import dungeonmania.Entity;
 import dungeonmania.util.Position;
-
+import java.util.List;
 /**
  * Acts like empty squares and can ONLY be activated by boulders. Has following properties:
  *      - Other entities can appear on top of it but will not activate it.
@@ -14,12 +14,12 @@ public class FloorSwitch extends StaticEntity {
     private boolean active;
 
     public FloorSwitch(String id, Position xy) {
-        super(id, xy);
+        super(id,"switch", xy);
         active = false;
     }
 
     public FloorSwitch(String id, Position xy, boolean active) {
-        super(id, xy);
+        super(id,"switch", xy);
         this.active = active;
     }
 
