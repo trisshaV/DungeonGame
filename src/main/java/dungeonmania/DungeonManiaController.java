@@ -7,6 +7,9 @@ import dungeonmania.dynamic_entity.Player;
 import dungeonmania.dynamic_entity.Spider;
 import dungeonmania.dynamic_entity.ZombieToast;
 import dungeonmania.exceptions.InvalidActionException;
+import dungeonmania.goal.BoulderGoal;
+import dungeonmania.goal.ExitGoal;
+import dungeonmania.goal.Goal;
 import dungeonmania.response.models.EntityResponse;
 import dungeonmania.response.models.DungeonResponse;
 import dungeonmania.response.models.ItemResponse;
@@ -37,8 +40,9 @@ public class DungeonManiaController {
     private List<Portal> unpairedPortals = new ArrayList<>();
     private List<Entity> entities = new ArrayList<>();
     private Player player = null;
-	private String dungeonId = "1";	
-    private String goal;
+	private String dungeonId = "1";
+    private Goal goalStrategy = null;
+    private String goal = "";
 	private String dungeonName;
 
     public String getSkin() {
@@ -83,7 +87,7 @@ public class DungeonManiaController {
         JSONObject jsonConfig = new JSONObject(confContent);
         JSONArray jsonEntities = json.getJSONArray("entities");
 
-        goal = json.getJSONObject("goal-condition").getString("goal");
+        setGoal(json.getJSONObject("goal-condition"));
 
         for (int i = 0; i < jsonEntities.length(); i++) {
             JSONObject jsonEntity = jsonEntities.getJSONObject(i);
@@ -91,6 +95,22 @@ public class DungeonManiaController {
         }
 
         return getDungeonResponseModel();
+
+    }
+
+    private void setGoal(JSONObject goalCondition) {
+        String superGoal = goalCondition.getString("goal");
+        switch (superGoal) {
+            case "exit":
+                goal = ":exit";
+                goalStrategy = new ExitGoal();
+            case "boulder":
+                goal = ":boulder";
+                goalStrategy = new BoulderGoal();
+            default:
+                // TODO: change
+                goalStrategy = new ExitGoal();
+        }
 
     }
 
@@ -166,7 +186,7 @@ public class DungeonManiaController {
 
         return new DungeonResponse(
             dungeonId, dungeonName, entityResponseList, player.getInventory(),
-            new ArrayList<>(), player.getBuildables(), goal);
+            new ArrayList<>(), player.getBuildables(), goalStrategy.getGoal(entities));
     }
 
     /**
