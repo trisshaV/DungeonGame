@@ -38,8 +38,8 @@ public class FloorSwitchTests {
         Position posSwitch = getEntities(res, "switch").get(0).getPosition();
         Position posBoulder = getEntities(res, "boulder").get(0).getPosition();
         assertEquals(posSwitch, posBoulder);
-        FloorSwitch expectedSwitch = new FloorSwitch(getEntities(res, "switch").get(0).getId(), posSwitch, true);
-        assertEquals(expectedSwitch, getEntities(res, "switch").get(0));
+        assertEquals(true, dmc.switchActive());
+        
     }
     @Test
     @DisplayName("Floor Switch Not Active")
@@ -47,9 +47,7 @@ public class FloorSwitchTests {
         DungeonManiaController dmc;
         dmc = new DungeonManiaController();
         DungeonResponse res = dmc.newGame("d_activateFloorSwitch", "c_DoorsKeysTest_useKeyWalkThroughOpenDoor");
-        Position posSwitch = getEntities(res, "switch").get(0).getPosition();
-        FloorSwitch expectedSwitch = new FloorSwitch(getEntities(res, "switch").get(0).getId(), posSwitch, false);
-        assertEquals(expectedSwitch, getEntities(res, "switch").get(0));
+        assertEquals(false, dmc.switchActive());
     }
     @Test
     @DisplayName("Push Boulder off Switch")
@@ -59,9 +57,7 @@ public class FloorSwitchTests {
         DungeonResponse res = dmc.newGame("d_activateFloorSwitch", "c_DoorsKeysTest_useKeyWalkThroughOpenDoor");
         res = dmc.tick(Direction.DOWN);
         res = dmc.tick(Direction.DOWN);
-        Position posSwitch = getEntities(res, "switch").get(0).getPosition();
-        FloorSwitch expectedSwitch = new FloorSwitch(getEntities(res, "switch").get(0).getId(), posSwitch, false);
-        assertEquals(expectedSwitch, getEntities(res, "switch").get(0));
+        assertEquals(false, dmc.switchActive());
 
     }
 }

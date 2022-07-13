@@ -1,5 +1,14 @@
 package dungeonmania.dynamic_entity;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
+import org.json.JSONObject;
+
+import dungeonmania.Entity;
+import dungeonmania.util.Direction;
 import dungeonmania.util.Position;
 
 /**
@@ -12,9 +21,127 @@ import dungeonmania.util.Position;
  *          ONLY boulders will effect the movement path and this is noted in previous point.
  */
 public class Spider extends DynamicEntity {
+    private String direction;
 
-    public Spider(String id, Position xy) {
+    private boolean cycleStart = false;
+
+    private List<Position> cyclePositions;
+
+    private int currentPosition;
+
+    public Spider(String id, Position xy, JSONObject config) {
         super(id, xy);
+        this.attack = config.getInt("spider_attack");
+        this.health = config.getInt("spider_health");
+        this.direction = "clockwise";
+        cyclePositions = generatePositions(this.getPosition());
+    }
+
+    public String getType() {
+        return "spider";
+    }
+    public String getDirection() {
+        return direction;
     }
     
+
+    public void setDirection(String direction) {
+        this.direction = direction;
+    }
+    
+    public void updatePos(Direction d, List<Entity> l) {
+
+        // boulder
+        // call change Direction
+        if (cycleStart == false) {
+            Position curr = this.getPosition();
+            Position nextPosition = new Position(curr.getX(), curr.getY() - 1);
+            
+            List <Entity> listEntities = l.stream().filter(x -> x.getPosition().equals(nextPosition)).collect(Collectors.toList());
+            if (listEntities.stream().anyMatch(entity -> !entity.collide(this) && !entity.equals(null) == true)) {
+                return;
+            }
+             
+            currentPosition = 0;
+            cycleStart = true;
+            this.setPosition(cyclePositions.get(currentPosition));
+            return;
+        }
+
+        int result = checkCycle(l);
+
+        currentPosition += result;
+
+        if (currentPosition > 7) {
+            currentPosition = 0;
+        } else if (currentPosition < 0) {
+            currentPosition = 7;
+        }
+        this.setPosition(cyclePositions.get(currentPosition));
+    }
+    
+    private List<Position> generatePositions(Position centre) {
+        List<Position> result = new ArrayList<Position>();
+        int x = centre.getX();
+        int y = centre.getY();
+        // Add positions in a clockwise motion starting at top 
+        result.add(new Position(x  , y-1));
+        result.add(new Position(x+1, y-1));
+        result.add(new Position(x+1, y));
+        result.add(new Position(x+1, y+1));
+        result.add(new Position(x  , y+1));
+        result.add(new Position(x-1, y+1));
+        result.add(new Position(x-1, y));
+        result.add(new Position(x-1, y-1));
+        return result;
+    }
+
+    private int checkCycle(List<Entity> l) {
+
+        int clockwiseIndex = currentPosition + 1;
+        int anticlockwiseIndex = currentPosition -1;
+        
+        if (currentPosition == 0) {
+            anticlockwiseIndex = 0;
+        } else if (currentPosition == 7) {
+            clockwiseIndex = 0;
+        }
+        
+        Position checkClockwise = cyclePositions.get(clockwiseIndex);
+        Position checkAnticlockwise = cyclePositions.get(anticlockwiseIndex);
+        boolean clockwise = true;
+        boolean anticlockwise = true;
+         
+        List <Entity> listEntities1 = l.stream().filter(x -> x.getPosition().equals(checkClockwise)).collect(Collectors.toList());
+        List <Entity> listEntities2 = l.stream().filter(x -> x.getPosition().equals(checkAnticlockwise)).collect(Collectors.toList());
+
+
+        if (listEntities1.stream().anyMatch(entity -> !entity.collide(this) && !entity.equals(null) == true)) {
+            clockwise = false;
+        }
+
+        if (listEntities2.stream().anyMatch(entity -> !entity.collide(this) && !entity.equals(null) == true)) {
+            anticlockwise = false;
+        }
+
+        if (direction.equals("clockwise")) {
+            if (clockwise == false) {
+                if (anticlockwise == true) {
+                    setDirection("anticlockwise");
+                    return -1;
+                } 
+                return 0;
+            } 
+            return 1;
+        } 
+        if (anticlockwise == false) {
+            if (clockwise == true) {
+                setDirection("clockwise");
+                return 1;
+            }
+            return 0;
+        }
+        
+        return -1;
+    }
 }

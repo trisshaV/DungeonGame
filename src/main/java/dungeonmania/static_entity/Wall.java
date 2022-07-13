@@ -1,5 +1,6 @@
 package dungeonmania.static_entity;
 
+import dungeonmania.Entity;
 import dungeonmania.util.Position;
 
 /**
@@ -9,13 +10,18 @@ import dungeonmania.util.Position;
  *      - Blocks the movement of Boulders.
  */
 public class Wall extends StaticEntity {
-
     public Wall(String id, Position xy) {
         super(id, xy);
     }
+    public boolean collide(Entity entity) {
+        if (entity.getType().equals("spider")) {
+            return true;
+        }
+        return false;
+    }
 
-    @Override
     public String getType() {
         return "wall";
     }
+    
 }

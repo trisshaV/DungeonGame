@@ -1,5 +1,6 @@
 package dungeonmania.static_entity;
 
+import dungeonmania.Boulder;
 import dungeonmania.Entity;
 import dungeonmania.util.Position;
 

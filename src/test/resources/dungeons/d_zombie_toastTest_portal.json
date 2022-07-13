@@ -1,0 +1,49 @@
+{
+    "entities": [
+        {
+            "type": "exit",
+            "x": 1,
+            "y": 3
+        },
+        {
+            "type": "zombie_toast",
+            "x": 1,
+            "y": 1
+        },
+        {
+            "type": "wall",
+            "x": 0,
+            "y": 1
+        },
+        {
+            "type": "wall",
+            "x": 2,
+            "y": 1
+        },
+        {
+            "type": "wall",
+            "x": 1,
+            "y": 0
+        },
+        {
+            "type": "portal",
+            "colour": "red",
+            "x": 1,
+            "y": 2
+        },
+        {
+            "type": "portal",
+            "colour": "red",
+            "x": 5,
+            "y": 5
+        },
+        {
+            "type": "player",
+            "x": 20,
+            "y": 20
+        }
+    ],
+    "goal-condition": {
+        "goal": "exit"
+    }
+}
