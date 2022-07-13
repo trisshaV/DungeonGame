@@ -103,12 +103,12 @@ public class Player extends DynamicEntity {
 
                 if (entity.getType().equals("key") && inventory.getNoItemType("key") > 0) {
                     // Entity is a key and player is already holding a key
-                    // Dont pick it up 
+                    // Dont pick it up
                     this.inventory.put(entity, this);
                     toRemove.add(entity);
 
-                    
-                } else {
+                } 
+                else if (entity instanceof Collectible) {
                     // Pickup the item
                     this.inventory.put(entity, this);
                     toRemove.add(entity);
