@@ -128,12 +128,12 @@ public class DungeonManiaController {
                 newEntity = new Boulder(this, id, position);
                 break;
             case "portal":
-                newEntity = new Portal(this, id, position, jsonConfig.getString("colour"));
+                newEntity = new Portal(this, id, position, jsonEntity.getString("colour"));
                 Portal newPortal = (Portal) newEntity;
                 addPortal(newPortal);
-                Portal partner = checkForPartner(jsonConfig.getString("colour"));
+                Portal partner = checkForPartner(newPortal);
                 if (partner != null) {
-                    partner.setLinkPosition(position);
+                    partner.setLinkPosition(newPortal.getPosition());
                     newPortal.setLinkPosition(partner.getPosition());
                 }
                 break;
@@ -147,9 +147,9 @@ public class DungeonManiaController {
         unpairedPortals.add(add);
     }
 
-    public Portal checkForPartner(String colour) {
+    public Portal checkForPartner(Portal finder) {
         for (Portal portal : unpairedPortals) {
-            if (portal.getColour().equals(colour)) {
+            if (portal.getColour().equals(finder.getColour()) && !(finder.equals(portal))) {
                 unpairedPortals.remove(portal);
                 return portal;
             }

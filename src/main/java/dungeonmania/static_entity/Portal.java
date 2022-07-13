@@ -61,8 +61,10 @@ public class Portal extends StaticEntity {
         return colour;
     }
 
-    public void setLinkPosition(Position pos) {
-        linkPosition = pos;
+    public void setLinkPosition(Position linkPosition) {
+        this.linkPosition = linkPosition;
     }
+
+   
     
 }
