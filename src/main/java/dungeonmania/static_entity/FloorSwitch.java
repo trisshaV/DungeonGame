@@ -22,5 +22,4 @@ public class FloorSwitch extends StaticEntity {
     public boolean collide(Entity entity) {
         return false;
     }
-
 }
