@@ -115,7 +115,7 @@ public class DungeonManiaController {
                 newEntity = new Door(id, position);
                 break;
             case "exit":
-                newEntity = new Exit(id, position);
+                newEntity = new Exit(id, position, this);
                 break;
             case "spider":
                 newEntity = new Spider(id, position, jsonConfig);
@@ -215,6 +215,11 @@ public class DungeonManiaController {
         return null;
     }
 
+    public boolean exitReached() {
+        Exit exit = (Exit) entities.stream().filter(x -> x instanceof Exit).findFirst().orElse(null);
+        return exit.getActive();
+    }
+    
     public Entity checkStaticCollision(Position pos) {
         List<Entity> colliders = this.entities.stream()
                 .filter(x -> x.getPosition().equals(pos))
