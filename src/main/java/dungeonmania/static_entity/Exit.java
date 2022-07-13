@@ -1,6 +1,8 @@
 package dungeonmania.static_entity;
 
+import dungeonmania.DungeonManiaController;
 import dungeonmania.Entity;
+import dungeonmania.dynamic_entity.Player;
 import dungeonmania.util.Position;
 
 /**
@@ -8,16 +10,28 @@ import dungeonmania.util.Position;
  *      - The puzzle is completed when the Player reaches this square.
  */
 public class Exit extends StaticEntity {
-    public Exit(String id, Position xy) {
+    DungeonManiaController dungeon;
+    boolean active;
+
+    public Exit(String id, Position xy, DungeonManiaController dungeon) {
         super(id, xy);
+        this.dungeon = dungeon;
+        active = false;
     }
 
+    public boolean collide(Entity entity) {
+        // TODO: add and condition that every OTHER goal has been achieved 
+        if (entity instanceof Player) {
+            active = true;
+        }
+        return true;
+    }
     @Override
     public String getType() {
         return "exit";
     }
 
-    public boolean collide(Entity entity) {
-        return false;
+    public boolean getActive() {
+        return active;
     }
 }
