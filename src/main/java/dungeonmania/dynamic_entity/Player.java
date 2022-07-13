@@ -94,8 +94,6 @@ public class Player extends DynamicEntity {
         List<Entity> toRemove = new ArrayList<>();
         for (Entity entity : entities) {
             if (entity.getPosition().equals(super.getPosition()) && !entity.getType().equals("player")) {
-                System.out.println("found");
-                System.out.println(entity);
 
                 if (entity.getType().equals("key") && inventory.getNoItemType("key") > 0) {
                     // Entity is a key and player is already holding a key
@@ -115,31 +113,7 @@ public class Player extends DynamicEntity {
         }
         entities.removeAll(toRemove);
     }
-    /**
-     * Player uses items
-     * @param map
-     * @param itemUsed
-     * @throws IllegalArgumentException
-     */
-    public void useItem(Map<Position, List<Entity>> map, String itemUsed) throws IllegalArgumentException, InvalidActionException {
-        Entity item = inventory.getItemById(itemUsed);
-        if (item == null) {
-            // Player does not have the item
-            throw new InvalidActionException("Player does not have the item.");
-        }
-        if (!useableItems.contains(item.getType())) {
-            // Cannot use the item
-            throw new IllegalArgumentException("Cannot use item.");
-        }
 
-        if (item.getType().equals("bomb")) {
-            // Item is a bomb
-            Bomb bomb = (Bomb) this.inventory.getItemById(itemUsed);
-            map.get(super.getPosition().asLayer(2)).add(bomb);
-            bomb.setPosition(super.getPosition().asLayer(2));
-        }
-        this.inventory.getItemById(itemUsed).use();
-    }
     public List<Collectible> getInventoryList() {
         return inventory.getInven();
     }

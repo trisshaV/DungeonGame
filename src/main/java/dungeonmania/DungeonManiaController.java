@@ -157,7 +157,6 @@ public class DungeonManiaController {
         default:
             return;
         }
-        System.out.println(newEntity);
         entities.add(newEntity);
     }
 
@@ -165,11 +164,9 @@ public class DungeonManiaController {
      * /game/dungeonResponseModel
      */
     public DungeonResponse getDungeonResponseModel() {
-        System.out.println(entities);
         List<EntityResponse> entityResponseList = entities.stream()
                 .map(Entity::getEntityResponse)
                 .collect(Collectors.toList());
-        System.out.println(entityResponseList);
 
         return new DungeonResponse(
             dungeonId, dungeonName, entityResponseList, player.getInventory().getItemResponses(),
