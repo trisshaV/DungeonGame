@@ -16,7 +16,7 @@ public abstract class DynamicEntity extends Entity {
     public int attack;
 
     public boolean collide(Entity entity) {
-        return false;
+        return true;
     }
 
     public DynamicEntity(String id, Position xy) {
