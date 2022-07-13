@@ -7,17 +7,10 @@ import dungeonmania.util.Position;
  * Entities that DO NOT move in dungeon.
  */
 public abstract class StaticEntity extends Entity {
-    public StaticEntity(String id, Position xy) {
-        super(id, xy);
+    public StaticEntity(String id, String type, Position xy) {
+        super(id, type, xy);
     }
 
     public abstract boolean collide(Entity entity);
-    /**
-     * TODO: Remove or make abstract
-     * @return
-     */
-    @Override
-    public String getType() {
-        return "wall";
-    }
+
 }

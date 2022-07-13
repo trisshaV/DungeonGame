@@ -11,7 +11,7 @@ import dungeonmania.util.Position;
 public class Portal extends StaticEntity {
 
     public Portal(String id, Position xy) {
-        super(id, xy);
+        super(id, "portal", xy);
     }
 
     public boolean collide(Entity entity) {

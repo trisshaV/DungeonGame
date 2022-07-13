@@ -1,5 +1,7 @@
 package dungeonmania.collectible;
 
+import org.json.JSONObject;
+
 import dungeonmania.util.Position;
 
 /**
@@ -13,9 +15,20 @@ import dungeonmania.util.Position;
  *          NOT harm the Player.
  */
 public class Bomb extends Collectible {
+    private int radius;
+    public Bomb(String id, Position xy, JSONObject config) {
+        super(id, "bomb", xy);
+        radius = config.getInt("bomb_radius");
+    }
 
-    public Bomb(String id, Position xy) {
-        super(id, xy);
+    @Override
+    public void use() {
+        // TODO Auto-generated method stub
+        
+    }
+
+    public int getRadius() {
+        return radius;
     }
     
 }

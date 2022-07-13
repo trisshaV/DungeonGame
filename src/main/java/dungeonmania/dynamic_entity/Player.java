@@ -1,7 +1,9 @@
 package dungeonmania.dynamic_entity;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
@@ -10,24 +12,33 @@ import org.json.JSONObject;
 
 import dungeonmania.Boulder;
 import dungeonmania.Entity;
+import dungeonmania.collectible.Bomb;
 import dungeonmania.collectible.Collectible;
 import dungeonmania.collectible.Key;
 import dungeonmania.response.models.ItemResponse;
 import dungeonmania.static_entity.StaticEntity;
 import dungeonmania.util.Direction;
 import dungeonmania.util.Position;
+import dungeonmania.Inventory;
 
+import dungeonmania.exceptions.InvalidActionException;
 /**
  * Entity that is controlled by the Player.
  */
 public class Player extends DynamicEntity {
-    private List<Collectible> inventory;
+    private Inventory inventory;
+    private List<String> useableItems = Arrays.asList("bomb", "health_potion", "invincibility_potion", "invisibility_potion", null);
 
+    /**
+     * @param id
+     * @param xy
+     * @param config
+     */
     public Player(String id, Position xy, JSONObject config) {
-        super(id, xy);
+        super(id, "player", xy);
         this.attack = config.getInt("zombie_attack");
         this.health = config.getInt("zombie_health");
-        inventory = new ArrayList<>();
+        inventory = new Inventory(this);
     }
 
     @Override
@@ -35,43 +46,10 @@ public class Player extends DynamicEntity {
         return "player";
     }
 
-    public List<ItemResponse> getInventory() {
-        return inventory.stream()
-            .map(Collectible::toItemResponse)
-            .collect(Collectors.toList());
-    }
-
     public List<String> getBuildables() {
         return new ArrayList<>();
     }
 
-    /**
-     * Adds a collectible to the player's inventory.
-     * @return if the item was picked up.
-     */
-    public boolean collect(Collectible c) {
-        // player cannot pick up more than one key
-        if (c.getType().equals("key") && getKey().isPresent()) {
-            return false;
-        }
-
-        inventory.add(c);
-        return true;
-    }
-
-    /**
-     * Remove the key the player is holding
-     */
-    public void removeKey() {
-        getKey().ifPresent(key -> inventory.remove(key));
-    }
-
-    /** 
-     * Returns a key if the player has one, else empty.
-    */
-    public Optional<Collectible> getKey() {
-        return inventory.stream().filter(x -> x.getType().equals("key")).findFirst();
-    }
     /**
      * Updates the new position of Player given a direction
      */
@@ -110,5 +88,83 @@ public class Player extends DynamicEntity {
             return;
         }
         this.setPosition(nextPosition);
+    }
+
+    public void pickUp(List<Entity> entities) {
+        List<Entity> toRemove = new ArrayList<>();
+        for (Entity entity : entities) {
+            if (entity.getPosition().equals(super.getPosition()) && !entity.getType().equals("player")) {
+                System.out.println("found");
+                System.out.println(entity);
+
+                if (entity.getType().equals("key") && inventory.getNoItemType("key") > 0) {
+                    // Entity is a key and player is already holding a key
+                    // Dont pick it up 
+                    this.inventory.put(entity, this);
+                    toRemove.add(entity);
+
+                    
+                } else {
+                    // Pickup the item
+                    this.inventory.put(entity, this);
+                    toRemove.add(entity);
+
+                }
+                // Pickup the item
+            }
+        }
+        entities.removeAll(toRemove);
+    }
+    /**
+     * Player uses items
+     * @param map
+     * @param itemUsed
+     * @throws IllegalArgumentException
+     */
+    public void useItem(Map<Position, List<Entity>> map, String itemUsed) throws IllegalArgumentException, InvalidActionException {
+        Entity item = inventory.getItemById(itemUsed);
+        if (item == null) {
+            // Player does not have the item
+            throw new InvalidActionException("Player does not have the item.");
+        }
+        if (!useableItems.contains(item.getType())) {
+            // Cannot use the item
+            throw new IllegalArgumentException("Cannot use item.");
+        }
+
+        if (item.getType().equals("bomb")) {
+            // Item is a bomb
+            Bomb bomb = (Bomb) this.inventory.getItemById(itemUsed);
+            map.get(super.getPosition().asLayer(2)).add(bomb);
+            bomb.setPosition(super.getPosition().asLayer(2));
+        }
+        this.inventory.getItemById(itemUsed).use();
+    }
+    public List<Collectible> getInventoryList() {
+        return inventory.getInven();
+    }
+
+    /**
+     * Given an item name, check if the player has the 
+     * item in inventory or not.
+     * @param item (Collectable Entity)
+     * @return True if player has item, and false otherwise.
+     */
+    public boolean hasItem(String item) {
+        return !(inventory.getItem(item) == null);
+    }
+
+    /**
+     * Given an item name, checks in the player inventory, and if exisits,
+     * return the item as a collectable entity.
+     * @param item (String)
+     * @return The item (Collectable Entity)
+     */
+    public Collectible getItem(String item) {
+        return inventory.getItem(item);
+    }
+
+    public Inventory getInventory() {
+        return inventory;
     }
 }

@@ -11,7 +11,7 @@ import dungeonmania.util.Position;
 public class ZombieToastSpawner extends StaticEntity {
 
     public ZombieToastSpawner(String id, Position xy) {
-        super(id, xy);
+        super(id, "zombie_toast_spawner", xy);
     }
 
     public boolean collide(Entity entity) {

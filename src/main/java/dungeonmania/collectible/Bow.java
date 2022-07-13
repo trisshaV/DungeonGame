@@ -1,7 +1,5 @@
-package dungeonmania.dynamic_entity.player;
-
-import dungeonmania.collectible.Collectible;
-import dungeonmania.util.Position;
+package dungeonmania.collectible;
+import org.json.JSONObject;
 
 /**
  * Among the buildable entities and hence can be built by Player using a recipe. Has following properties:
@@ -11,10 +9,16 @@ import dungeonmania.util.Position;
  *      - Gives the Player DOUBLE damage in a single round. 
  *          NOTE: it only simulates ranged attacks by providing more damage, however it CANNOT be used at range.
  */
-public class Bow extends Collectible implements Buildable {
-
-    public Bow(String id, Position xy) {
-        super(id, xy);
+public class Bow extends Buildable {
+    private int durability;
+    public Bow(String id) {
+        super(id, "bow");
     }
-    
+    public int getDurability() {
+        return durability;
+    }
+
+    public void setDurability(int num) {
+        this.durability = num;
+    }
 }

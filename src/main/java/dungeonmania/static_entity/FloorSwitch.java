@@ -13,7 +13,7 @@ import dungeonmania.util.Position;
 public class FloorSwitch extends StaticEntity {
 
     public FloorSwitch(String id, Position xy) {
-        super(id, xy);
+        super(id, "floor_switch", xy);
     }
 
     public void collide(Boulder boulder) {

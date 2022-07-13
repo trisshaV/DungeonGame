@@ -1,5 +1,7 @@
 package dungeonmania.collectible;
 
+import org.json.JSONObject;
+
 import dungeonmania.util.Position;
 
 /**
@@ -11,9 +13,16 @@ import dungeonmania.util.Position;
  *          as they too cannot see the Player.
  */
 public class InvisibilityPotion extends Collectible {
+    private int duration;
+    public InvisibilityPotion(String id, Position xy, JSONObject config) {
+        super(id, "invisibility_potion", xy);
+        duration = config.getInt("invisibility_potion_duration");
+    }
 
-    public InvisibilityPotion(String id, Position xy) {
-        super(id, xy);
+    @Override
+    public void use() {
+        // TODO Auto-generated method stub
+        
     }
     
 }

@@ -1,4 +1,4 @@
-package dungeonmania.dynamic_entity.player;
+package dungeonmania.collectible;
 
 import dungeonmania.collectible.Collectible;
 import dungeonmania.util.Position;
@@ -10,10 +10,9 @@ import dungeonmania.util.Position;
  *          it is no longer useable.
  *      - Decreases the effects of enemy attacks. 
  */
-public class Shield extends Collectible implements Buildable {
+public class Shield extends Buildable{
 
-    public Shield(String id, Position xy) {
-        super(id, xy);
+    public Shield(String id) {
+        super(id, "shield");
     }
-    
 }

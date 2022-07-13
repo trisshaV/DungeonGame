@@ -11,7 +11,7 @@ import dungeonmania.util.Position;
 public class Door extends StaticEntity {
 
     public Door(String id, Position xy) {
-        super(id, xy);
+        super(id, "door", xy);
     }
 
     @Override

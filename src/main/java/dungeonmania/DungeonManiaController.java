@@ -1,6 +1,13 @@
 package dungeonmania;
 
+import dungeonmania.collectible.Arrow;
+import dungeonmania.collectible.Bomb;
+import dungeonmania.collectible.InvincibilityPotion;
+import dungeonmania.collectible.InvisibilityPotion;
 import dungeonmania.collectible.Key;
+import dungeonmania.collectible.Sword;
+import dungeonmania.collectible.Treasure;
+import dungeonmania.collectible.Wood;
 import dungeonmania.dynamic_entity.DynamicEntity;
 import dungeonmania.dynamic_entity.Mercenary;
 import dungeonmania.dynamic_entity.Player;
@@ -106,7 +113,7 @@ public class DungeonManiaController {
                 newEntity = new Wall(id, position);
                 break;
             case "key":
-                newEntity = new Key(id, position);
+                newEntity = new Key(id, position, jsonEntity.getInt("key"));
                 break;
             case "door":
                 newEntity = new Door(id, position);
@@ -126,9 +133,31 @@ public class DungeonManiaController {
             case "boulder":
                 newEntity = new Boulder(this, id, position);
                 break;
+            case "bomb":
+                newEntity = new Bomb(id, position, jsonConfig);
+                break;
+            case "sword":
+                newEntity = new Sword(id, position, jsonConfig);
+                break;
+            case "arrow":
+                newEntity = new Arrow(id, position, jsonConfig);
+                break;
+            case "wood":
+                newEntity = new Wood(id, position, jsonConfig);
+                break;
+            case "treasure":
+                newEntity = new Treasure(id, position, jsonConfig);
+                break;
+            case "invincibility_potion":
+                newEntity = new InvisibilityPotion(id, position, jsonConfig);
+                break;
+            case "invisibility_potion":
+                newEntity = new InvincibilityPotion(id, position, jsonConfig);
+                break;        
         default:
             return;
         }
+        System.out.println(newEntity);
         entities.add(newEntity);
     }
 
@@ -136,12 +165,14 @@ public class DungeonManiaController {
      * /game/dungeonResponseModel
      */
     public DungeonResponse getDungeonResponseModel() {
+        System.out.println(entities);
         List<EntityResponse> entityResponseList = entities.stream()
                 .map(Entity::getEntityResponse)
                 .collect(Collectors.toList());
+        System.out.println(entityResponseList);
 
         return new DungeonResponse(
-            dungeonId, dungeonName, entityResponseList, player.getInventory(),
+            dungeonId, dungeonName, entityResponseList, player.getInventory().getItemResponses(),
             new ArrayList<>(), player.getBuildables(), goal);
     }
 
@@ -171,6 +202,7 @@ public class DungeonManiaController {
                 y.updatePos(movementDirection, entities);
             }
         );
+        player.pickUp(entities);
     
         return getDungeonResponseModel();
     }

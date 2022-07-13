@@ -1,5 +1,5 @@
 package dungeonmania.collectible;
-
+import org.json.JSONObject;
 import dungeonmania.util.Position;
 
 /**
@@ -9,8 +9,13 @@ import dungeonmania.util.Position;
  */
 public class Arrow extends Collectible {
 
-    public Arrow(String id, Position xy) {
-        super(id, xy);
+    public Arrow(String id, Position xy, JSONObject config) {
+        super(id, "arrow", xy);
     }
-    
+    /**
+     * Uses arrows to build bows.
+     */
+    public void use() {
+        getPlayer().getInventoryList().remove((Collectible)this);
+    }
 }
