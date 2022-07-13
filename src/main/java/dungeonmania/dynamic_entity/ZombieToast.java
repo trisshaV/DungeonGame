@@ -33,4 +33,6 @@ public class ZombieToast extends DynamicEntity {
             this.setPosition(nextPosition);
         }
     }
+
+    
 }

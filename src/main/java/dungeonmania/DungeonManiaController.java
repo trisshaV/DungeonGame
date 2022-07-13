@@ -16,6 +16,7 @@ import dungeonmania.static_entity.Door;
 import dungeonmania.static_entity.Exit;
 import dungeonmania.static_entity.StaticEntity;
 import dungeonmania.static_entity.Wall;
+import dungeonmania.static_entity.ZombieToastSpawner;
 import dungeonmania.util.Direction;
 import dungeonmania.util.FileLoader;
 import dungeonmania.util.Position;
@@ -126,12 +127,17 @@ public class DungeonManiaController {
             case "boulder":
                 newEntity = new Boulder(this, id, position);
                 break;
+            case "zombie_toast_spawner":
+                newEntity = new ZombieToastSpawner(this, id, position, Integer.valueOf(jsonEntity.getString("zombie_spawn_rate")), Integer.valueOf(jsonConfig.getString("zombie_attack")), Integer.valueOf(jsonConfig.getString("zombie_health")));
         default:
             return;
         }
         entities.add(newEntity);
     }
 
+    public void spawnToast(int attack, int health, Position position) {
+
+    }
     /**
      * /game/dungeonResponseModel
      */
