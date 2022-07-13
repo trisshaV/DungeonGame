@@ -3,6 +3,7 @@ package dungeonmania;
 import dungeonmania.collectible.Arrow;
 import dungeonmania.collectible.Bomb;
 import dungeonmania.collectible.Bow;
+import dungeonmania.collectible.Collectible;
 import dungeonmania.collectible.InvincibilityPotion;
 import dungeonmania.collectible.InvisibilityPotion;
 import dungeonmania.collectible.Key;
@@ -21,8 +22,10 @@ import dungeonmania.response.models.ItemResponse;
 import dungeonmania.response.models.DungeonResponse;
 import dungeonmania.response.models.EntityResponse;
 import dungeonmania.response.models.ItemResponse;
+import dungeonmania.static_entity.ActiveBomb;
 import dungeonmania.static_entity.Door;
 import dungeonmania.static_entity.Exit;
+import dungeonmania.static_entity.FloorSwitch;
 import dungeonmania.static_entity.StaticEntity;
 import dungeonmania.static_entity.Wall;
 import dungeonmania.util.Direction;
@@ -123,6 +126,9 @@ public class DungeonManiaController {
             case "door":
                 newEntity = new Door(id, position);
                 break;
+            case "switch":
+                newEntity = new FloorSwitch(id, position);
+                break;
             case "exit":
                 newEntity = new Exit(id, position);
                 break;
@@ -182,6 +188,18 @@ public class DungeonManiaController {
      * /game/tick/item
      */
     public DungeonResponse tick(String itemUsedId) throws IllegalArgumentException, InvalidActionException {
+        Position pos = player.getPosition();
+        Collectible item = player.getItemById(itemUsedId);
+        if (item.getType().equals("bomb")) {
+            entities.add(new ActiveBomb(itemUsedId, pos));
+            player.removeItem(item);
+        }
+        if (item.getType().equals("invincibility_potion")) {
+            player.removeItem(item);
+        }
+        if (item.getType().equals("invisibility_potion")) {
+            player.removeItem(item);
+        }
         return getDungeonResponseModel();
     }
 

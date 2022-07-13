@@ -60,19 +60,14 @@ public class Inventory {
         return entities;
     }
 
-    /**
-     * Gets the number of items in inventory that are the given type
-     * @param type
-     * @return
-     */
     public int getNoItemType(String type) {
-        int count = 0;
+        int number = 0;
         for (Collectible item : entities) {
             if (item.getType().equals(type)) {
-                count++;
+                number++;
             }
         }
-        return count;
+        return number;
     }
 
     public Collectible getItem(String type) {
@@ -93,12 +88,6 @@ public class Inventory {
         return null;
     }
 
-    /**
-     * Returns the key with the given keyId (separate from getItem since keys
-     * have unique integer id's)
-     * @param keyId
-     * @return
-     */
     public Key getKey(int keyId) {
         for (Collectible item : entities) {
             if (item.getType().equals("key")) {
@@ -129,7 +118,7 @@ public class Inventory {
         }
     }
 
-    private void removeItem(String itemToRemove) {
+    public void removeItem(String itemToRemove) {
         for (Collectible item : entities) {
             if (item.getType().equals(itemToRemove)) {
                 entities.remove(item);

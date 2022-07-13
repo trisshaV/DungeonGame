@@ -16,6 +16,7 @@ import dungeonmania.collectible.Bomb;
 import dungeonmania.collectible.Collectible;
 import dungeonmania.collectible.Key;
 import dungeonmania.response.models.ItemResponse;
+import dungeonmania.static_entity.ActiveBomb;
 import dungeonmania.static_entity.StaticEntity;
 import dungeonmania.util.Direction;
 import dungeonmania.util.Position;
@@ -142,9 +143,16 @@ public class Player extends DynamicEntity {
         return inventory.getItem(item);
     }
 
+    public Collectible getItemById(String id) {
+        return inventory.getItemById(id);
+    }
+
     public Inventory getInventory() {
         return inventory;
     }
 
+    public void removeItem(Collectible item) {
+        inventory.removeItem(item.getType());
+    }
     
 }
