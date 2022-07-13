@@ -14,6 +14,7 @@ import dungeonmania.response.models.EntityResponse;
 import dungeonmania.response.models.ItemResponse;
 import dungeonmania.static_entity.Door;
 import dungeonmania.static_entity.Exit;
+import dungeonmania.static_entity.Portal;
 import dungeonmania.static_entity.StaticEntity;
 import dungeonmania.static_entity.Wall;
 import dungeonmania.util.Direction;
@@ -25,7 +26,9 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import javax.servlet.FilterRegistration.Dynamic;
 
@@ -33,7 +36,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 public class DungeonManiaController {
-
+    private List<Portal> unpairedPortals = new ArrayList<>();
     private List<Entity> entities = new ArrayList<>();
     private Player player = null;
 	private String dungeonId = "1";	
@@ -126,12 +129,35 @@ public class DungeonManiaController {
             case "boulder":
                 newEntity = new Boulder(this, id, position);
                 break;
+            case "portal":
+                newEntity = new Portal(this, id, position, jsonEntity.getString("colour"));
+                Portal newPortal = (Portal) newEntity;
+                addPortal(newPortal);
+                Portal partner = checkForPartner(newPortal);
+                if (partner != null) {
+                    partner.setLinkPosition(newPortal.getPosition());
+                    newPortal.setLinkPosition(partner.getPosition());
+                }
+                break;
         default:
             return;
         }
         entities.add(newEntity);
     }
 
+    public void addPortal(Portal add) {
+        unpairedPortals.add(add);
+    }
+
+    public Portal checkForPartner(Portal finder) {
+        for (Portal portal : unpairedPortals) {
+            if (portal.getColour().equals(finder.getColour()) && !(finder.equals(portal))) {
+                unpairedPortals.remove(portal);
+                return portal;
+            }
+        }
+        return null;
+    }
     /**
      * /game/dungeonResponseModel
      */
@@ -190,10 +216,13 @@ public class DungeonManiaController {
     }
 
     public Entity checkStaticCollision(Position pos) {
-        List<Entity> colliders =  this.entities.stream().filter(x -> x.getPosition().equals(pos)).collect(Collectors.toList());
-        if (colliders.stream().filter(x -> x instanceof Boulder).findFirst().orElse(null) == null) {
-            return colliders.stream().filter(x -> x instanceof StaticEntity).findFirst().orElse(null);
-        }
-        return colliders.stream().filter(x -> x instanceof Boulder).findFirst().orElse(null);
+        List<Entity> colliders = this.entities.stream()
+                .filter(x -> x.getPosition().equals(pos))
+                .collect(Collectors.toList());
+
+        return colliders.stream().filter(x -> x instanceof Boulder)
+                .findFirst()
+                .orElseGet(() -> colliders.stream().filter(x -> x instanceof StaticEntity).findFirst()
+                .orElse(null));
     }
 }
