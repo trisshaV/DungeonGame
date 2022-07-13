@@ -216,11 +216,13 @@ public class DungeonManiaController {
     }
 
     public Entity checkStaticCollision(Position pos) {
-        Stream<Entity> colliders = this.entities.stream().filter(x -> x.getPosition().equals(pos));
+        List<Entity> colliders = this.entities.stream()
+                .filter(x -> x.getPosition().equals(pos))
+                .collect(Collectors.toList());
 
-        return colliders.filter(x -> x instanceof Boulder)
+        return colliders.stream().filter(x -> x instanceof Boulder)
                 .findFirst()
-                .orElseGet(() -> colliders.filter(x -> x instanceof StaticEntity).findFirst()
+                .orElseGet(() -> colliders.stream().filter(x -> x instanceof StaticEntity).findFirst()
                 .orElse(null));
     }
 }
