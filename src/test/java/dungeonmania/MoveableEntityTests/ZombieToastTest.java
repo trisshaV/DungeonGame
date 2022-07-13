@@ -34,7 +34,6 @@ public class ZombieToastTest {
         // Assert Random Movement of Zombie toast
         for (int i = 0; i <= 20; ++i) {
             res = dmc.tick(Direction.UP);
-            System.out.print(previousPos);
             assertNotEquals(previousPos, getEntities(res, "zombie_toast").get(0).getPosition());
             previousPos = getEntities(res, "zombie_toast").get(0).getPosition();
         }
