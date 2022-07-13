@@ -34,7 +34,7 @@ public class RandomMovement {
             Position nextPosition = newPositions.remove(result);
             if (temp.size() == 0) {
                 return nextPosition;
-            } else if (temp.stream().filter(e -> e == null).anyMatch(entity -> entity.collide(d) || entity.collide(null))) {
+            } else if (temp.stream().anyMatch(entity -> !entity.collide(d) && !entity.equals(null) == true) == false) {
                 return nextPosition;
             }
         }

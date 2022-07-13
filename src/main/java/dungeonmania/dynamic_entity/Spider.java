@@ -107,8 +107,8 @@ public class Spider extends DynamicEntity {
             clockwiseIndex = 0;
         }
         
-        final Position checkClockwise = cyclePositions.get(clockwiseIndex);
-        final Position checkAnticlockwise = cyclePositions.get(anticlockwiseIndex);
+        Position checkClockwise = cyclePositions.get(clockwiseIndex);
+        Position checkAnticlockwise = cyclePositions.get(anticlockwiseIndex);
         boolean clockwise = true;
         boolean anticlockwise = true;
          
