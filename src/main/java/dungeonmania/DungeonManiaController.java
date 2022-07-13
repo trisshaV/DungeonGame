@@ -14,6 +14,7 @@ import dungeonmania.response.models.EntityResponse;
 import dungeonmania.response.models.ItemResponse;
 import dungeonmania.static_entity.Door;
 import dungeonmania.static_entity.Exit;
+import dungeonmania.static_entity.Portal;
 import dungeonmania.static_entity.StaticEntity;
 import dungeonmania.static_entity.Wall;
 import dungeonmania.util.Direction;
@@ -33,7 +34,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 public class DungeonManiaController {
-
+    private List<Portal> unpairedPortals = new ArrayList<>();
     private List<Entity> entities = new ArrayList<>();
     private Player player = null;
 	private String dungeonId = "1";	
@@ -126,12 +127,35 @@ public class DungeonManiaController {
             case "boulder":
                 newEntity = new Boulder(this, id, position);
                 break;
+            case "portal":
+                newEntity = new Portal(this, id, position, jsonConfig.getString("colour"));
+                Portal newPortal = (Portal) newEntity;
+                addPortal(newPortal);
+                Portal partner = checkForPartner(jsonConfig.getString("colour"));
+                if (partner != null) {
+                    partner.setLinkPosition(position);
+                    newPortal.setLinkPosition(partner.getPosition());
+                }
+                break;
         default:
             return;
         }
         entities.add(newEntity);
     }
 
+    public void addPortal(Portal add) {
+        unpairedPortals.add(add);
+    }
+
+    public Portal checkForPartner(String colour) {
+        for (Portal portal : unpairedPortals) {
+            if (portal.getColour().equals(colour)) {
+                unpairedPortals.remove(portal);
+                return portal;
+            }
+        }
+        return null;
+    }
     /**
      * /game/dungeonResponseModel
      */
