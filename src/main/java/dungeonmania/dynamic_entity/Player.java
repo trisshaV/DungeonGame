@@ -22,11 +22,12 @@ import dungeonmania.util.Position;
  */
 public class Player extends DynamicEntity {
     private List<Collectible> inventory;
+    
 
     public Player(String id, Position xy, JSONObject config) {
         super(id, xy);
-        this.attack = config.getInt("zombie_attack");
-        this.health = config.getInt("zombie_health");
+        this.attack = config.getInt("player_attack");
+        this.health = config.getInt("player_health");
         inventory = new ArrayList<>();
     }
 
@@ -111,4 +112,6 @@ public class Player extends DynamicEntity {
         }
         this.setPosition(nextPosition);
     }
+
+    
 }

@@ -149,6 +149,15 @@ public class DungeonManiaController {
      * /game/tick/item
      */
     public DungeonResponse tick(String itemUsedId) throws IllegalArgumentException, InvalidActionException {
+
+        // move Dynamic entities except Player
+        entities.stream().filter(it -> (it instanceof DynamicEntity) && (it instanceof Player == false)).forEach(
+            x -> {
+                DynamicEntity y = (DynamicEntity) x;
+                y.updatePos(null, entities);
+            }
+        );
+
         return null;
     }
 
@@ -164,7 +173,7 @@ public class DungeonManiaController {
             }
         );
 
-        // move entities
+        // move Dynamic entities except Player
         entities.stream().filter(it -> (it instanceof DynamicEntity) && (it instanceof Player == false)).forEach(
             x -> {
                 DynamicEntity y = (DynamicEntity) x;
