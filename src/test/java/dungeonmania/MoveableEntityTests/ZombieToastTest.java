@@ -29,14 +29,14 @@ public class ZombieToastTest {
         dmc = new DungeonManiaController();
         DungeonResponse res = dmc.newGame("d_zombie_toastTest_randomMovement", "c_standard_movement");
         Position pos = getEntities(res, "zombie_toast").get(0).getPosition();
-        
         Position previousPos = new Position(pos.getX(), pos.getY());
 
         // Assert Random Movement of Zombie toast
         for (int i = 0; i <= 20; ++i) {
             res = dmc.tick(Direction.UP);
+            System.out.print(previousPos);
             assertNotEquals(previousPos, getEntities(res, "zombie_toast").get(0).getPosition());
-            previousPos = new Position(pos.getX(), pos.getY());
+            previousPos = getEntities(res, "zombie_toast").get(0).getPosition();
         }
     }
 
