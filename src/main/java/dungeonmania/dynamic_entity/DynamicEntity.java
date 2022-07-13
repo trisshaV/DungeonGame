@@ -19,7 +19,7 @@ public abstract class DynamicEntity extends Entity {
     }
 
     public boolean collide(Entity entity) {
-        return false;
+        return true;
     }
 
     
