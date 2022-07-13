@@ -20,8 +20,6 @@ import dungeonmania.static_entity.StaticEntity;
 import dungeonmania.util.Direction;
 import dungeonmania.util.Position;
 import dungeonmania.Inventory;
-
-import dungeonmania.exceptions.InvalidActionException;
 /**
  * Entity that is controlled by the Player.
  */
@@ -38,7 +36,7 @@ public class Player extends DynamicEntity {
         super(id, "player", xy);
         this.attack = config.getInt("zombie_attack");
         this.health = config.getInt("zombie_health");
-        inventory = new Inventory(this);
+        inventory = new Inventory(this, config);
     }
 
     @Override
@@ -47,7 +45,14 @@ public class Player extends DynamicEntity {
     }
 
     public List<String> getBuildables() {
-        return new ArrayList<>();
+        List<String> buildables = new ArrayList<>();
+        if (inventory.hasEnoughMaterials("bow")) {
+            buildables.add("bow");
+        }
+        if (inventory.hasEnoughMaterials("shield")) {
+            buildables.add("shield");
+        }
+        return buildables;
     }
 
     /**
@@ -108,7 +113,6 @@ public class Player extends DynamicEntity {
                     toRemove.add(entity);
 
                 }
-                // Pickup the item
             }
         }
         entities.removeAll(toRemove);
@@ -141,4 +145,6 @@ public class Player extends DynamicEntity {
     public Inventory getInventory() {
         return inventory;
     }
+
+    
 }

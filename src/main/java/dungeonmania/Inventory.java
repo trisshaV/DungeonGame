@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.json.JSONArray;
+import org.json.JSONObject;
 
 import dungeonmania.collectible.*;
 
@@ -15,14 +16,19 @@ public class Inventory {
     
     private Player player;
     private List<Collectible> entities; 
+    private List<String> buildable;
+    private List<Buildable> builtItems;
+    private JSONObject config;
 
     /**
      * Constructor for Inventory
      * @param player
      */
-    public Inventory(Player player) {
+    public Inventory(Player player, JSONObject config) {
         this.setPlayer(player);
         entities = new ArrayList<>();
+        builtItems = new ArrayList<>();
+        this.config = config;
     }
 
     public void put(Entity entity, Player player){
@@ -39,9 +45,14 @@ public class Inventory {
     }
 
     public List<ItemResponse> getItemResponses() {
-        return entities.stream()
-                       .map(Collectible::toItemResponse)
-                       .collect(Collectors.toList());
+        List<ItemResponse> itemResponses = entities.stream()
+                                                   .map(Collectible::toItemResponse)
+                                                   .collect(Collectors.toList());
+        for (Buildable buildable : builtItems) {
+            itemResponses.add(new ItemResponse(buildable.getId(), buildable.getType()));
+        }
+
+        return  itemResponses;
     }
 
 
@@ -100,11 +111,55 @@ public class Inventory {
         return null;
     }
 
-    /**
-     * Uses the item with the given id.
-     * @param id
-     */
-    public void useItem(String type) {
-        getItem(type).use();
+
+    public boolean hasEnoughMaterials(String buildable) {
+        switch (buildable) {
+            case "bow":
+                if (getNoItemType("wood") < 1 || getNoItemType("arrow") < 3) {
+                    return false;
+                }
+                return true;    
+            case "shield":
+                if (getNoItemType("wood") < 2 || (getNoItemType("treasure") < 1 && getNoItemType("key") < 1 && getNoItemType("sun_stone") < 1)) {
+                return false;
+                }
+                return true;
+            default:
+                return false;
+        }
+    }
+
+    private void removeItem(String itemToRemove) {
+        for (Collectible item : entities) {
+            if (item.getType().equals(itemToRemove)) {
+                entities.remove(item);
+                break;
+            }
+        }
+    }
+
+    public boolean buildItem(String buildable, String id) {
+        if (hasEnoughMaterials(buildable) && buildable.equals("bow")) {
+            //make bow
+            builtItems.add(new Bow(id, config));
+            removeItem("wood");
+            removeItem("arrow");
+            removeItem("arrow");
+            removeItem("arrow");
+            return true;
+        }
+        if (hasEnoughMaterials(buildable) && buildable.equals("shield")) {
+            //make shield
+            builtItems.add(new Shield(id, config));
+            removeItem("wood");
+            removeItem("wood");
+            if (getNoItemType("treasure") >= 1) {
+                removeItem("treasure");
+            } else if (getNoItemType("key") >= 1) {
+                removeItem("key");
+            return true;
+            }
+        }
+        return false;
     }
 }

@@ -2,9 +2,11 @@ package dungeonmania;
 
 import dungeonmania.collectible.Arrow;
 import dungeonmania.collectible.Bomb;
+import dungeonmania.collectible.Bow;
 import dungeonmania.collectible.InvincibilityPotion;
 import dungeonmania.collectible.InvisibilityPotion;
 import dungeonmania.collectible.Key;
+import dungeonmania.collectible.Shield;
 import dungeonmania.collectible.Sword;
 import dungeonmania.collectible.Treasure;
 import dungeonmania.collectible.Wood;
@@ -26,6 +28,7 @@ import dungeonmania.static_entity.Wall;
 import dungeonmania.util.Direction;
 import dungeonmania.util.FileLoader;
 import dungeonmania.util.Position;
+import dungeonmania.Inventory;
 import javassist.expr.Instanceof;
 
 import java.io.IOException;
@@ -41,6 +44,7 @@ import org.json.JSONObject;
 
 public class DungeonManiaController {
 
+    private int id;
     private List<Entity> entities = new ArrayList<>();
     private Player player = null;
 	private String dungeonId = "1";	
@@ -95,6 +99,7 @@ public class DungeonManiaController {
             JSONObject jsonEntity = jsonEntities.getJSONObject(i);
             addEntity(String.valueOf(i), jsonEntity, jsonConfig);
         }
+        id = entities.size();
 
         return getDungeonResponseModel();
 
@@ -153,7 +158,7 @@ public class DungeonManiaController {
                 break;
             case "invisibility_potion":
                 newEntity = new InvincibilityPotion(id, position, jsonConfig);
-                break;        
+                break;
         default:
             return;
         }
@@ -177,7 +182,7 @@ public class DungeonManiaController {
      * /game/tick/item
      */
     public DungeonResponse tick(String itemUsedId) throws IllegalArgumentException, InvalidActionException {
-        return null;
+        return getDungeonResponseModel();
     }
 
     /**
@@ -204,11 +209,26 @@ public class DungeonManiaController {
         return getDungeonResponseModel();
     }
 
+    public List<String> validBuildables() {
+        return Arrays.asList("bow", "shield");
+    }
+
     /**
      * /game/build
      */
     public DungeonResponse build(String buildable) throws IllegalArgumentException, InvalidActionException {
-        return null;
+        if (!validBuildables().contains(buildable)) {
+            throw new IllegalArgumentException();
+        }
+        Inventory playerInv = player.getInventory();
+        if (!playerInv.hasEnoughMaterials(buildable)) {
+            throw new InvalidActionException("Not enough materials!");
+        }
+
+        if (playerInv.buildItem(buildable, String.valueOf(id))) {
+            id ++;
+        }
+        return getDungeonResponseModel();
     }
 
     /**
