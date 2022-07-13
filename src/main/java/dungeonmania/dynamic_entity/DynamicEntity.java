@@ -25,4 +25,14 @@ public abstract class DynamicEntity extends Entity {
     
 
     public abstract String getType();
+
+    public int getHealth() {
+        return health;
+    }
+
+    public int getAttack() {
+        return attack;
+    }
+
+    
 }

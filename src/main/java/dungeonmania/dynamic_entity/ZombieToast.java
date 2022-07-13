@@ -24,6 +24,12 @@ public class ZombieToast extends DynamicEntity {
         this.attack = config.getInt("player_attack");
         this.health = config.getInt("player_health");
     }
+
+    public ZombieToast(String id, Position xy, int attack, int health) {
+        super(id,"zombie_toast", xy);
+        this.attack = attack;
+        this.health = health;
+    }
     
     public void updatePos(Direction d, List<Entity> l) {
         
@@ -33,4 +39,6 @@ public class ZombieToast extends DynamicEntity {
             this.setPosition(nextPosition);
         }
     }
+
+    
 }

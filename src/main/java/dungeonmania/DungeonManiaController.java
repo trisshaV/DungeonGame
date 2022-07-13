@@ -29,6 +29,7 @@ import dungeonmania.static_entity.FloorSwitch;
 import dungeonmania.static_entity.Portal;
 import dungeonmania.static_entity.StaticEntity;
 import dungeonmania.static_entity.Wall;
+import dungeonmania.static_entity.ZombieToastSpawner;
 import dungeonmania.util.Direction;
 import dungeonmania.util.FileLoader;
 import dungeonmania.util.Position;
@@ -39,6 +40,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.UUID;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -168,6 +170,9 @@ public class DungeonManiaController {
                 break;
             case "invisibility_potion":
                 newEntity = new InvincibilityPotion(id, position, jsonConfig);
+            case "zombie_toast_spawner":
+                newEntity = new ZombieToastSpawner(this, id, position, jsonConfig.getInt("zombie_spawn_rate"), jsonConfig.getInt("zombie_attack"), jsonConfig.getInt("zombie_health"));
+                break;
             case "portal":
                 newEntity = new Portal(this, id, position, jsonEntity.getString("colour"));
                 Portal newPortal = (Portal) newEntity;
@@ -184,6 +189,11 @@ public class DungeonManiaController {
         entities.add(newEntity);
     }
 
+    public void spawnToast(int attack, int health, Position position) {
+        Entity newEntity = new ZombieToast(UUID.randomUUID().toString(), position, attack, health);
+        entities.add(newEntity);
+    }
+    
     public void addPortal(Portal add) {
         unpairedPortals.add(add);
     }
@@ -249,6 +259,14 @@ public class DungeonManiaController {
             }
         );
         player.pickUp(entities);
+        List <Entity> copy = new ArrayList<>();
+        copy.addAll(entities);
+        copy.stream().filter(x -> x instanceof ZombieToastSpawner).forEach(
+            x -> {
+                ZombieToastSpawner spawner = (ZombieToastSpawner) x;
+                spawner.tick();
+            }
+        );
     
         return getDungeonResponseModel();
     }
@@ -281,7 +299,15 @@ public class DungeonManiaController {
     public DungeonResponse interact(String entityId) throws IllegalArgumentException, InvalidActionException {
         return null;
     }
-
+    public boolean switchActive() {
+        for (Entity entity : entities) {
+            if (entity instanceof FloorSwitch) {
+                FloorSwitch check = (FloorSwitch) entity;
+                return check.getActive();
+            }
+        }
+       return false;
+    }
     public boolean exitReached() {
         Exit exit = (Exit) entities.stream().filter(x -> x instanceof Exit).findFirst().orElse(null);
         return exit.getActive();
