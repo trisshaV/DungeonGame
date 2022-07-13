@@ -14,6 +14,7 @@ import dungeonmania.response.models.EntityResponse;
 import dungeonmania.response.models.ItemResponse;
 import dungeonmania.static_entity.Door;
 import dungeonmania.static_entity.Exit;
+import dungeonmania.static_entity.FloorSwitch;
 import dungeonmania.static_entity.Portal;
 import dungeonmania.static_entity.StaticEntity;
 import dungeonmania.static_entity.Wall;
@@ -117,6 +118,9 @@ public class DungeonManiaController {
             case "exit":
                 newEntity = new Exit(id, position, this);
                 break;
+            case "switch":
+                newEntity = new FloorSwitch(id, position);
+                break;
             case "spider":
                 newEntity = new Spider(id, position, jsonConfig);
                 break;
@@ -214,7 +218,15 @@ public class DungeonManiaController {
     public DungeonResponse interact(String entityId) throws IllegalArgumentException, InvalidActionException {
         return null;
     }
-
+    public boolean switchActive() {
+        for (Entity entity : entities) {
+            if (entity instanceof FloorSwitch) {
+                FloorSwitch check = (FloorSwitch) entity;
+                return check.getActive();
+            }
+        }
+       return false;
+    }
     public boolean exitReached() {
         Exit exit = (Exit) entities.stream().filter(x -> x instanceof Exit).findFirst().orElse(null);
         return exit.getActive();
