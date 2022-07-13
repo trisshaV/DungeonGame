@@ -1,5 +1,7 @@
 package dungeonmania.static_entity;
 
+import dungeonmania.Boulder;
+import dungeonmania.Entity;
 import dungeonmania.util.Position;
 
 /**
@@ -13,5 +15,11 @@ public class FloorSwitch extends StaticEntity {
     public FloorSwitch(String id, Position xy) {
         super(id, xy);
     }
+
+    public void collide(Boulder boulder) {
+    }
     
+    public boolean collide(Entity entity) {
+        return false;
+    }
 }
