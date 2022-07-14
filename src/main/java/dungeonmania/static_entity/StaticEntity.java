@@ -17,7 +17,5 @@ public abstract class StaticEntity extends Entity {
      * @return
      */
     @Override
-    public String getType() {
-        return "wall";
-    }
+    public abstract String getType();
 }

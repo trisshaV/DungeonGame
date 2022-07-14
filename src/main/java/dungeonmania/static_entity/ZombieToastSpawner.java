@@ -17,5 +17,10 @@ public class ZombieToastSpawner extends StaticEntity {
     public boolean collide(Entity entity) {
         return false;
     }
-    
+
+    @Override
+    public String getType() {
+        return "zombie_toast_spawner";
+    }
+
 }
