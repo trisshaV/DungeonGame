@@ -1,4 +1,4 @@
-package dungeonmania.dynamic_entity;
+package dungeonmania.dynamic_entity.player;
 
 import java.util.List;
 

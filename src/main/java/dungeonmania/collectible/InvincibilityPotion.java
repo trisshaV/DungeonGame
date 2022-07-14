@@ -1,5 +1,7 @@
 package dungeonmania.collectible;
 
+import org.json.JSONObject;
+
 import dungeonmania.util.Position;
 
 /**
@@ -11,9 +13,16 @@ import dungeonmania.util.Position;
  *          HOWEVER spiders and mercenaries (bribed) will remain UNAFFECTED.
  */
 public class InvincibilityPotion extends Collectible {
+    private int duration;
+    public InvincibilityPotion(String id, Position xy, JSONObject config) {
+        super(id, "invincibility_potion", xy);
+        duration = config.getInt("invincibility_potion_duration");
+    }
 
-    public InvincibilityPotion(String id, Position xy) {
-        super(id, xy);
+    @Override
+    public void use() {
+        // TODO Auto-generated method stub
+        
     }
     
 }

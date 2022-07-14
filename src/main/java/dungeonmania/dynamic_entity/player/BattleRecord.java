@@ -35,9 +35,9 @@ public class BattleRecord {
         double enemyAttack = enemy.getAttack();
         double playerAttack = player.getAttack();
 
-        int bowModifier = 1;
-        int swordAdd = 0;
-        int shieldMinus = 0;
+        double bowModifier = 1;
+        double swordAdd = 0;
+        double shieldMinus = 0;
 
         // Check for each of these 
 
@@ -54,7 +54,7 @@ public class BattleRecord {
             // Update durability of equipment
             updateDurability(bowModifier, swordAdd, shieldMinus, player);
 
-            addRoundRecord(-1 * modifiedEnemyDamage, -1 * modifiedPlayerDamage, )
+            addRoundRecord(-1 * modifiedEnemyDamage, -1 * modifiedPlayerDamage, null);
 
 
             // Recalculate modifiers
@@ -65,7 +65,7 @@ public class BattleRecord {
 
     }
 
-    private void updateDurability(double bowModifier, double swordAdd, double shieldMinus, Player player) {
+    private void updateDurability(double bowModifier, double swordAdd, double shieldMinus, DynamicEntity player) {
         if (bowModifier != 1) {
             // update durablity for bow
         }
@@ -78,8 +78,10 @@ public class BattleRecord {
         }
     }
     
-    private List<Collectible> itemsAvaliable(player) {
-        // List will contain three boolean values representing bow, sword and shield respectively
-        List<Collectible> result = 
+    private List<Collectible> itemsAvaliable(DynamicEntity player) {
+        // List will contain three values representing bow, sword and shield respectively
+        List<Collectible> result = null;
+
+        return result;
     }
 }

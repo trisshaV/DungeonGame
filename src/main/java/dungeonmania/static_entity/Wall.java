@@ -11,7 +11,7 @@ import dungeonmania.util.Position;
  */
 public class Wall extends StaticEntity {
     public Wall(String id, Position xy) {
-        super(id, xy);
+        super(id, "wall", xy);
     }
     public boolean collide(Entity entity) {
         if (entity.getType().equals("spider")) {

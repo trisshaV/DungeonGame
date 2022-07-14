@@ -1,6 +1,16 @@
 package dungeonmania;
 
+import dungeonmania.collectible.Arrow;
+import dungeonmania.collectible.Bomb;
+import dungeonmania.collectible.Bow;
+import dungeonmania.collectible.Collectible;
+import dungeonmania.collectible.InvincibilityPotion;
+import dungeonmania.collectible.InvisibilityPotion;
 import dungeonmania.collectible.Key;
+import dungeonmania.collectible.Shield;
+import dungeonmania.collectible.Sword;
+import dungeonmania.collectible.Treasure;
+import dungeonmania.collectible.Wood;
 import dungeonmania.dynamic_entity.DynamicEntity;
 import dungeonmania.dynamic_entity.Mercenary;
 import dungeonmania.dynamic_entity.Player;
@@ -12,20 +22,28 @@ import dungeonmania.response.models.ItemResponse;
 import dungeonmania.response.models.DungeonResponse;
 import dungeonmania.response.models.EntityResponse;
 import dungeonmania.response.models.ItemResponse;
+import dungeonmania.static_entity.ActiveBomb;
 import dungeonmania.static_entity.Door;
 import dungeonmania.static_entity.Exit;
+import dungeonmania.static_entity.FloorSwitch;
+import dungeonmania.static_entity.Portal;
 import dungeonmania.static_entity.StaticEntity;
 import dungeonmania.static_entity.Wall;
+import dungeonmania.static_entity.ZombieToastSpawner;
 import dungeonmania.util.Direction;
 import dungeonmania.util.FileLoader;
 import dungeonmania.util.Position;
+import dungeonmania.Inventory;
 import javassist.expr.Instanceof;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.UUID;
+import java.util.Optional;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import javax.servlet.FilterRegistration.Dynamic;
 
@@ -34,6 +52,8 @@ import org.json.JSONObject;
 
 public class DungeonManiaController {
 
+    private int id;
+    private List<Portal> unpairedPortals = new ArrayList<>();
     private List<Entity> entities = new ArrayList<>();
     private Player player = null;
 	private String dungeonId = "1";	
@@ -88,6 +108,7 @@ public class DungeonManiaController {
             JSONObject jsonEntity = jsonEntities.getJSONObject(i);
             addEntity(String.valueOf(i), jsonEntity, jsonConfig);
         }
+        id = entities.size();
 
         return getDungeonResponseModel();
 
@@ -106,13 +127,16 @@ public class DungeonManiaController {
                 newEntity = new Wall(id, position);
                 break;
             case "key":
-                newEntity = new Key(id, position);
+                newEntity = new Key(id, position, jsonEntity.getInt("key"));
                 break;
             case "door":
                 newEntity = new Door(id, position);
                 break;
+            case "switch":
+                newEntity = new FloorSwitch(id, position);
+                break;
             case "exit":
-                newEntity = new Exit(id, position);
+                newEntity = new Exit(id, position, this);
                 break;
             case "spider":
                 newEntity = new Spider(id, position, jsonConfig);
@@ -126,12 +150,63 @@ public class DungeonManiaController {
             case "boulder":
                 newEntity = new Boulder(this, id, position);
                 break;
+            case "bomb":
+                newEntity = new Bomb(id, position, jsonConfig);
+                break;
+            case "sword":
+                newEntity = new Sword(id, position, jsonConfig);
+                break;
+            case "arrow":
+                newEntity = new Arrow(id, position, jsonConfig);
+                break;
+            case "wood":
+                newEntity = new Wood(id, position, jsonConfig);
+                break;
+            case "treasure":
+                newEntity = new Treasure(id, position, jsonConfig);
+                break;
+            case "invincibility_potion":
+                newEntity = new InvisibilityPotion(id, position, jsonConfig);
+                break;
+            case "invisibility_potion":
+                newEntity = new InvincibilityPotion(id, position, jsonConfig);
+            case "zombie_toast_spawner":
+                newEntity = new ZombieToastSpawner(this, id, position, jsonConfig.getInt("zombie_spawn_rate"), jsonConfig.getInt("zombie_attack"), jsonConfig.getInt("zombie_health"));
+                break;
+            case "portal":
+                newEntity = new Portal(this, id, position, jsonEntity.getString("colour"));
+                Portal newPortal = (Portal) newEntity;
+                addPortal(newPortal);
+                Portal partner = checkForPartner(newPortal);
+                if (partner != null) {
+                    partner.setLinkPosition(newPortal.getPosition());
+                    newPortal.setLinkPosition(partner.getPosition());
+                }
+                break;
         default:
             return;
         }
         entities.add(newEntity);
     }
 
+    public void spawnToast(int attack, int health, Position position) {
+        Entity newEntity = new ZombieToast(UUID.randomUUID().toString(), position, attack, health);
+        entities.add(newEntity);
+    }
+    
+    public void addPortal(Portal add) {
+        unpairedPortals.add(add);
+    }
+
+    public Portal checkForPartner(Portal finder) {
+        for (Portal portal : unpairedPortals) {
+            if (portal.getColour().equals(finder.getColour()) && !(finder.equals(portal))) {
+                unpairedPortals.remove(portal);
+                return portal;
+            }
+        }
+        return null;
+    }
     /**
      * /game/dungeonResponseModel
      */
@@ -141,7 +216,7 @@ public class DungeonManiaController {
                 .collect(Collectors.toList());
 
         return new DungeonResponse(
-            dungeonId, dungeonName, entityResponseList, player.getInventory(),
+            dungeonId, dungeonName, entityResponseList, player.getInventory().getItemResponses(),
             new ArrayList<>(), player.getBuildables(), goal);
     }
 
@@ -150,15 +225,27 @@ public class DungeonManiaController {
      */
     public DungeonResponse tick(String itemUsedId) throws IllegalArgumentException, InvalidActionException {
 
+        Position pos = player.getPosition();
+        Collectible item = player.getItemById(itemUsedId);
+        if (item.getType().equals("bomb")) {
+            entities.add(new ActiveBomb(itemUsedId, pos));
+            player.removeItem(item);
+        }
+        if (item.getType().equals("invincibility_potion")) {
+            player.removeItem(item);
+        }
+        if (item.getType().equals("invisibility_potion")) {
+            player.removeItem(item);
+        }
+        
         // move Dynamic entities except Player
         entities.stream().filter(it -> (it instanceof DynamicEntity) && (it instanceof Player == false)).forEach(
             x -> {
                 DynamicEntity y = (DynamicEntity) x;
                 y.updatePos(null, entities);
             }
-        );
-
-        return null;
+            );
+        return getDungeonResponseModel();
     }
 
     /**
@@ -180,15 +267,39 @@ public class DungeonManiaController {
                 y.updatePos(movementDirection, entities);
             }
         );
+        player.pickUp(entities);
+        List <Entity> copy = new ArrayList<>();
+        copy.addAll(entities);
+        copy.stream().filter(x -> x instanceof ZombieToastSpawner).forEach(
+            x -> {
+                ZombieToastSpawner spawner = (ZombieToastSpawner) x;
+                spawner.tick();
+            }
+        );
     
         return getDungeonResponseModel();
+    }
+
+    public List<String> validBuildables() {
+        return Arrays.asList("bow", "shield");
     }
 
     /**
      * /game/build
      */
     public DungeonResponse build(String buildable) throws IllegalArgumentException, InvalidActionException {
-        return null;
+        if (!validBuildables().contains(buildable)) {
+            throw new IllegalArgumentException();
+        }
+        Inventory playerInv = player.getInventory();
+        if (!playerInv.hasEnoughMaterials(buildable)) {
+            throw new InvalidActionException("Not enough materials!");
+        }
+
+        if (playerInv.buildItem(buildable, String.valueOf(id))) {
+            id ++;
+        }
+        return getDungeonResponseModel();
     }
 
     /**
@@ -197,12 +308,28 @@ public class DungeonManiaController {
     public DungeonResponse interact(String entityId) throws IllegalArgumentException, InvalidActionException {
         return null;
     }
-
-    public Entity checkStaticCollision(Position pos) {
-        List<Entity> colliders =  this.entities.stream().filter(x -> x.getPosition().equals(pos)).collect(Collectors.toList());
-        if (colliders.stream().filter(x -> x instanceof Boulder).findFirst().orElse(null) == null) {
-            return colliders.stream().filter(x -> x instanceof StaticEntity).findFirst().orElse(null);
+    public boolean switchActive() {
+        for (Entity entity : entities) {
+            if (entity instanceof FloorSwitch) {
+                FloorSwitch check = (FloorSwitch) entity;
+                return check.getActive();
+            }
         }
-        return colliders.stream().filter(x -> x instanceof Boulder).findFirst().orElse(null);
+       return false;
+    }
+    public boolean exitReached() {
+        Exit exit = (Exit) entities.stream().filter(x -> x instanceof Exit).findFirst().orElse(null);
+        return exit.getActive();
+    }
+    
+    public Entity checkStaticCollision(Position pos) {
+        List<Entity> colliders = this.entities.stream()
+                .filter(x -> x.getPosition().equals(pos))
+                .collect(Collectors.toList());
+
+        return colliders.stream().filter(x -> x instanceof Boulder)
+                .findFirst()
+                .orElseGet(() -> colliders.stream().filter(x -> x instanceof StaticEntity).findFirst()
+                .orElse(null));
     }
 }

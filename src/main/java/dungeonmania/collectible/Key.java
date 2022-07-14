@@ -14,8 +14,25 @@ import dungeonmania.util.Position;
  */
 public class Key extends Collectible {
 
-    public Key(String id, Position xy) {
-        super(id, xy);
+    private int keyId;
+
+    public Key(String id, Position xy, int keyId) {
+        super(id, "key", xy);
+        this.keyId = keyId;
     }
-    
+
+    /**
+     * Is called if the key is used to craft a shield or open a door.
+     */
+    public void use() {
+        getPlayer().getInventoryList().remove(this);
+    }
+
+    public void setKeyId(int id) {
+        keyId = id;
+    }
+
+    public int getKeyId() {
+        return keyId;
+    }
 }
