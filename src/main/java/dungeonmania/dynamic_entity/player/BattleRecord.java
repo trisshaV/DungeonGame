@@ -2,11 +2,17 @@ package dungeonmania.dynamic_entity.player;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.servlet.FilterRegistration.Dynamic;
 
 import dungeonmania.Entity;
+import dungeonmania.Inventory;
+import dungeonmania.collectible.Bow;
+import dungeonmania.collectible.Buildable;
 import dungeonmania.collectible.Collectible;
+import dungeonmania.collectible.Shield;
+import dungeonmania.collectible.Sword;
 import dungeonmania.dynamic_entity.DynamicEntity;
 import dungeonmania.dynamic_entity.Player;
 
@@ -40,7 +46,8 @@ public class BattleRecord {
         double shieldMinus = 0;
 
         // Check for each of these 
-
+        // itemsInRoundUsed will have { List of Swords, List of Bows, List of Shields}
+        List <List<Object>> itemsInRoundUsed = itemsAvaliable(player);
 
         double newEnemyHealth = initialEnemyHealth;
         double newPlayerHealth = initialPlayerHealth;
@@ -52,7 +59,7 @@ public class BattleRecord {
             newPlayerHealth = player.getHealth() - modifiedEnemyDamage;
 
             // Update durability of equipment
-            updateDurability(bowModifier, swordAdd, shieldMinus, player);
+            updateDurability(itemsInRoundUsed, (Player)player);
 
             addRoundRecord(-1 * modifiedEnemyDamage, -1 * modifiedPlayerDamage, null);
 
@@ -63,25 +70,57 @@ public class BattleRecord {
         enemy.setHealth(newEnemyHealth);
         player.setHealth(newPlayerHealth);
 
+
+        // Starts
+
+        // Going to check avaliable battle items
+        
+        // HERE
+        // Caculate the modifiers 
+        // Player hit enemey
+        // Enemey hits player
+        // updateDurablity
+
+        // Check: if Player.health <= 0, Enemey.health <= 0 
+        // If they're alive, go back up to HERE
+
     }
 
-    private void updateDurability(double bowModifier, double swordAdd, double shieldMinus, DynamicEntity player) {
-        if (bowModifier != 1) {
-            // update durablity for bow
-        }
-        if (swordAdd != 0) {
-            // update durability for sword
-        }
+    private void updateDurability(List<List<Object>> itemsUsed, Player player) {
 
-        if (shieldMinus != 0) {
-            // update durability for shield
-        }
+        // Unchecked Type cast, itemsUsed has been safely type checked from method itemsAvaliable
+        List<Collectible> SwordsUsed = (List<Collectible>)(List<?>) itemsUsed.get(0);
+        List<Buildable> BowsUsed = (List<Buildable>)(List<?>) itemsUsed.get(1);
+        List<Buildable> ShieldsUsed = (List<Buildable>)(List<?>) itemsUsed.get(2);
+
+        SwordsUsed.stream().forEach(
+            x -> {
+                
+            }
+        );
+
+
+        // Remove broken weapons
     }
     
-    private List<Collectible> itemsAvaliable(DynamicEntity player) {
-        // List will contain three values representing bow, sword and shield respectively
-        List<Collectible> result = null;
+    // List will contain three values representing sword, bow and shield respectively
+    /**
+     * Returns a list of the list of items avaliable in the form { List of Swords, List of Bows, List of Shields} 
+     * @param player
+     * @return List<List<Object>>
+     */
+    private List<List<Object>> itemsAvaliable(DynamicEntity player) {
 
-        return result;
+        List<List<Object>> listsOfItems = new ArrayList<>();
+        Inventory i = ((Player) player).getInventory();
+        List <Collectible> CollectableItems = i.getCollectableItems();
+        List <Buildable> BuildableItems = i.getBuildableItems();
+
+              
+        listsOfItems.add(CollectableItems.stream().filter(item -> item instanceof Sword).collect(Collectors.toList()));
+        listsOfItems.add(BuildableItems.stream().filter(item -> item instanceof Bow).collect(Collectors.toList()));
+        listsOfItems.add(BuildableItems.stream().filter(item -> item instanceof Shield).collect(Collectors.toList()));
+
+        return listsOfItems;
     }
 }
