@@ -24,13 +24,13 @@ public class BoulderGoal implements Goal {
             .allMatch((sw_xy) -> {
                 return boulders.stream()
                     .map(Entity::getPosition)
-                    .anyMatch(bould_xy -> sw_xy.equals(bould_xy));
+                    .anyMatch(sw_xy::equals);
             });
     }
 
     @Override
     public String getGoal(List<Entity> entities) {
-        return isComplete(entities) ? ":boulder" : "";
+        return isComplete(entities) ? "" : ":boulder";
     }
     
 }

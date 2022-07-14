@@ -14,11 +14,7 @@ import dungeonmania.response.models.EntityResponse;
 import dungeonmania.response.models.DungeonResponse;
 import dungeonmania.response.models.ItemResponse;
 import dungeonmania.response.models.EntityResponse;
-import dungeonmania.static_entity.Door;
-import dungeonmania.static_entity.Exit;
-import dungeonmania.static_entity.Portal;
-import dungeonmania.static_entity.StaticEntity;
-import dungeonmania.static_entity.Wall;
+import dungeonmania.static_entity.*;
 import dungeonmania.util.Direction;
 import dungeonmania.util.FileLoader;
 import dungeonmania.util.Position;
@@ -87,7 +83,7 @@ public class DungeonManiaController {
         JSONObject jsonConfig = new JSONObject(confContent);
         JSONArray jsonEntities = json.getJSONArray("entities");
 
-        setGoal(json.getJSONObject("goal-condition"));
+        goalStrategy = newGoalStrategy(json.getJSONObject("goal-condition"));
 
         for (int i = 0; i < jsonEntities.length(); i++) {
             JSONObject jsonEntity = jsonEntities.getJSONObject(i);
@@ -98,18 +94,16 @@ public class DungeonManiaController {
 
     }
 
-    private void setGoal(JSONObject goalCondition) {
+    private Goal newGoalStrategy(JSONObject goalCondition) {
         String superGoal = goalCondition.getString("goal");
         switch (superGoal) {
             case "exit":
-                goal = ":exit";
-                goalStrategy = new ExitGoal();
+                return new ExitGoal();
             case "boulder":
-                goal = ":boulder";
-                goalStrategy = new BoulderGoal();
+                return new BoulderGoal();
             default:
-                // TODO: change
-                goalStrategy = new ExitGoal();
+                // TODO: add more
+                return new ExitGoal();
         }
 
     }
@@ -146,6 +140,9 @@ public class DungeonManiaController {
                 break;
             case "boulder":
                 newEntity = new Boulder(this, id, position);
+                break;
+            case "switch":
+                newEntity = new FloorSwitch(id, position);
                 break;
             case "portal":
                 newEntity = new Portal(this, id, position, jsonEntity.getString("colour"));
