@@ -1,13 +1,12 @@
 package dungeonmania;
 
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import dungeonmania.response.models.DungeonResponse;
 import dungeonmania.util.Direction;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 public class GoalsTests {
     @Test
@@ -17,17 +16,17 @@ public class GoalsTests {
         DungeonResponse resp = dmc.newGame("d_walkExit", "c_standard_movement");
         assertTrue(resp.getGoals().contains(":exit"));
         resp = dmc.tick(Direction.RIGHT);
-        assertNotEquals(true, resp.getGoals().contains(":exit"));
+        assertFalse(resp.getGoals().contains(":exit"));
     }
 
     @Test
     @DisplayName("Test simple boulder goal")
     public void testSimpleBoulderGoal() {
         DungeonManiaController dmc = new DungeonManiaController();
-        DungeonResponse resp = dmc.newGame("d_walkExit", "c_standard_movement");
+        DungeonResponse resp = dmc.newGame("d_boulderGoal", "c_standard_movement");
         assertTrue(resp.getGoals().contains(":boulder"));
         resp = dmc.tick(Direction.RIGHT);
-        assertNotEquals(true, resp.getGoals().contains(":boulder"));
+        assertFalse(resp.getGoals().contains(":boulder"));
     }
 
     @Test
