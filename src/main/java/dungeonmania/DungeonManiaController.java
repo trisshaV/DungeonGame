@@ -93,7 +93,7 @@ public class DungeonManiaController {
         try {
             confContent = FileLoader.loadResourceFile("/configs/" + configName + ".json");
             dungeonContent = FileLoader.loadResourceFile("/dungeons/" + dungeonName + ".json");
-        } catch (IOException e) {
+        } catch (Exception e) {
             e.printStackTrace();
             throw new IllegalArgumentException();
         }
