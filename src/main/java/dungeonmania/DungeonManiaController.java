@@ -42,6 +42,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 import java.util.Optional;
+import java.util.Random;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -59,6 +60,7 @@ public class DungeonManiaController {
 	private String dungeonId = "1";	
     private String goal;
 	private String dungeonName;
+    private Spiderspawner spiderspawner;
 
     public String getSkin() {
         return "default";
@@ -103,6 +105,7 @@ public class DungeonManiaController {
         JSONArray jsonEntities = json.getJSONArray("entities");
 
         goal = json.getJSONObject("goal-condition").getString("goal");
+        spiderspawner = new Spiderspawner(this, jsonConfig.getInt("spider_attack"), jsonConfig.getInt("spider_health"), jsonConfig.getInt("spider_spawn_rate"));
 
         for (int i = 0; i < jsonEntities.length(); i++) {
             JSONObject jsonEntity = jsonEntities.getJSONObject(i);
@@ -192,6 +195,24 @@ public class DungeonManiaController {
             return;
         }
         entities.add(newEntity);
+    }
+    public void spawnSpider(int attack, int health) {
+        Entity newEntity = new Spider(UUID.randomUUID().toString(), getRandomPosition(), attack, health);
+        entities.add(newEntity);
+    }
+
+    public Position getRandomPosition() {
+        Entity player = entities.stream().filter(x -> x instanceof Player).findFirst().orElse(null);
+        Player target = (Player) player;
+        Position pos = target.getPosition();
+
+        Random rand = new Random();
+        Position randomPos = (new Position(pos.getX() + rand.nextInt(1, 6), pos.getY()));
+        if (entities.stream().filter(x -> (x instanceof Boulder) && (x.getPosition().equals(randomPos))).findFirst().orElse(null) != null) {
+            return getRandomPosition();
+        }
+        return randomPos;
+        
     }
 
     public void spawnToast(int attack, int health, Position position) {
@@ -284,7 +305,9 @@ public class DungeonManiaController {
                 spawner.tick();
             }
         );
-    
+
+        spiderspawner.tick();
+            
         return getDungeonResponseModel();
     }
 
