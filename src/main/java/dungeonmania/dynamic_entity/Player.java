@@ -155,4 +155,11 @@ public class Player extends DynamicEntity {
         inventory.removeItem(item.getType());
     }
     
+    public Key getKey() {
+        return (Key) inventory.getItem("key");
+    }
+
+    public void removeKey() {
+        inventory.removeItem("key");
+    }
 }

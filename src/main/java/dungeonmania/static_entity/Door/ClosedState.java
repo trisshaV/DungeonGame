@@ -11,13 +11,16 @@ public class ClosedState implements State {
     }
 
     public boolean interact(Entity entity) {
-        if (entity.getName().equals("Player")) {
+        if (entity.getType().equals("player")) {
             Player player =  (Player) entity;
             if (door.getKey().equals(player.getKey())) {
                 player.removeKey();
                 door.setState(door.getOpened());
                 return true;
             }
+        }
+        else if (entity.getType().equals("spider")) {
+            return true;
         }
         return false;
     }
