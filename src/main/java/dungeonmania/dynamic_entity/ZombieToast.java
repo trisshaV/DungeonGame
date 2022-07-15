@@ -21,8 +21,8 @@ public class ZombieToast extends DynamicEntity {
 
     public ZombieToast(String id, Position xy, JSONObject config) {
         super(id, "zombie_toast", xy);
-        this.attack = config.getInt("zombie_attack");
-        this.health = config.getInt("zombie_health");
+        this.attack = config.getDouble("zombie_attack");
+        this.health = config.getDouble("zombie_health");
     }
 
     public ZombieToast(String id, Position xy, int attack, int health) {

@@ -20,6 +20,7 @@ public class Observer {
 
     public Observer(List<Entity> entitiesList, Player player) {
         List<Entity> temp = entitiesList.stream().filter(entity -> entity instanceof DynamicEntity && !(entity instanceof Player)).collect(Collectors.toList());
+        entities = new ArrayList<>();
         temp.stream().forEach(
             e -> {
                 if (e instanceof Mercenary && ((Mercenary)e).getStatus().equals("HOSTILE")) {
@@ -44,7 +45,6 @@ public class Observer {
                 }
             }
         );
-
         if (numBattles == battleRecords.size()) {
             return false;
         } else {

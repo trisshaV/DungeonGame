@@ -90,12 +90,10 @@ public class BattleRecord {
                 int shieldDefense = temp.getShieldDefense();
                 shieldMinus = itemsInRoundUsed.get(2).size() * shieldDefense;
             }
-
             double modifiedPlayerDamage = ((bowModifier * (playerAttack + swordAdd))/5);
             double modifiedEnemyDamage = ((enemyAttack - shieldMinus) / 10);
             newEnemyHealth = enemy.getHealth() - modifiedPlayerDamage;
             newPlayerHealth = player.getHealth() - modifiedEnemyDamage;
-
             // Update durability of equipment
             updateDurability(itemsInRoundUsed, (Player)player);
 
@@ -105,9 +103,10 @@ public class BattleRecord {
 
             // Remove broken items
             ((Player)player).removeBrokenItems();
+
+            enemy.setHealth(newEnemyHealth);
+            player.setHealth(newPlayerHealth);
         }
-        enemy.setHealth(newEnemyHealth);
-        player.setHealth(newPlayerHealth);
 
     }
 

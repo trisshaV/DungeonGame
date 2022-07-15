@@ -31,7 +31,7 @@ public abstract class DynamicEntity extends Entity {
     }
 
     public double getAttack() {
-        return health;
+        return attack;
     }
 
     public void setHealth(double health) {

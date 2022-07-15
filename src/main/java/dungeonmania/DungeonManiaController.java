@@ -64,7 +64,7 @@ public class DungeonManiaController {
 	private String dungeonId = "1";	
     private String goal;
 	private String dungeonName;
-    private Observer observer;
+    private Observer observer = null;
 
     public String getSkin() {
         return "default";
@@ -123,7 +123,7 @@ public class DungeonManiaController {
                 player = (Player)entity;
             }
         }
-        observer = new Observer(entities, player);
+        this.observer = new Observer(entities, player);
         return getDungeonResponseModel();
 
     }
@@ -258,7 +258,7 @@ public class DungeonManiaController {
                 y.updatePos(null, entities);
             }
         );
-        if (observer.checkBattle() == true) {
+        if (this.observer.checkBattle() == true) {
             entities = removeDeadEntities();
         }
         return getDungeonResponseModel();
@@ -281,7 +281,9 @@ public class DungeonManiaController {
                 p.updatePos(movementDirection, entities);
             }
         );
-        if (observer.checkBattle() == true) {
+
+        boolean battleOccured = this.observer.checkBattle();
+        if (battleOccured) {
             entities = removeDeadEntities();
         }
         // move Dynamic entities except Player
@@ -291,9 +293,11 @@ public class DungeonManiaController {
                 y.updatePos(movementDirection, entities);
             }
         );
-        if (observer.checkBattle() == true) {
+        battleOccured = this.observer.checkBattle();
+        if (battleOccured) {
             entities = removeDeadEntities();
         }
+
         player.pickUp(entities);
         List <Entity> copy = new ArrayList<>();
         copy.addAll(entities);
@@ -361,7 +365,7 @@ public class DungeonManiaController {
 
     public List<BattleResponse> listBattleResponses() {
         // Convert battles to battleResponses
-        List<BattleRecord> listOfBattles = observer.getBattleRecords();
+        List<BattleRecord> listOfBattles = this.observer.getBattleRecords();
 
         List<BattleResponse> result = new ArrayList<>();
         listOfBattles.stream().forEach(
@@ -401,4 +405,5 @@ public class DungeonManiaController {
         );
         return result;
     }
+
 }

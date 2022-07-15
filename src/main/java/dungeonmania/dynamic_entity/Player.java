@@ -35,8 +35,8 @@ public class Player extends DynamicEntity {
      */
     public Player(String id, Position xy, JSONObject config) {
         super(id, "player", xy);
-        this.attack = config.getInt("zombie_attack");
-        this.health = config.getInt("zombie_health");
+        this.attack = config.getDouble("player_attack");
+        this.health = config.getDouble("player_health");
         inventory = new Inventory(this, config);
     }
 

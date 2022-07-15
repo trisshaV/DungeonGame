@@ -34,9 +34,8 @@ public class Mercenary extends DynamicEntity {
     
     public Mercenary(String id, Position xy, JSONObject config) {
         super(id, "mercenary", xy);
-        this.attack = config.getInt("mercenary_attack");
-        this.health = config.getInt("mercenary_health");
-
+        this.attack = config.getDouble("mercenary_attack");
+        this.health = config.getDouble("mercenary_health");
     }
 
     public void updatePos(Direction d, List<Entity> l) {
