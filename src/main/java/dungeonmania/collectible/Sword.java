@@ -39,4 +39,9 @@ public class Sword extends Collectible {
         // TODO Auto-generated method stub
         
     }
+
+    @Override
+    public String getType() {
+        return "sword";
+    }
 }

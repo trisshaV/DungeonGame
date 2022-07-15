@@ -57,6 +57,11 @@ public class Portal extends StaticEntity {
         return true;
     }
 
+    @Override
+    public String getType() {
+        return "portal";
+    }
+
     public String getColour() {
         return colour;
     }
