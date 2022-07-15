@@ -26,7 +26,6 @@ import dungeonmania.Inventory;
  */
 public class Player extends DynamicEntity {
     private Inventory inventory;
-    private List<String> useableItems = Arrays.asList("bomb", "health_potion", "invincibility_potion", "invisibility_potion", null);
 
     /**
      * @param id
@@ -47,10 +46,10 @@ public class Player extends DynamicEntity {
 
     public List<String> getBuildables() {
         List<String> buildables = new ArrayList<>();
-        if (inventory.hasEnoughMaterials("bow")) {
+        if (inventory.CheckMaterials("bow")) {
             buildables.add("bow");
         }
-        if (inventory.hasEnoughMaterials("shield")) {
+        if (inventory.CheckMaterials("shield")) {
             buildables.add("shield");
         }
         return buildables;
