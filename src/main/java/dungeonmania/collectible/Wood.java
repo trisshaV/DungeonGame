@@ -20,5 +20,9 @@ public class Wood extends Collectible {
     public void use() {
         getPlayer().getInventoryList().remove((Collectible)this);
     }
-    
+
+    @Override
+    public String getType() {
+        return "wood";
+    }
 }

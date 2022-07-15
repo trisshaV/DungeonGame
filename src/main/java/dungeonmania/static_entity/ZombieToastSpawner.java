@@ -54,10 +54,7 @@ public class ZombieToastSpawner extends StaticEntity {
         }
     }
     public boolean collide(Entity entity) {
-        if (entity instanceof Spider) {
-            return true;
-        }
-        return false;
+        return entity instanceof Spider;
     }
 
 }

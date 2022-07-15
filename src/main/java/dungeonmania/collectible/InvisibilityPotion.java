@@ -24,5 +24,9 @@ public class InvisibilityPotion extends Collectible {
         // TODO Auto-generated method stub
         
     }
-    
+
+    @Override
+    public String getType() {
+        return "invisibility_potion";
+    }
 }

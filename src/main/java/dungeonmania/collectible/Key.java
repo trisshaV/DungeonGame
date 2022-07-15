@@ -35,4 +35,10 @@ public class Key extends Collectible {
     public int getKeyId() {
         return keyId;
     }
+
+
+    @Override
+    public String getType() {
+        return "key";
+    }
 }

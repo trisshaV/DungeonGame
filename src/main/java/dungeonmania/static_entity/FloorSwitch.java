@@ -37,12 +37,9 @@ public class FloorSwitch extends StaticEntity {
         return true;
     }
 
-    public String getType() {
-        return "switch";
-    }
-
     @Override
     public String getType() {
         return "switch";
     }
+
 }
