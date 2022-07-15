@@ -224,7 +224,7 @@ public class DungeonManiaController {
         Position pos = target.getPosition();
 
         Random rand = new Random();
-        Position randomPos = (new Position(pos.getX() + rand.nextInt(1, 6), pos.getY()));
+        Position randomPos = (new Position(pos.getX() + rand.nextInt(6) + 1 , pos.getY()));
         if (entities.stream().anyMatch(x -> (x instanceof Boulder) && (x.getPosition().equals(randomPos)))) {
             return getRandomPosition();
         }
