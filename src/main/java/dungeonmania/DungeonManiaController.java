@@ -59,6 +59,7 @@ public class DungeonManiaController {
 	private String dungeonId = "1";	
     private String goal;
 	private String dungeonName;
+    private Observer observer;
 
     public String getSkin() {
         return "default";
@@ -110,6 +111,14 @@ public class DungeonManiaController {
         }
         id = entities.size();
 
+        // Create observer
+        Player player = null;
+        for (Entity entity : entities) {
+            if (entity.getType().equals("player")) {
+                player = (Player)entity;
+            }
+        }
+        observer = new Observer(entities, player);
         return getDungeonResponseModel();
 
     }

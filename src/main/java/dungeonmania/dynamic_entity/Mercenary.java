@@ -118,4 +118,10 @@ public class Mercenary extends DynamicEntity {
             this.setPosition(nextPosition);
         }
     }
+
+    public String getStatus() {
+        return status;
+    }
+
+    
 }

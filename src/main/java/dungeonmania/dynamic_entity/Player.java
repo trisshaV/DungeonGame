@@ -154,5 +154,9 @@ public class Player extends DynamicEntity {
     public void removeItem(Collectible item) {
         inventory.removeItem(item.getType());
     }
+
+    public void removeBrokenItems() {
+        inventory.removeBrokenItems();
+    }
     
 }

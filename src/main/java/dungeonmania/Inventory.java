@@ -174,4 +174,10 @@ public class Inventory {
             itemSword.setDurability(currentDurability - 1);
         }
     }
+
+    public void removeBrokenItems() {
+        // Deleting broken shields and bows
+        builtItems = builtItems.stream().filter(item -> item.getDurability() == 0).collect(Collectors.toList());
+        entities = entities.stream().filter(item -> (item instanceof Sword) && (((Sword)item).getDurability() == 0)).collect(Collectors.toList());
+    }
 }
