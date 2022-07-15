@@ -19,7 +19,7 @@ import dungeonmania.util.Position;
 import static dungeonmania.TestUtils.countEntityOfType;
 
 public class BoulderTest {
-    /*
+    
     @Test
     @DisplayName("Test construction of boulder")
     public void testConstructor() {
@@ -32,7 +32,7 @@ public class BoulderTest {
     @Test
     @DisplayName("Test moving one boulder")
     public void basicMovement() {
-    */
+    
         
         /*
          *  [  ]   [  ]  [  ]  [  ]  [  ]  [  ] 
@@ -42,7 +42,7 @@ public class BoulderTest {
          *  [  ]   [  ]  [  ]  [  ]  [  ]  [  ]
          *  [  ]   [  ]  [  ]  [  ]  [  ]  exit
          */
-    /*
+    
         DungeonManiaController dmc;
         dmc = new DungeonManiaController();
         DungeonResponse res = dmc.newGame("d_boulderTest_move", "c_standard_movement");
@@ -67,7 +67,7 @@ public class BoulderTest {
     @Test
     @DisplayName("Test player inability to move a boulder past a wall")
     public void boulderWallBlock() {
-    */
+    
         
         /*
          *  [  ]   [  ]  [  ]  [  ]  [  ]  [  ] 
@@ -77,7 +77,7 @@ public class BoulderTest {
          *  [  ]   [  ]  [  ]  [  ]  [  ]  [  ]
          *  [  ]   [  ]  [  ]  [  ]  [  ]  exit
          */
-    /*
+    
         DungeonManiaController dmc;
         dmc = new DungeonManiaController();
         DungeonResponse res = dmc.newGame("d_boulderTest_move", "c_standard_movement");
@@ -105,7 +105,7 @@ public class BoulderTest {
     @Test
     @DisplayName("Test player inability to move a boulder past another boulder")
     public void twoBoulderBlock() {
-    */
+    
         /*
          *  [  ]   [  ]  [  ]  [  ]  [  ]  [  ] 
          *  [  ]   play  [  ]  bold  [  ]  bold 
@@ -114,7 +114,7 @@ public class BoulderTest {
          *  [  ]   [  ]  [  ]  [  ]  [  ]  [  ]
          *  [  ]   [  ]  [  ]  [  ]  [  ]  exit
          */
-    /*
+    
         DungeonManiaController dmc;
         dmc = new DungeonManiaController();
         DungeonResponse res = dmc.newGame("d_boulderTest_move", "c_standard_movement");
@@ -140,7 +140,7 @@ public class BoulderTest {
     @Test
     @DisplayName("Moving different boulders multiple times")
     public void complexBoulderMove() {
-    */
+    
         /*
          *  [  ]   [  ]  [  ]  [  ]  [  ]  [  ] 
          *  [  ]   play  [  ]  bold  [  ]  bold 
@@ -149,7 +149,7 @@ public class BoulderTest {
          *  [  ]   [  ]  [  ]  [  ]  [  ]  [  ]
          *  [  ]   [  ]  [  ]  [  ]  [  ]  exit
          */
-    /*
+    
         DungeonManiaController dmc;
         dmc = new DungeonManiaController();
         DungeonResponse res = dmc.newGame("d_boulderTest_move", "c_standard_movement");
@@ -182,5 +182,5 @@ public class BoulderTest {
 
         assertTrue(expectedResult.containsAll(actualResult));
     }
-    */
+    
 }

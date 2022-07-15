@@ -29,7 +29,7 @@ import dungeonmania.util.Direction;
 import dungeonmania.util.FileLoader;
 import dungeonmania.util.Position;
 import dungeonmania.static_entity.ActiveBomb;
-import dungeonmania.static_entity.Door;
+import dungeonmania.static_entity.Door.Door;
 import dungeonmania.static_entity.Exit;
 import dungeonmania.static_entity.FloorSwitch;
 import dungeonmania.static_entity.Portal;
@@ -96,7 +96,7 @@ public class DungeonManiaController {
         try {
             confContent = FileLoader.loadResourceFile("/configs/" + configName + ".json");
             dungeonContent = FileLoader.loadResourceFile("/dungeons/" + dungeonName + ".json");
-        } catch (IOException e) {
+        } catch (Exception e) {
             e.printStackTrace();
             throw new IllegalArgumentException();
         }
@@ -148,6 +148,11 @@ public class DungeonManiaController {
                 break;
             case "door":
                 newEntity = new Door(id, position);
+                Door newDoor = (Door) newEntity;
+                Key newKey = findKey(jsonEntity.getInt("key"));
+                if (newKey != null) {
+                    newDoor.setKey(newKey);
+                }
                 break;
             case "switch":
                 newEntity = new FloorSwitch(id, position);
@@ -220,6 +225,18 @@ public class DungeonManiaController {
             if (portal.getColour().equals(finder.getColour()) && !(finder.equals(portal))) {
                 unpairedPortals.remove(portal);
                 return portal;
+            }
+        }
+        return null;
+    }
+
+    public Key findKey(int i) {
+        for (Entity entity: entities) {
+            if (entity instanceof Key) {
+                Key target = (Key) entity;
+                if (target.getKeyId() == i) {
+                    return target;
+                }
             }
         }
         return null;
