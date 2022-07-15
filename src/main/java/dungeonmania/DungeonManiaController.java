@@ -219,13 +219,13 @@ public class DungeonManiaController {
     }
 
     public Position getRandomPosition() {
-        Entity player = entities.stream().filter(x -> x instanceof Player).findFirst().orElse(null);
+        Entity player = entities.stream().filter(x -> x instanceof Player).findFirst().get();
         Player target = (Player) player;
         Position pos = target.getPosition();
 
         Random rand = new Random();
         Position randomPos = (new Position(pos.getX() + rand.nextInt(1, 6), pos.getY()));
-        if (entities.stream().filter(x -> (x instanceof Boulder) && (x.getPosition().equals(randomPos))).findFirst().orElse(null) != null) {
+        if (entities.stream().anyMatch(x -> (x instanceof Boulder) && (x.getPosition().equals(randomPos)))) {
             return getRandomPosition();
         }
         return randomPos;
