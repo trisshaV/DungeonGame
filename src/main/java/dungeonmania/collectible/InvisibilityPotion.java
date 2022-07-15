@@ -1,5 +1,9 @@
 package dungeonmania.collectible;
 
+import org.json.JSONObject;
+
+import dungeonmania.util.Position;
+
 /**
  * Are among the collectible entities and is stored as Player inventory. Has following properties:
  *      - Can be collected when Player moves onto the square it is on.
@@ -9,5 +13,16 @@ package dungeonmania.collectible;
  *          as they too cannot see the Player.
  */
 public class InvisibilityPotion extends Collectible {
+    private int duration;
+    public InvisibilityPotion(String id, Position xy, JSONObject config) {
+        super(id, "invisibility_potion", xy);
+        duration = config.getInt("invisibility_potion_duration");
+    }
+
+    @Override
+    public void use() {
+        // TODO Auto-generated method stub
+        
+    }
     
 }

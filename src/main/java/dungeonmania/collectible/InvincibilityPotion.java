@@ -1,5 +1,9 @@
 package dungeonmania.collectible;
 
+import org.json.JSONObject;
+
+import dungeonmania.util.Position;
+
 /**
  * Are among the collectible entities and is stored as Player inventory. Has following properties:
  *      - Can be collected when Player moves onto the square it is on.
@@ -9,5 +13,16 @@ package dungeonmania.collectible;
  *          HOWEVER spiders and mercenaries (bribed) will remain UNAFFECTED.
  */
 public class InvincibilityPotion extends Collectible {
+    private int duration;
+    public InvincibilityPotion(String id, Position xy, JSONObject config) {
+        super(id, "invincibility_potion", xy);
+        duration = config.getInt("invincibility_potion_duration");
+    }
+
+    @Override
+    public void use() {
+        // TODO Auto-generated method stub
+        
+    }
     
 }

@@ -1,5 +1,9 @@
 package dungeonmania.collectible;
 
+import org.json.JSONObject;
+
+import dungeonmania.util.Position;
+
 /**
  * Are among the collectible entities and is stored as Player inventory. Has following properties:
  *      - Can be collected when Player moves onto the square it is on.
@@ -11,5 +15,20 @@ package dungeonmania.collectible;
  *          NOT harm the Player.
  */
 public class Bomb extends Collectible {
+    private int radius;
+    public Bomb(String id, Position xy, JSONObject config) {
+        super(id, "bomb", xy);
+        radius = config.getInt("bomb_radius");
+    }
+
+    @Override
+    public void use() {
+        // TODO Auto-generated method stub
+        
+    }
+
+    public int getRadius() {
+        return radius;
+    }
     
 }

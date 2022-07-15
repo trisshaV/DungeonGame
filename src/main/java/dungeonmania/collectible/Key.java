@@ -1,5 +1,7 @@
 package dungeonmania.collectible;
 
+import dungeonmania.util.Position;
+
 /**
  * Are among the collectible entities and is stored as Player inventory. Has following properties:
  *      - Can be collected when Player moves onto the square it is on.
@@ -11,5 +13,26 @@ package dungeonmania.collectible;
  *          as mentioned above and also consequently makes the correspnding door be locked forever.
  */
 public class Key extends Collectible {
-    
+
+    private int keyId;
+
+    public Key(String id, Position xy, int keyId) {
+        super(id, "key", xy);
+        this.keyId = keyId;
+    }
+
+    /**
+     * Is called if the key is used to craft a shield or open a door.
+     */
+    public void use() {
+        getPlayer().getInventoryList().remove(this);
+    }
+
+    public void setKeyId(int id) {
+        keyId = id;
+    }
+
+    public int getKeyId() {
+        return keyId;
+    }
 }
