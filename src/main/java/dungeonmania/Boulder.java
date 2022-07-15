@@ -18,7 +18,7 @@ public class Boulder extends Entity {
     private DungeonManiaController dungeon;
 
     public Boulder(DungeonManiaController dungeon, String id, Position xy) {
-        super(id, xy);
+        super(id, "boulder", xy);
         this.dungeon = dungeon;
     }
 
@@ -34,6 +34,7 @@ public class Boulder extends Entity {
                 FloorSwitch activateSwitch = (FloorSwitch) collision;
                 activateSwitch.collide(this);
                 this.setPosition(new Position(this.getPosition().getX() - changeX, this.getPosition().getY() - changeY));
+                return true;
             }
             else if (collision == null) {
                 this.setPosition(new Position(this.getPosition().getX() - changeX, this.getPosition().getY() - changeY));

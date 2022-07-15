@@ -33,7 +33,7 @@ public class Mercenary extends DynamicEntity {
     }
     
     public Mercenary(String id, Position xy, JSONObject config) {
-        super(id, xy);
+        super(id, "mercenary", xy);
         this.attack = config.getInt("mercenary_attack");
         this.health = config.getInt("mercenary_health");
 

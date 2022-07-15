@@ -30,7 +30,7 @@ public class Spider extends DynamicEntity {
     private int currentPosition;
 
     public Spider(String id, Position xy, JSONObject config) {
-        super(id, xy);
+        super(id, "spider", xy);
         this.attack = config.getInt("spider_attack");
         this.health = config.getInt("spider_health");
         this.direction = "clockwise";

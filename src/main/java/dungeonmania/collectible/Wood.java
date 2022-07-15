@@ -1,5 +1,6 @@
 package dungeonmania.collectible;
 
+import org.json.JSONObject;
 import dungeonmania.util.Position;
 
 /**
@@ -9,8 +10,15 @@ import dungeonmania.util.Position;
  */
 public class Wood extends Collectible {
 
-    public Wood(String id, Position xy) {
-        super(id, xy);
+    public Wood(String id, Position xy, JSONObject config) {
+        super(id, "wood", xy);
+    }
+
+    /**
+     * Uses wood to build bows and shields. 
+     */
+    public void use() {
+        getPlayer().getInventoryList().remove((Collectible)this);
     }
     
 }
