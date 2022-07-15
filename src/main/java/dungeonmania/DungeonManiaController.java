@@ -44,6 +44,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 import java.util.Optional;
+import java.util.Random;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -62,6 +63,7 @@ public class DungeonManiaController {
     private Goal goalStrategy = null;
     private String goal = "";
 	private String dungeonName;
+    private Spiderspawner spiderspawner;
 
     public String getSkin() {
         return "default";
@@ -105,6 +107,7 @@ public class DungeonManiaController {
         JSONObject jsonConfig = new JSONObject(confContent);
         JSONArray jsonEntities = json.getJSONArray("entities");
 
+        spiderspawner = new Spiderspawner(this, jsonConfig.getInt("spider_attack"), jsonConfig.getInt("spider_health"), jsonConfig.getInt("spider_spawn_rate"));
         goalStrategy = newGoalStrategy(json.getJSONObject("goal-condition"));
 
         for (int i = 0; i < jsonEntities.length(); i++) {
@@ -210,6 +213,24 @@ public class DungeonManiaController {
         }
         entities.add(newEntity);
     }
+    public void spawnSpider(int attack, int health) {
+        Entity newEntity = new Spider(UUID.randomUUID().toString(), getRandomPosition(), attack, health);
+        entities.add(newEntity);
+    }
+
+    public Position getRandomPosition() {
+        Entity player = entities.stream().filter(x -> x instanceof Player).findFirst().get();
+        Player target = (Player) player;
+        Position pos = target.getPosition();
+
+        Random rand = new Random();
+        Position randomPos = (new Position(pos.getX() + rand.nextInt(6) + 1 , pos.getY()));
+        if (entities.stream().anyMatch(x -> (x instanceof Boulder) && (x.getPosition().equals(randomPos)))) {
+            return getRandomPosition();
+        }
+        return randomPos;
+        
+    }
 
     public void spawnToast(int attack, int health, Position position) {
         Entity newEntity = new ZombieToast(UUID.randomUUID().toString(), position, attack, health);
@@ -301,7 +322,9 @@ public class DungeonManiaController {
                 spawner.tick();
             }
         );
-    
+
+        spiderspawner.tick();
+            
         return getDungeonResponseModel();
     }
 
