@@ -51,5 +51,12 @@ public class Observer {
             return true;
         }
     }
-    
+
+    public boolean isPlayerDeceased() {
+        return playerDeceased;
+    }
+
+    public List<BattleRecord> getBattleRecords() {
+        return battleRecords;
+    }  
 }

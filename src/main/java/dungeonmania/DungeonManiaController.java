@@ -3,6 +3,7 @@ package dungeonmania;
 import dungeonmania.collectible.Arrow;
 import dungeonmania.collectible.Bomb;
 import dungeonmania.collectible.Bow;
+import dungeonmania.collectible.Buildable;
 import dungeonmania.collectible.Collectible;
 import dungeonmania.collectible.InvincibilityPotion;
 import dungeonmania.collectible.InvisibilityPotion;
@@ -16,9 +17,13 @@ import dungeonmania.dynamic_entity.Mercenary;
 import dungeonmania.dynamic_entity.Player;
 import dungeonmania.dynamic_entity.Spider;
 import dungeonmania.dynamic_entity.ZombieToast;
+import dungeonmania.dynamic_entity.player.BattleRecord;
+import dungeonmania.dynamic_entity.player.RoundRecord;
 import dungeonmania.exceptions.InvalidActionException;
 import dungeonmania.response.models.EntityResponse;
 import dungeonmania.response.models.ItemResponse;
+import dungeonmania.response.models.RoundResponse;
+import dungeonmania.response.models.BattleResponse;
 import dungeonmania.response.models.DungeonResponse;
 import dungeonmania.response.models.EntityResponse;
 import dungeonmania.response.models.ItemResponse;
@@ -223,10 +228,9 @@ public class DungeonManiaController {
         List<EntityResponse> entityResponseList = entities.stream()
                 .map(Entity::getEntityResponse)
                 .collect(Collectors.toList());
-
         return new DungeonResponse(
             dungeonId, dungeonName, entityResponseList, player.getInventory().getItemResponses(),
-            new ArrayList<>(), player.getBuildables(), goal);
+            listBattleResponses(), player.getBuildables(), goal);
     }
 
     /**
@@ -253,8 +257,17 @@ public class DungeonManiaController {
                 DynamicEntity y = (DynamicEntity) x;
                 y.updatePos(null, entities);
             }
-            );
+        );
+        if (observer.checkBattle() == true) {
+            entities = removeDeadEntities();
+        }
         return getDungeonResponseModel();
+    }
+
+    private List <Entity> removeDeadEntities() {
+        List <Entity> result = new ArrayList<>();
+        result = entities.stream().filter(e -> e instanceof DynamicEntity && ((DynamicEntity)e).getHealth() < 0).collect(Collectors.toList());
+        return result;
     }
 
     /**
@@ -268,7 +281,9 @@ public class DungeonManiaController {
                 p.updatePos(movementDirection, entities);
             }
         );
-
+        if (observer.checkBattle() == true) {
+            entities = removeDeadEntities();
+        }
         // move Dynamic entities except Player
         entities.stream().filter(it -> (it instanceof DynamicEntity) && (it instanceof Player == false)).forEach(
             x -> {
@@ -276,6 +291,9 @@ public class DungeonManiaController {
                 y.updatePos(movementDirection, entities);
             }
         );
+        if (observer.checkBattle() == true) {
+            entities = removeDeadEntities();
+        }
         player.pickUp(entities);
         List <Entity> copy = new ArrayList<>();
         copy.addAll(entities);
@@ -285,7 +303,6 @@ public class DungeonManiaController {
                 spawner.tick();
             }
         );
-    
         return getDungeonResponseModel();
     }
 
@@ -340,5 +357,48 @@ public class DungeonManiaController {
                 .findFirst()
                 .orElseGet(() -> colliders.stream().filter(x -> x instanceof StaticEntity).findFirst()
                 .orElse(null));
+    }
+
+    public List<BattleResponse> listBattleResponses() {
+        // Convert battles to battleResponses
+        List<BattleRecord> listOfBattles = observer.getBattleRecords();
+
+        List<BattleResponse> result = new ArrayList<>();
+        listOfBattles.stream().forEach(
+            battle -> {
+                List<RoundResponse> roundResponses = convertRoundRecords(battle.getRounds());
+                DynamicEntity temp = battle.getEnemy();
+                result.add(new BattleResponse(temp.getType(), roundResponses, battle.getInitialPlayerHealth(), battle.getInitialEnemyHealth()));
+            }
+        );
+
+        return result;
+    }
+
+    public List<RoundResponse> convertRoundRecords(List<RoundRecord> roundRecords) {
+        List<RoundResponse> result = new ArrayList<>();
+        roundRecords.stream().forEach(
+            round -> {
+                List<ItemResponse> itemResponses = convertItemResponse(round.getItemsUsed());
+                result.add(new RoundResponse(round.getChangePlayerHealth(), round.getChangeEnemyHealth(), itemResponses));
+            }
+        );
+        return result;
+    }
+
+    private List<ItemResponse> convertItemResponse(List<Object> itemsUsed) {
+        List <ItemResponse> result = new ArrayList<>();
+        itemsUsed.stream().forEach(
+            item -> {
+                if (item instanceof Collectible) {
+                    Collectible temp = (Collectible)item;
+                    result.add(new ItemResponse(temp.getId(), temp.getType()));
+                } else if (item instanceof Buildable) {
+                    Buildable temp = (Buildable)item;
+                    result.add(new ItemResponse(temp.getId(), temp.getType()));
+                }
+            }
+        );
+        return result;
     }
 }

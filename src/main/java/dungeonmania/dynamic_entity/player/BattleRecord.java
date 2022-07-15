@@ -166,4 +166,24 @@ public class BattleRecord {
     private List <Object> convertToList(List<List<Object>> listsOfItems) {
         return listsOfItems.stream().flatMap(Collection::stream).collect(Collectors.toList());
     }
+
+    public List<RoundRecord> getRounds() {
+        return rounds;
+    }
+
+    public double getInitialPlayerHealth() {
+        return initialPlayerHealth;
+    }
+
+    public double getInitialEnemyHealth() {
+        return initialEnemyHealth;
+    }
+
+    public DynamicEntity getEnemy() {
+        return enemy;
+    }
+
+    
+
+    
 }
