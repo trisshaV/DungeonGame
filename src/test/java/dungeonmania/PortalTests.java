@@ -67,4 +67,22 @@ public class PortalTests {
         res = dmc.tick(Direction.DOWN);
         assertEquals(new Position(4, 1), getEntities(res, "player").get(0).getPosition());
     }
+    @Test
+    @DisplayName("Portal chaining")
+    public void testPlayerTeleportsChainedPortals() {
+        DungeonManiaController dmc;
+        dmc = new DungeonManiaController();
+        DungeonResponse res = dmc.newGame("d_portalsChained", "c_DoorsKeysTest_useKeyWalkThroughOpenDoor");
+        res = dmc.tick(Direction.RIGHT);
+        assertEquals(new Position(7, 0), getEntities(res, "player").get(0).getPosition());
+    }
+    @Test
+    @DisplayName("Portal chaining twice")
+    public void testPlayerTeleportsChainedPortalsTwice() {
+        DungeonManiaController dmc;
+        dmc = new DungeonManiaController();
+        DungeonResponse res = dmc.newGame("d_portalsChainedTwice", "c_DoorsKeysTest_useKeyWalkThroughOpenDoor");
+        res = dmc.tick(Direction.RIGHT);
+        assertEquals(new Position(10, 0), getEntities(res, "player").get(0).getPosition());
+    }
 }
