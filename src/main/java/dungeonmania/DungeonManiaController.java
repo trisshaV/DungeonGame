@@ -17,11 +17,17 @@ import dungeonmania.dynamic_entity.Player;
 import dungeonmania.dynamic_entity.Spider;
 import dungeonmania.dynamic_entity.ZombieToast;
 import dungeonmania.exceptions.InvalidActionException;
+import dungeonmania.goal.BoulderGoal;
+import dungeonmania.goal.ExitGoal;
+import dungeonmania.goal.Goal;
 import dungeonmania.response.models.EntityResponse;
-import dungeonmania.response.models.ItemResponse;
 import dungeonmania.response.models.DungeonResponse;
-import dungeonmania.response.models.EntityResponse;
 import dungeonmania.response.models.ItemResponse;
+import dungeonmania.response.models.EntityResponse;
+import dungeonmania.static_entity.*;
+import dungeonmania.util.Direction;
+import dungeonmania.util.FileLoader;
+import dungeonmania.util.Position;
 import dungeonmania.static_entity.ActiveBomb;
 import dungeonmania.static_entity.Door.Door;
 import dungeonmania.static_entity.Exit;
@@ -30,10 +36,6 @@ import dungeonmania.static_entity.Portal;
 import dungeonmania.static_entity.StaticEntity;
 import dungeonmania.static_entity.Wall;
 import dungeonmania.static_entity.ZombieToastSpawner;
-import dungeonmania.util.Direction;
-import dungeonmania.util.FileLoader;
-import dungeonmania.util.Position;
-import dungeonmania.Inventory;
 import javassist.expr.Instanceof;
 
 import java.io.IOException;
@@ -57,8 +59,9 @@ public class DungeonManiaController {
     private List<Portal> unpairedPortals = new ArrayList<>();
     private List<Entity> entities = new ArrayList<>();
     private Player player = null;
-	private String dungeonId = "1";	
-    private String goal;
+	private String dungeonId = "1";
+    private Goal goalStrategy = null;
+    private String goal = "";
 	private String dungeonName;
     private Spiderspawner spiderspawner;
 
@@ -104,8 +107,8 @@ public class DungeonManiaController {
         JSONObject jsonConfig = new JSONObject(confContent);
         JSONArray jsonEntities = json.getJSONArray("entities");
 
-        goal = json.getJSONObject("goal-condition").getString("goal");
         spiderspawner = new Spiderspawner(this, jsonConfig.getInt("spider_attack"), jsonConfig.getInt("spider_health"), jsonConfig.getInt("spider_spawn_rate"));
+        goalStrategy = newGoalStrategy(json.getJSONObject("goal-condition"));
 
         for (int i = 0; i < jsonEntities.length(); i++) {
             JSONObject jsonEntity = jsonEntities.getJSONObject(i);
@@ -114,6 +117,20 @@ public class DungeonManiaController {
         id = entities.size();
 
         return getDungeonResponseModel();
+
+    }
+
+    private Goal newGoalStrategy(JSONObject goalCondition) {
+        String superGoal = goalCondition.getString("goal");
+        switch (superGoal) {
+            case "exit":
+                return new ExitGoal();
+            case "boulder":
+                return new BoulderGoal();
+            default:
+                // TODO: add more
+                return new ExitGoal();
+        }
 
     }
 
@@ -255,7 +272,7 @@ public class DungeonManiaController {
 
         return new DungeonResponse(
             dungeonId, dungeonName, entityResponseList, player.getInventory().getItemResponses(),
-            new ArrayList<>(), player.getBuildables(), goal);
+            new ArrayList<>(), player.getBuildables(), goalStrategy.getGoal(entities));
     }
 
     /**

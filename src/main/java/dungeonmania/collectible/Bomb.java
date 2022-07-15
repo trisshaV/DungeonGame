@@ -30,5 +30,9 @@ public class Bomb extends Collectible {
     public int getRadius() {
         return radius;
     }
-    
+
+    @Override
+    public String getType() {
+        return "bomb";
+    }
 }

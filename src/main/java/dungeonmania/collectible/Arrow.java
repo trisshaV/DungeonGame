@@ -18,4 +18,9 @@ public class Arrow extends Collectible {
     public void use() {
         getPlayer().getInventoryList().remove((Collectible)this);
     }
+
+    @Override
+    public String getType() {
+        return "arrow";
+    }
 }

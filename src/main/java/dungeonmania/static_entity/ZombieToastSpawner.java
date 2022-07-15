@@ -25,6 +25,11 @@ public class ZombieToastSpawner extends StaticEntity {
         this.zombieAttack = zombieAttack;
         this.zombieHealth = zombieHealth;
     }
+
+    @Override
+    public String getType() {
+        return "zombie_toast_spawner";
+    }
     
     public void tick() {
         currentTick += 1;
@@ -49,12 +54,7 @@ public class ZombieToastSpawner extends StaticEntity {
         }
     }
     public boolean collide(Entity entity) {
-        if (entity instanceof Spider) {
-            return true;
-        }
-        return false;
+        return entity instanceof Spider;
     }
 
-
-    
 }
