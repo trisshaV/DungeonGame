@@ -40,22 +40,22 @@ public class Portal extends StaticEntity {
             }
             Entity collisionLeft = dungeon.checkStaticCollision(new Position(linkPosition.getX() - 1, linkPosition.getY()));
             if (collisionLeft == null) {
-                player.setPosition(new Position(linkPosition.getX() + changeX, linkPosition.getY() - changeY));
+                player.setPosition(new Position(linkPosition.getX() - 1, linkPosition.getY()));
                 return false;
             }
             Entity collisionRight = dungeon.checkStaticCollision(new Position(linkPosition.getX() + 1, linkPosition.getY()));
             if (collisionRight == null) {
-                player.setPosition(new Position(linkPosition.getX() + changeX, linkPosition.getY() - changeY));
+                player.setPosition(new Position(linkPosition.getX() + 1, linkPosition.getY()));
                 return false;
             }
             Entity collisionUp = dungeon.checkStaticCollision(new Position(linkPosition.getX(), linkPosition.getY() - 1));
             if (collisionUp == null) {
-                player.setPosition(new Position(linkPosition.getX() + changeX, linkPosition.getY() - changeY));
+                player.setPosition(new Position(linkPosition.getX(), linkPosition.getY() - 1));
                 return false;
             }
             Entity collisionDown = dungeon.checkStaticCollision(new Position(linkPosition.getX(), linkPosition.getY() + 1));
             if (collisionDown == null) {
-                player.setPosition(new Position(linkPosition.getX() + changeX, linkPosition.getY() - changeY));
+                player.setPosition(new Position(linkPosition.getX(), linkPosition.getY() + 1));
                 return false;
             }
         }

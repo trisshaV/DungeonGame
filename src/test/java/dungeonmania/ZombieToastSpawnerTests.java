@@ -39,15 +39,35 @@ public class ZombieToastSpawnerTests {
         assertEquals(new Position(6, 5), getEntities(res, "zombie_toast").get(0).getPosition());
     }
     @Test 
-    @DisplayName("Spawn zombie toast in open square when cardinally blocked")
+    @DisplayName("Spawn zombie toast in open square when cardinally blocked left")
     public void testSpawnZombieToastBlocked() {
         DungeonManiaController dmc = new DungeonManiaController();
         DungeonResponse res = dmc.newGame("d_zombieToastBlocked", "c_zombieToastSpawner");
         res = dmc.tick(Direction.RIGHT);
         res = dmc.tick(Direction.RIGHT);
-        assertEquals(new Position(4, 5), getEntities(res, "zombie_toast").get(0).getPosition());
+        assertEquals(new Position(6, 5), getEntities(res, "zombie_toast").get(0).getPosition());
     }
-    /* 
+
+    @Test 
+    @DisplayName("Spawn zombie toast in open square when cardinally blocked left and right")
+    public void testSpawnZombieToastBlockedLeft() {
+        DungeonManiaController dmc = new DungeonManiaController();
+        DungeonResponse res = dmc.newGame("d_zombieToastBlockedTwice", "c_zombieToastSpawner");
+        res = dmc.tick(Direction.RIGHT);
+        res = dmc.tick(Direction.RIGHT);
+        assertEquals(new Position(5, 6), getEntities(res, "zombie_toast").get(0).getPosition());
+    }
+
+    @Test 
+    @DisplayName("Spawn zombie toast in open square when cardinally blocked left right and down")
+    public void testSpawnZombieToastBlockedTwice() {
+        DungeonManiaController dmc = new DungeonManiaController();
+        DungeonResponse res = dmc.newGame("d_zombieToastBlockedThrice", "c_zombieToastSpawner");
+        res = dmc.tick(Direction.RIGHT);
+        res = dmc.tick(Direction.RIGHT);
+        assertEquals(new Position(5, 4), getEntities(res, "zombie_toast").get(0).getPosition());
+    }
+    
     @Test
     @DisplayName("Zombie toast won't be destroyed when player doesn't have a weapon") 
     public void testCannotDestroyZombieToast() {
@@ -58,17 +78,4 @@ public class ZombieToastSpawnerTests {
         });
 
     }
-    @Test
-    @DisplayName("Player can interact and destroy zombie spawner when it has a weapon")
-    public void testDestroyZombieToast() {
-        DungeonManiaController dmc = new DungeonManiaController();
-        DungeonResponse res = dmc.newGame("d_zombieToastHasWeapon", "c_zombieToastSpawner");
-        assertDoesNotThrow(() -> {
-            dmc.interact(getEntities(res, "zombie_toast_spawner").get(0).getId());
-        });
-        assertThrows(NullPointerException.class, () -> {
-            getEntities(res, "zombie_toast_spawner").get(0);
-        });
-    }
-    */
 }
