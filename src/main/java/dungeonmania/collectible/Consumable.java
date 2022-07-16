@@ -8,5 +8,5 @@ package dungeonmania.collectible;
  *          the QUEUED potions to the Player accordingly.
  */
 public interface Consumable {
-    
+    public abstract boolean potency();
 }
