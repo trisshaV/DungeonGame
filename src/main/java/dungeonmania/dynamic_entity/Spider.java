@@ -36,6 +36,13 @@ public class Spider extends DynamicEntity {
         this.direction = "clockwise";
         cyclePositions = generatePositions(this.getPosition());
     }
+    public Spider(String id, Position xy, int attack, int health) {
+        super(id, "spider", xy);
+        this.attack = attack;
+        this.health = health;
+        this.direction = "clockwise";
+        cyclePositions = generatePositions(this.getPosition());
+    }
 
     public String getType() {
         return "spider";

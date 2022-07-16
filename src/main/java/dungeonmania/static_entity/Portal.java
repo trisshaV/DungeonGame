@@ -29,6 +29,11 @@ public class Portal extends StaticEntity {
             int changeY = pos.getY() - this.getPosition().getY();
 
             Entity collision = dungeon.checkStaticCollision(new Position(linkPosition.getX() - changeX, linkPosition.getY() - changeY));
+            if (collision instanceof Portal) {
+                Portal chain = (Portal) collision;
+                player.setPosition(new Position(linkPosition.getX(), linkPosition.getY()));
+                return (chain.collide(entity));
+            }
             if (collision == null) {
                 player.setPosition(new Position(linkPosition.getX() - changeX, linkPosition.getY() - changeY));
                 return false;
@@ -55,6 +60,11 @@ public class Portal extends StaticEntity {
             }
         }
         return true;
+    }
+
+    @Override
+    public String getType() {
+        return "portal";
     }
 
     public String getColour() {

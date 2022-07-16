@@ -13,4 +13,6 @@ public abstract class StaticEntity extends Entity {
 
     public abstract boolean collide(Entity entity);
 
+    public abstract String getType();
+
 }

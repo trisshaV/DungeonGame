@@ -20,25 +20,28 @@ import dungeonmania.dynamic_entity.ZombieToast;
 import dungeonmania.dynamic_entity.player.BattleRecord;
 import dungeonmania.dynamic_entity.player.RoundRecord;
 import dungeonmania.exceptions.InvalidActionException;
+import dungeonmania.goal.BoulderGoal;
+import dungeonmania.goal.ExitGoal;
+import dungeonmania.goal.Goal;
 import dungeonmania.response.models.EntityResponse;
 import dungeonmania.response.models.ItemResponse;
 import dungeonmania.response.models.RoundResponse;
 import dungeonmania.response.models.BattleResponse;
 import dungeonmania.response.models.DungeonResponse;
-import dungeonmania.response.models.EntityResponse;
 import dungeonmania.response.models.ItemResponse;
+import dungeonmania.response.models.EntityResponse;
+import dungeonmania.static_entity.*;
+import dungeonmania.util.Direction;
+import dungeonmania.util.FileLoader;
+import dungeonmania.util.Position;
 import dungeonmania.static_entity.ActiveBomb;
-import dungeonmania.static_entity.Door;
+import dungeonmania.static_entity.Door.Door;
 import dungeonmania.static_entity.Exit;
 import dungeonmania.static_entity.FloorSwitch;
 import dungeonmania.static_entity.Portal;
 import dungeonmania.static_entity.StaticEntity;
 import dungeonmania.static_entity.Wall;
 import dungeonmania.static_entity.ZombieToastSpawner;
-import dungeonmania.util.Direction;
-import dungeonmania.util.FileLoader;
-import dungeonmania.util.Position;
-import dungeonmania.Inventory;
 import javassist.expr.Instanceof;
 
 import java.io.IOException;
@@ -47,6 +50,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 import java.util.Optional;
+import java.util.Random;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -61,10 +65,12 @@ public class DungeonManiaController {
     private List<Portal> unpairedPortals = new ArrayList<>();
     private List<Entity> entities = new ArrayList<>();
     private Player player = null;
-	private String dungeonId = "1";	
-    private String goal;
+	private String dungeonId = "1";
+    private Goal goalStrategy = null;
+    private String goal = "";
 	private String dungeonName;
     private Observer observer = null;
+    private Spiderspawner spiderspawner;
 
     public String getSkin() {
         return "default";
@@ -99,7 +105,7 @@ public class DungeonManiaController {
         try {
             confContent = FileLoader.loadResourceFile("/configs/" + configName + ".json");
             dungeonContent = FileLoader.loadResourceFile("/dungeons/" + dungeonName + ".json");
-        } catch (IOException e) {
+        } catch (Exception e) {
             e.printStackTrace();
             throw new IllegalArgumentException();
         }
@@ -108,7 +114,8 @@ public class DungeonManiaController {
         JSONObject jsonConfig = new JSONObject(confContent);
         JSONArray jsonEntities = json.getJSONArray("entities");
 
-        goal = json.getJSONObject("goal-condition").getString("goal");
+        spiderspawner = new Spiderspawner(this, jsonConfig.getInt("spider_attack"), jsonConfig.getInt("spider_health"), jsonConfig.getInt("spider_spawn_rate"));
+        goalStrategy = newGoalStrategy(json.getJSONObject("goal-condition"));
 
         for (int i = 0; i < jsonEntities.length(); i++) {
             JSONObject jsonEntity = jsonEntities.getJSONObject(i);
@@ -125,6 +132,20 @@ public class DungeonManiaController {
         }
         this.observer = new Observer(entities, player);
         return getDungeonResponseModel();
+
+    }
+
+    private Goal newGoalStrategy(JSONObject goalCondition) {
+        String superGoal = goalCondition.getString("goal");
+        switch (superGoal) {
+            case "exit":
+                return new ExitGoal();
+            case "boulder":
+                return new BoulderGoal();
+            default:
+                // TODO: add more
+                return new ExitGoal();
+        }
 
     }
 
@@ -145,6 +166,11 @@ public class DungeonManiaController {
                 break;
             case "door":
                 newEntity = new Door(id, position);
+                Door newDoor = (Door) newEntity;
+                Key newKey = findKey(jsonEntity.getInt("key"));
+                if (newKey != null) {
+                    newDoor.setKey(newKey);
+                }
                 break;
             case "switch":
                 newEntity = new FloorSwitch(id, position);
@@ -180,10 +206,11 @@ public class DungeonManiaController {
                 newEntity = new Treasure(id, position, jsonConfig);
                 break;
             case "invincibility_potion":
-                newEntity = new InvisibilityPotion(id, position, jsonConfig);
+                newEntity = new InvincibilityPotion(id, position, jsonConfig);
                 break;
             case "invisibility_potion":
-                newEntity = new InvincibilityPotion(id, position, jsonConfig);
+                newEntity = new InvisibilityPotion(id, position, jsonConfig);
+                break;
             case "zombie_toast_spawner":
                 newEntity = new ZombieToastSpawner(this, id, position, jsonConfig.getInt("zombie_spawn_rate"), jsonConfig.getInt("zombie_attack"), jsonConfig.getInt("zombie_health"));
                 break;
@@ -202,6 +229,24 @@ public class DungeonManiaController {
         }
         entities.add(newEntity);
     }
+    public void spawnSpider(int attack, int health) {
+        Entity newEntity = new Spider(UUID.randomUUID().toString(), getRandomPosition(), attack, health);
+        entities.add(newEntity);
+    }
+
+    public Position getRandomPosition() {
+        Entity player = entities.stream().filter(x -> x instanceof Player).findFirst().get();
+        Player target = (Player) player;
+        Position pos = target.getPosition();
+
+        Random rand = new Random();
+        Position randomPos = (new Position(pos.getX() + rand.nextInt(6) + 1 , pos.getY()));
+        if (entities.stream().anyMatch(x -> (x instanceof Boulder) && (x.getPosition().equals(randomPos)))) {
+            return getRandomPosition();
+        }
+        return randomPos;
+        
+    }
 
     public void spawnToast(int attack, int health, Position position) {
         Entity newEntity = new ZombieToast(UUID.randomUUID().toString(), position, attack, health);
@@ -217,6 +262,18 @@ public class DungeonManiaController {
             if (portal.getColour().equals(finder.getColour()) && !(finder.equals(portal))) {
                 unpairedPortals.remove(portal);
                 return portal;
+            }
+        }
+        return null;
+    }
+
+    public Key findKey(int i) {
+        for (Entity entity: entities) {
+            if (entity instanceof Key) {
+                Key target = (Key) entity;
+                if (target.getKeyId() == i) {
+                    return target;
+                }
             }
         }
         return null;
@@ -245,9 +302,11 @@ public class DungeonManiaController {
             player.removeItem(item);
         }
         if (item.getType().equals("invincibility_potion")) {
+            player.consumePotion(item);
             player.removeItem(item);
         }
         if (item.getType().equals("invisibility_potion")) {
+            player.consumePotion(item);
             player.removeItem(item);
         }
         
@@ -307,6 +366,9 @@ public class DungeonManiaController {
                 spawner.tick();
             }
         );
+
+        spiderspawner.tick();
+            
         return getDungeonResponseModel();
     }
 

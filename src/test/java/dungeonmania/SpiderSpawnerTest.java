@@ -1,4 +1,5 @@
 package dungeonmania;
+
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -18,44 +19,40 @@ import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import dungeonmania.collectible.Key;
 import dungeonmania.response.models.BattleResponse;
 import dungeonmania.response.models.DungeonResponse;
 import dungeonmania.response.models.EntityResponse;
-import dungeonmania.response.models.ItemResponse;
 import dungeonmania.response.models.RoundResponse;
 import dungeonmania.util.Direction;
 import dungeonmania.util.Position;
 
-public class PickUpTests {
-    @Test
-    @DisplayName("Player can pick up items")
-    public void testPickUpTreasure() {
+public class SpiderSpawnerTest {
+    @Test 
+    @DisplayName("Spider spawning at correct rate and correct values") 
+    public void testSpiderSpawn() {
         DungeonManiaController dmc = new DungeonManiaController();
-        DungeonResponse res = dmc.newGame("d_keyPickUpTest", "bomb_radius_2");
-        List<ItemResponse> inventory = new ArrayList<>();
-        inventory.add(new ItemResponse("2", "key"));
+        DungeonResponse res = dmc.newGame("d_movementTest_testMovementDown", "c_spiderspawner");
         res = dmc.tick(Direction.RIGHT);
-        List<ItemResponse> inven = getInventory(res, "key");
-        assertEquals(inven.get(0).getType(), inventory.get(0).getType());
+        assertEquals(1, getEntities(res, "spider").size());
+        res = dmc.tick(Direction.RIGHT);
+        assertEquals(2, getEntities(res, "spider").size());
     }
-
-    @Test
-    @DisplayName("Test player only picks up one key")
-    public void testPlayerPickupOneKeyOnly() {
-        DungeonManiaController dmc;
-        dmc = new DungeonManiaController();
-        DungeonResponse res = dmc.newGame("d_twoKeyPickup", "c_standard_movement");
-
-        // pick up key
+    @Test 
+    @DisplayName("Spiders don't spawn when spawn rate is 0")
+    public void testZeroSpiderSpawn() {
+        DungeonManiaController dmc = new DungeonManiaController();
+        DungeonResponse res = dmc.newGame("d_movementTest_testMovementDown", "c_standard_movement");
         res = dmc.tick(Direction.RIGHT);
-        Position pos = getEntities(res, "player").get(0).getPosition();
-        assertEquals(1, getInventory(res, "key").size());
+        assertEquals(0, getEntities(res, "spider").size());
 
-        // tries to pickup another but CANNOT
-        res = dmc.tick(Direction.RIGHT);
-        assertEquals(1, getInventory(res, "key").size());
-        assertNotEquals(pos, getEntities(res, "player").get(0).getPosition());
     }
-
+    @Test 
+    @DisplayName("Spiders don't spawn on boulders or player")
+    public void testSpiderSpawnNotPlayerOrBoulder() {
+        DungeonManiaController dmc = new DungeonManiaController();
+        DungeonResponse res = dmc.newGame("d_spiderSpawnNotOnBoulder", "c_spiderspawner");
+        res = dmc.tick(Direction.RIGHT);
+        assertEquals(1, getEntities(res, "spider").size());
+        assertEquals(new Position(6, 1), getEntities(res, "spider").get(0).getPosition());
+    }
 }
