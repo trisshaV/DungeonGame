@@ -160,7 +160,7 @@ public class BattleRecord {
     }
 
     public List<RoundRecord> getRounds() {
-        return rounds;
+        return rounds; 
     }
 
     public double getInitialPlayerHealth() {
