@@ -17,10 +17,7 @@ import dungeonmania.dynamic_entity.Player;
 import dungeonmania.dynamic_entity.Spider;
 import dungeonmania.dynamic_entity.ZombieToast;
 import dungeonmania.exceptions.InvalidActionException;
-import dungeonmania.goal.BoulderGoal;
-import dungeonmania.goal.ExitGoal;
-import dungeonmania.goal.Goal;
-import dungeonmania.goal.TreasureGoal;
+import dungeonmania.goal.*;
 import dungeonmania.response.models.EntityResponse;
 import dungeonmania.response.models.DungeonResponse;
 import dungeonmania.response.models.ItemResponse;
@@ -106,7 +103,7 @@ public class DungeonManiaController {
         JSONObject jsonConfig = new JSONObject(confContent);
         JSONArray jsonEntities = json.getJSONArray("entities");
 
-        goalStrategy = newGoalStrategy(json.getJSONObject("goal-condition"), jsonConfig);
+        goalStrategy = new SuperGoal(json.getJSONObject("goal-condition"), jsonConfig);
 
         for (int i = 0; i < jsonEntities.length(); i++) {
             JSONObject jsonEntity = jsonEntities.getJSONObject(i);
@@ -115,22 +112,6 @@ public class DungeonManiaController {
         id = entities.size();
 
         return getDungeonResponseModel();
-
-    }
-
-    private Goal newGoalStrategy(JSONObject goalCondition, JSONObject config) {
-        String superGoal = goalCondition.getString("goal");
-        switch (superGoal) {
-            case "exit":
-                return new ExitGoal();
-            case "boulder":
-                return new BoulderGoal();
-            case "treasure":
-                return new TreasureGoal(config.getInt("treasure_goal"));
-            default:
-                // TODO: add more
-                return null;
-        }
 
     }
 

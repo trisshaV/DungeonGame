@@ -12,6 +12,11 @@ public class EnemiesGoal implements Goal{
 
     @Override
     public String getGoal(List<Entity> entities) {
-        return isComplete(entities) ? "" : ":enemies";
+        return ":enemies";
+    }
+
+    @Override
+    public boolean isExitGoal() {
+        return false;
     }
 }

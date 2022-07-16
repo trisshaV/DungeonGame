@@ -30,7 +30,12 @@ public class BoulderGoal implements Goal {
 
     @Override
     public String getGoal(List<Entity> entities) {
-        return isComplete(entities) ? "" : ":boulder";
+        return ":boulders";
     }
-    
+
+    @Override
+    public boolean isExitGoal() {
+        return false;
+    }
+
 }

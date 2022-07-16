@@ -6,7 +6,7 @@ import dungeonmania.dynamic_entity.Player;
 import java.util.List;
 
 public class TreasureGoal implements Goal {
-    private int treasure_required;
+    private final int treasure_required;
     public TreasureGoal(int treasure_required) {
         this.treasure_required = treasure_required;
     }
@@ -23,5 +23,10 @@ public class TreasureGoal implements Goal {
     @Override
     public String getGoal(List<Entity> entities) {
         return isComplete(entities) ? "" : ":treasure";
+    }
+
+    @Override
+    public boolean isExitGoal() {
+        return false;
     }
 }

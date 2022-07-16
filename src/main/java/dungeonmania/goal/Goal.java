@@ -11,4 +11,6 @@ public interface Goal {
      * Returns the goal if it has NOT been completed, otherwise ""
      */
     String getGoal(List<Entity> entities);
+
+    boolean isExitGoal();
 }
