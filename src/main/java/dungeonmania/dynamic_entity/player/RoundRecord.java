@@ -7,10 +7,10 @@ import dungeonmania.collectible.Collectible;
 public class RoundRecord {
     private double changePlayerHealth;
     private double changeEnemyHealth;
-    List <Object> itemsUsed;
+    List <ItemRecord> itemsUsed;
 
     
-    public RoundRecord(double changePlayerHealth, double changeEnemyHealth, List<Object> itemsUsed) {
+    public RoundRecord(double changePlayerHealth, double changeEnemyHealth, List<ItemRecord> itemsUsed) {
         this.changePlayerHealth = changePlayerHealth;
         this.changeEnemyHealth = changeEnemyHealth;
         this.itemsUsed = itemsUsed;
@@ -27,7 +27,7 @@ public class RoundRecord {
     }
 
 
-    public List<Object> getItemsUsed() {
+    public List<ItemRecord> getItemsUsed() {
         return itemsUsed;
     }
     

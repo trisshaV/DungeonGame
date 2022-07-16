@@ -15,7 +15,6 @@ import dungeonmania.collectible.Shield;
 import dungeonmania.collectible.Sword;
 import dungeonmania.dynamic_entity.DynamicEntity;
 import dungeonmania.dynamic_entity.Player;
-import dungeonmania.response.models.ItemResponse;
 
 public class BattleRecord {
     private DynamicEntity enemy;
@@ -39,21 +38,21 @@ public class BattleRecord {
     }
     
     private void addRoundRecord(double changePlayerHealth, double changeEnemyHealth, List <Object> battleItems) {
-        // Convert battleItems into ItemResponses
+        // Convert battleItems into ItemRecords
 
-        List<Object> weaponsUsed = new ArrayList<>();
+        List<ItemRecord> weaponsUsed = new ArrayList<>();
         battleItems.stream().forEach(
             item -> {
-                Object newItem = null;
+                ItemRecord newItem = null;
                 if (item instanceof Sword) {
                     Sword temp = (Sword)item;
-                    newItem = new ItemResponse(temp.getId(), temp.getType());
+                    newItem = new ItemRecord(temp.getId(), temp.getType());
                 } else if (item instanceof Buildable) {
                     Buildable temp = (Buildable)item;
-                    newItem = new ItemResponse(temp.getId(), temp.getType());
+                    newItem = new ItemRecord(temp.getId(), temp.getType());
                 } else if (item instanceof InvincibilityPotion || item instanceof InvisibilityPotion) {
                     Collectible temp = (Collectible)item;
-                    newItem = new ItemResponse(temp.getId(), temp.getType());
+                    newItem = new ItemRecord(temp.getId(), temp.getType());
                 }
                 weaponsUsed.add(newItem);
             }

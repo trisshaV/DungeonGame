@@ -22,6 +22,8 @@ import org.junit.jupiter.api.Test;
 import dungeonmania.exceptions.InvalidActionException;
 import dungeonmania.response.models.BattleResponse;
 import dungeonmania.response.models.DungeonResponse;
+import dungeonmania.response.models.EntityResponse;
+import dungeonmania.response.models.ItemResponse;
 import dungeonmania.response.models.RoundResponse;
 import dungeonmania.util.Direction;
 
@@ -274,7 +276,7 @@ public class BattleTests {
         DungeonManiaController dmc = new DungeonManiaController();
         dmc.newGame("d_UnbrokenWeaponTest", "c_UnbrokenWeaponsWithSpiderTests");
 
-        // Pickup materials for bow
+        // Pickup materials for shield
         dmc.tick(Direction.DOWN);
         dmc.tick(Direction.DOWN);
         dmc.tick(Direction.DOWN);
@@ -283,7 +285,7 @@ public class BattleTests {
         dmc.tick(Direction.UP);
 
 
-        // Craft bow
+        // Craft shield
         dmc.build("shield");
 
         // Battle
@@ -298,6 +300,103 @@ public class BattleTests {
         weaponsUsed.add(1);
 
         assertBattleCalculationsWithUnbrokenWeapons("spider", battle, true, "c_UnbrokenWeaponsWithSpiderTests", weaponsUsed);
+    }
+
+    @Test
+    @DisplayName("Test battle with Multiple Weapons")
+    public void testMultipleWeapons() throws IllegalArgumentException, InvalidActionException {
+
+         /*
+         *  [  ] [  ] [  ] [  ] swor boul
+         *  arro arro arro wood play spid
+         *  [  ] [  ] [  ] [  ] wood [  ]
+         *  [  ] [  ] [  ] [  ] wood [  ]
+         *  [  ] [  ] [  ] [  ] key  [  ]
+         */
+
+
+        DungeonManiaController dmc = new DungeonManiaController();
+        dmc.newGame("d_UnbrokenWeaponTest", "c_UnbrokenWeaponsWithSpiderTests");
+
+        // Pickup materials for shield
+        dmc.tick(Direction.DOWN);
+        dmc.tick(Direction.DOWN);
+        dmc.tick(Direction.DOWN);
+        dmc.tick(Direction.UP);
+        dmc.tick(Direction.UP);
+        dmc.tick(Direction.UP);
+
+        // Pickup materials for bow
+        dmc.tick(Direction.LEFT);
+        dmc.tick(Direction.LEFT);
+        dmc.tick(Direction.LEFT);
+        dmc.tick(Direction.LEFT);
+        dmc.tick(Direction.RIGHT);
+        dmc.tick(Direction.RIGHT);
+        dmc.tick(Direction.RIGHT);
+        dmc.tick(Direction.RIGHT);
+
+        // Pickup Sword
+        dmc.tick(Direction.UP);
+        dmc.tick(Direction.DOWN);
+
+        // Craft shield and bow
+        dmc.build("shield");
+        dmc.build("bow");
+
+        // Battle
+        DungeonResponse postBattleResponse = dmc.tick(Direction.RIGHT);
+        BattleResponse battle = postBattleResponse.getBattles().get(0);
+
+        // List of integers as {Sword Bow Shield}
+        // 1 bow is used
+        List<Integer> weaponsUsed = new ArrayList<>();
+        weaponsUsed.add(1);
+        weaponsUsed.add(1);
+        weaponsUsed.add(1);
+
+        assertBattleCalculationsWithUnbrokenWeapons("spider", battle, true, "c_UnbrokenWeaponsWithSpiderTests", weaponsUsed);
+    }
+
+    @Test
+    @DisplayName("Test battle with invincibilty potion status")
+    public void testInvinciblePotion() throws IllegalArgumentException, InvalidActionException {
+
+         /*
+         *  [  ] [  ] [  ] [  ] [  ] boul
+         *  [  ] [  ] [  ] invi play spid
+         *  [  ] [  ] [  ] [  ] [  ] [  ]
+         *  [  ] [  ] [  ] [  ] [  ] [  ]
+         *  [  ] [  ] [  ] [  ] [  ] [  ]
+         */
+
+
+        DungeonManiaController dmc = new DungeonManiaController();
+        DungeonResponse res = dmc.newGame("d_InvinciblePotionTest", "c_UnbrokenWeaponsWithSpiderTests");
+
+        // Pickup potion
+        EntityResponse potionOne = getEntities(res, "invincibility_potion").get(0);
+        res = dmc.tick(Direction.LEFT);
+        res = dmc.tick(Direction.RIGHT);
+        // Consume potion
+        assertEquals(1, getInventory(res, "invincibility_potion").size());
+        res = dmc.tick(potionOne.getId());
+
+        // Battle with spider
+        DungeonResponse postBattleResponse = dmc.tick(Direction.RIGHT);
+        BattleResponse battle = postBattleResponse.getBattles().get(0);
+
+        // 1 Round only
+        assert(battle.getRounds().size() == 1);
+        RoundResponse singleRound = battle.getRounds().get(0);
+        assertEquals(singleRound.getDeltaCharacterHealth(), 0);
+        assertEquals(singleRound.getDeltaEnemyHealth(), -1 * Double.parseDouble(getValueFromConfigFile("spider_health", "c_UnbrokenWeaponsWithSpiderTests")));
+        // 1 item used
+        assert(singleRound.getWeaponryUsed().size() == 1);
+        ItemResponse potion = singleRound.getWeaponryUsed().get(0);
+        assertEquals(potion.getId(), potionOne.getId());
+        assertEquals(potion.getType(), potionOne.getType());
+
     }
 
 }

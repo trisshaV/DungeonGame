@@ -16,6 +16,8 @@ import dungeonmania.Entity;
 import dungeonmania.collectible.Bomb;
 import dungeonmania.collectible.Collectible;
 import dungeonmania.collectible.Consumable;
+import dungeonmania.collectible.InvincibilityPotion;
+import dungeonmania.collectible.InvisibilityPotion;
 import dungeonmania.collectible.Key;
 import dungeonmania.response.models.ItemResponse;
 import dungeonmania.static_entity.ActiveBomb;
@@ -136,19 +138,21 @@ public class Player extends DynamicEntity {
         }
         else {
             while (potionQueue.size() != 0) {
-                Consumable Potion = (Consumable) potionQueue.get(0);
-                if (Potion.potency()) {
-                    if (((Entity) Potion).getType().equals("invincibility_potion")) {
+
+                if (potionQueue.get(0) instanceof InvincibilityPotion) {
+                    InvincibilityPotion Potion = (InvincibilityPotion) potionQueue.get(0);
+                    if (Potion.potency()) {
                         this.status = "INVINCIBLE";
                         return;
                     }
-                    else {
+                } else if (potionQueue.get(0) instanceof InvisibilityPotion){
+                    InvisibilityPotion Potion = (InvisibilityPotion) potionQueue.get(0);
+                    if (Potion.potency()) {
                         this.status = "INVISIBLE";
-                        return; 
-                    } 
-                } else {
-                    potionQueue.remove(0);
-                }
+                        return;
+                    }
+                } 
+                potionQueue.remove(0);
             }
             this.status = "NONE";
             return;

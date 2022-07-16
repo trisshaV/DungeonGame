@@ -18,6 +18,7 @@ import dungeonmania.dynamic_entity.Player;
 import dungeonmania.dynamic_entity.Spider;
 import dungeonmania.dynamic_entity.ZombieToast;
 import dungeonmania.dynamic_entity.player.BattleRecord;
+import dungeonmania.dynamic_entity.player.ItemRecord;
 import dungeonmania.dynamic_entity.player.RoundRecord;
 import dungeonmania.exceptions.InvalidActionException;
 import dungeonmania.goal.BoulderGoal;
@@ -287,7 +288,7 @@ public class DungeonManiaController {
                 .collect(Collectors.toList());
         return new DungeonResponse(
             dungeonId, dungeonName, entityResponseList, player.getInventory().getItemResponses(),
-            listBattleResponses(), player.getBuildables(), goal);
+            listBattleResponses(), player.getBuildables(), goalStrategy.getGoal(entities));
     }
 
     /**
@@ -302,13 +303,14 @@ public class DungeonManiaController {
             player.removeItem(item);
         }
         if (item.getType().equals("invincibility_potion")) {
+            player.consumePotion(item);
             player.removeItem(item);
         }
         if (item.getType().equals("invisibility_potion")) {
             player.consumePotion(item);
             player.removeItem(item);
         }
-        
+        player.tickPotionEffects();
         // move Dynamic entities except Player
         entities.stream().filter(it -> (it instanceof DynamicEntity) && (it instanceof Player == false)).forEach(
             x -> {
@@ -339,7 +341,7 @@ public class DungeonManiaController {
                 p.updatePos(movementDirection, entities);
             }
         );
-
+        player.tickPotionEffects();
         boolean battleOccured = this.observer.checkBattle();
         if (battleOccured) {
             entities = removeDeadEntities();
@@ -451,17 +453,11 @@ public class DungeonManiaController {
         return result;
     }
 
-    private List<ItemResponse> convertItemResponse(List<Object> itemsUsed) {
+    private List<ItemResponse> convertItemResponse(List<ItemRecord> itemsUsed) {
         List <ItemResponse> result = new ArrayList<>();
         itemsUsed.stream().forEach(
             item -> {
-                if (item instanceof Collectible) {
-                    Collectible temp = (Collectible)item;
-                    result.add(new ItemResponse(temp.getId(), temp.getType()));
-                } else if (item instanceof Buildable) {
-                    Buildable temp = (Buildable)item;
-                    result.add(new ItemResponse(temp.getId(), temp.getType()));
-                }
+                result.add(new ItemResponse(item.getId(), item.getType()));
             }
         );
         return result;
