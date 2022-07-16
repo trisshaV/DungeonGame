@@ -37,6 +37,11 @@ public class BattleRecord {
         }
     }
     
+    /**
+     * Adds a RoundRecord to BattleRecord
+     * @param double, double, List <Object>
+     * @return List<List<Object>>
+     */
     private void addRoundRecord(double changePlayerHealth, double changeEnemyHealth, List <Object> battleItems) {
         // Convert battleItems into ItemRecords
 
@@ -61,6 +66,10 @@ public class BattleRecord {
         rounds.add(newRecord);
     }
 
+    /**
+     * Starts a Battle with Player and adds relevant Records
+     * @param Player
+     */
     private void startBattle(DynamicEntity player) {
         double enemyAttack = enemy.getAttack();
         double playerAttack = player.getAttack();
@@ -111,6 +120,10 @@ public class BattleRecord {
 
     }
 
+    /**
+     * Adds a RoundRecord to BattleRecord
+     * @param List<List<Object>>, Player
+     */
     private void updateDurability(List<List<Object>> itemsUsed, Player player) {
 
         // Unchecked Type cast, itemsUsed has been safely type checked from method itemsAvaliable
@@ -140,8 +153,7 @@ public class BattleRecord {
         );
 
     }
-    
-    // List will contain three values representing sword, bow and shield respectively
+
     /**
      * Returns a list of the list of items avaliable in the form { List of Swords, List of Bows, List of Shields} 
      * @param player
