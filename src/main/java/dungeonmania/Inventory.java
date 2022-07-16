@@ -154,4 +154,33 @@ public class Inventory {
         }
         return false;
     }
+
+    public List<Collectible> getCollectableItems() {
+        return entities;
+    }
+
+    public List<Buildable> getBuildableItems() {
+        return builtItems;
+    }
+
+    public void reduceDurability(String id) {
+        if (buildable.contains(id)) {
+            // Buildable item
+            Buildable item = builtItems.stream().filter(x -> x.getId().equals(id)).collect(Collectors.toList()).get(0);
+            int currentDurability = item.getDurability();
+            item.setDurability(currentDurability - 1);
+        } else {
+            // Collectible item
+            Collectible item = entities.stream().filter(x -> x.getId().equals(id)).collect(Collectors.toList()).get(0);
+            Sword itemSword = ((Sword)item);
+            int currentDurability = itemSword.getDurability();
+            itemSword.setDurability(currentDurability - 1);
+        }
+    }
+
+    public void removeBrokenItems() {
+        // Deleting broken shields and bows
+        builtItems = builtItems.stream().filter(item -> item.getDurability() != 0).collect(Collectors.toList());
+        entities = entities.stream().filter(item -> (item instanceof Sword) && (((Sword)item).getDurability() != 0)).collect(Collectors.toList());
+    }
 }

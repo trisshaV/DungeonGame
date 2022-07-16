@@ -4,6 +4,7 @@ public abstract class Buildable {
     
 	private final String id;
 	private String type;
+	public int durability;
 
 	public Buildable(String id, String type) {
 		this.id = id;
@@ -23,6 +24,14 @@ public abstract class Buildable {
 
     public void setType(String type) {
         this.type = type;
+    }
+
+	public int getDurability() {
+        return durability;
+    }
+
+    public void setDurability(int num) {
+        this.durability = num;
     }
     
 }
