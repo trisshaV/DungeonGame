@@ -14,10 +14,6 @@ public class Treasure extends Collectible {
     public Treasure(String id, Position xy, JSONObject config) {
         super(id, "treasure", xy);
     }
-    
-    public void use() {
-        getPlayer().getInventoryList().remove((Collectible)this);
-    }
 
     @Override
     public String getType() {

@@ -20,14 +20,7 @@ public class Key extends Collectible {
         super(id, "key", xy);
         this.keyId = keyId;
     }
-
-    /**
-     * Is called if the key is used to craft a shield or open a door.
-     */
-    public void use() {
-        getPlayer().getInventoryList().remove(this);
-    }
-
+    
     public void setKeyId(int id) {
         keyId = id;
     }
