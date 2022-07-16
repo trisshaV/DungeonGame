@@ -102,7 +102,7 @@ public class MercenaryTest {
         Position previousPos = new Position(pos.getX(), pos.getY());
 
         // Assert Random Movement of Zombie toast
-        for (int i = 0; i <= 2; ++i) {
+        for (int i = 0; i <= 1; ++i) {
             res = dmc.tick(Direction.UP);
             assertNotEquals(previousPos, getEntities(res, "mercenary").get(0).getPosition());
             previousPos = getEntities(res, "mercenary").get(0).getPosition();
