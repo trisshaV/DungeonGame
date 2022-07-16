@@ -198,10 +198,11 @@ public class DungeonManiaController {
                 newEntity = new Treasure(id, position, jsonConfig);
                 break;
             case "invincibility_potion":
-                newEntity = new InvisibilityPotion(id, position, jsonConfig);
+                newEntity = new InvincibilityPotion(id, position, jsonConfig);
                 break;
             case "invisibility_potion":
-                newEntity = new InvincibilityPotion(id, position, jsonConfig);
+                newEntity = new InvisibilityPotion(id, position, jsonConfig);
+                break;
             case "zombie_toast_spawner":
                 newEntity = new ZombieToastSpawner(this, id, position, jsonConfig.getInt("zombie_spawn_rate"), jsonConfig.getInt("zombie_attack"), jsonConfig.getInt("zombie_health"));
                 break;
@@ -296,9 +297,11 @@ public class DungeonManiaController {
             player.removeItem(item);
         }
         if (item.getType().equals("invincibility_potion")) {
+            player.consumePotion(item);
             player.removeItem(item);
         }
         if (item.getType().equals("invisibility_potion")) {
+            player.consumePotion(item);
             player.removeItem(item);
         }
         if (!validConsumable().contains(item.getType())) {
