@@ -5,6 +5,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Queue;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
@@ -14,19 +15,23 @@ import dungeonmania.Boulder;
 import dungeonmania.Entity;
 import dungeonmania.collectible.Bomb;
 import dungeonmania.collectible.Collectible;
+import dungeonmania.collectible.Consumable;
 import dungeonmania.collectible.Key;
 import dungeonmania.response.models.ItemResponse;
 import dungeonmania.static_entity.ActiveBomb;
 import dungeonmania.static_entity.StaticEntity;
 import dungeonmania.util.Direction;
 import dungeonmania.util.Position;
+import javassist.expr.NewArray;
 import dungeonmania.Inventory;
 /**
  * Entity that is controlled by the Player.
  */
 public class Player extends DynamicEntity {
     private Inventory inventory;
-    private List<String> useableItems = Arrays.asList("bomb", "health_potion", "invincibility_potion", "invisibility_potion", null);
+    private List<String> useableItems = Arrays.asList("bomb", "invincibility_potion", "invisibility_potion", null);
+    private List<Collectible> potionQueue = new ArrayList<>();
+    private String status = "NONE";
 
     /**
      * @param id
@@ -38,6 +43,7 @@ public class Player extends DynamicEntity {
         this.attack = config.getInt("zombie_attack");
         this.health = config.getInt("zombie_health");
         inventory = new Inventory(this, config);
+        this.status = "NONE";
     }
 
     @Override
@@ -117,6 +123,40 @@ public class Player extends DynamicEntity {
             }
         }
         entities.removeAll(toRemove);
+    }
+
+    public void consumePotion(Collectible Potion) {
+        potionQueue.add(Potion);
+    }
+
+    public void tickPotionEffects() {
+        if (potionQueue.size() == 0) {
+            this.status = "NONE";
+            return;
+        }
+        else {
+            while (potionQueue.size() != 0) {
+                Consumable Potion = (Consumable) potionQueue.get(0);
+                if (Potion.potency()) {
+                    if (((Entity) Potion).getType().equals("invincibility_potion")) {
+                        this.status = "INVINCIBLE";
+                        return;
+                    }
+                    else {
+                        this.status = "INVISIBLE";
+                        return; 
+                    } 
+                } else {
+                    potionQueue.remove(0);
+                }
+            }
+            this.status = "NONE";
+            return;
+        }
+    }
+
+    public String getStatus() {
+        return this.status;
     }
 
     public List<Collectible> getInventoryList() {
