@@ -1,5 +1,7 @@
 package dungeonmania;
 
+import dungeonmania.dynamic_entity.Player;
+import dungeonmania.exceptions.InvalidActionException;
 import dungeonmania.response.models.EntityResponse;
 import dungeonmania.util.Position;
 
@@ -55,5 +57,8 @@ public abstract class Entity {
 
     public void setType(String type) {
         this.type = type;
+    }
+
+    public void interact(Player player) throws InvalidActionException {
     }
 }
