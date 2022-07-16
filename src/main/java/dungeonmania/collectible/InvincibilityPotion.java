@@ -20,11 +20,6 @@ public class InvincibilityPotion extends Collectible {
         duration = config.getInt("invincibility_potion_duration");
     }
 
-    @Override
-    public void use() {
-        getPlayer().getInventoryList().remove(this);
-    }
-
     public boolean potency() {
         if (duration != 0) {
             duration = duration - 1;

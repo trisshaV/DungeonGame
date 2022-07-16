@@ -32,11 +32,6 @@ public abstract class Collectible extends StaticEntity {
      * @param pos
      */
 
-    /**
-     * Abstract function.
-     */
-    abstract public void use();
-
     public void setPlayer(Player player) {
         this.player = player;
     }
