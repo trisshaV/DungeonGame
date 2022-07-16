@@ -15,7 +15,7 @@ import dungeonmania.util.Position;
  *          NOT harm the Player.
  */
 public class Bomb extends Collectible {
-    private int radius;
+    public int radius;
     public Bomb(String id, Position xy, JSONObject config) {
         super(id, "bomb", xy);
         radius = config.getInt("bomb_radius");

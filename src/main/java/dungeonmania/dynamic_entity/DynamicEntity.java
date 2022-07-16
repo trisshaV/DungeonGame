@@ -11,8 +11,8 @@ import dungeonmania.util.Position;
  */
 public abstract class DynamicEntity extends Entity {
     public abstract void updatePos(Direction d, List<Entity> l);
-    public int health;
-    public int attack;
+    public double health;
+    public double attack;
 
     public DynamicEntity(String id, String type, Position xy) {
         super(id, type, xy);
@@ -26,13 +26,15 @@ public abstract class DynamicEntity extends Entity {
 
     public abstract String getType();
 
-    public int getHealth() {
+    public double getHealth() {
         return health;
     }
 
-    public int getAttack() {
+    public double getAttack() {
         return attack;
     }
 
-    
+    public void setHealth(double health) {
+        this.health = health;
+    }
 }

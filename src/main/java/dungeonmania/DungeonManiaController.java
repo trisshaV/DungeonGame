@@ -3,6 +3,7 @@ package dungeonmania;
 import dungeonmania.collectible.Arrow;
 import dungeonmania.collectible.Bomb;
 import dungeonmania.collectible.Bow;
+import dungeonmania.collectible.Buildable;
 import dungeonmania.collectible.Collectible;
 import dungeonmania.collectible.InvincibilityPotion;
 import dungeonmania.collectible.InvisibilityPotion;
@@ -16,9 +17,15 @@ import dungeonmania.dynamic_entity.Mercenary;
 import dungeonmania.dynamic_entity.Player;
 import dungeonmania.dynamic_entity.Spider;
 import dungeonmania.dynamic_entity.ZombieToast;
+import dungeonmania.dynamic_entity.player.BattleRecord;
+import dungeonmania.dynamic_entity.player.ItemRecord;
+import dungeonmania.dynamic_entity.player.RoundRecord;
 import dungeonmania.exceptions.InvalidActionException;
 import dungeonmania.goal.*;
 import dungeonmania.response.models.EntityResponse;
+import dungeonmania.response.models.ItemResponse;
+import dungeonmania.response.models.RoundResponse;
+import dungeonmania.response.models.BattleResponse;
 import dungeonmania.response.models.DungeonResponse;
 import dungeonmania.response.models.ItemResponse;
 import dungeonmania.response.models.EntityResponse;
@@ -35,13 +42,16 @@ import dungeonmania.static_entity.StaticEntity;
 import dungeonmania.static_entity.Wall;
 import dungeonmania.static_entity.ZombieToastSpawner;
 import javassist.expr.Instanceof;
+import javassist.expr.NewArray;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 import java.util.Optional;
+import java.util.Random;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -53,6 +63,7 @@ import org.json.JSONObject;
 public class DungeonManiaController {
 
     private int id;
+    private JSONObject jsonConfig;
     private List<Portal> unpairedPortals = new ArrayList<>();
     private List<Entity> entities = new ArrayList<>();
     private Player player = null;
@@ -60,6 +71,8 @@ public class DungeonManiaController {
     private Goal goalStrategy = null;
     private String goal = "";
 	private String dungeonName;
+    private Observer observer = null;
+    private Spiderspawner spiderspawner;
 
     public String getSkin() {
         return "default";
@@ -102,8 +115,11 @@ public class DungeonManiaController {
         JSONObject json = new JSONObject(dungeonContent);
         JSONObject jsonConfig = new JSONObject(confContent);
         JSONArray jsonEntities = json.getJSONArray("entities");
+        this.jsonConfig = jsonConfig;
 
         goalStrategy = new SuperGoal(json.getJSONObject("goal-condition"), jsonConfig);
+        spiderspawner = new Spiderspawner(this, jsonConfig.getInt("spider_attack"), jsonConfig.getInt("spider_health"), jsonConfig.getInt("spider_spawn_rate"));
+
 
         for (int i = 0; i < jsonEntities.length(); i++) {
             JSONObject jsonEntity = jsonEntities.getJSONObject(i);
@@ -111,6 +127,14 @@ public class DungeonManiaController {
         }
         id = entities.size();
 
+        // Create observer
+        Player player = null;
+        for (Entity entity : entities) {
+            if (entity.getType().equals("player")) {
+                player = (Player)entity;
+            }
+        }
+        this.observer = new Observer(entities, player);
         return getDungeonResponseModel();
 
     }
@@ -159,6 +183,9 @@ public class DungeonManiaController {
             case "bomb":
                 newEntity = new Bomb(id, position, jsonConfig);
                 break;
+            case "ActiveBomb":
+                newEntity = new ActiveBomb(id, position);
+                break;
             case "sword":
                 newEntity = new Sword(id, position, jsonConfig);
                 break;
@@ -172,10 +199,11 @@ public class DungeonManiaController {
                 newEntity = new Treasure(id, position, jsonConfig);
                 break;
             case "invincibility_potion":
-                newEntity = new InvisibilityPotion(id, position, jsonConfig);
+                newEntity = new InvincibilityPotion(id, position, jsonConfig);
                 break;
             case "invisibility_potion":
-                newEntity = new InvincibilityPotion(id, position, jsonConfig);
+                newEntity = new InvisibilityPotion(id, position, jsonConfig);
+                break;
             case "zombie_toast_spawner":
                 newEntity = new ZombieToastSpawner(this, id, position, jsonConfig.getInt("zombie_spawn_rate"), jsonConfig.getInt("zombie_attack"), jsonConfig.getInt("zombie_health"));
                 break;
@@ -193,6 +221,24 @@ public class DungeonManiaController {
             return;
         }
         entities.add(newEntity);
+    }
+    public void spawnSpider(int attack, int health) {
+        Entity newEntity = new Spider(UUID.randomUUID().toString(), getRandomPosition(), attack, health);
+        entities.add(newEntity);
+    }
+
+    public Position getRandomPosition() {
+        Entity player = entities.stream().filter(x -> x instanceof Player).findFirst().get();
+        Player target = (Player) player;
+        Position pos = target.getPosition();
+
+        Random rand = new Random();
+        Position randomPos = (new Position(pos.getX() + rand.nextInt(6) + 1 , pos.getY()));
+        if (entities.stream().anyMatch(x -> (x instanceof Boulder) && (x.getPosition().equals(randomPos)))) {
+            return getRandomPosition();
+        }
+        return randomPos;
+        
     }
 
     public void spawnToast(int attack, int health, Position position) {
@@ -232,16 +278,19 @@ public class DungeonManiaController {
         List<EntityResponse> entityResponseList = entities.stream()
                 .map(Entity::getEntityResponse)
                 .collect(Collectors.toList());
-
         return new DungeonResponse(
             dungeonId, dungeonName, entityResponseList, player.getInventory().getItemResponses(),
-            new ArrayList<>(), player.getBuildables(), goalStrategy.getGoal(entities));
+            listBattleResponses(), player.getBuildables(), goalStrategy.getGoal(entities));
     }
-
+    
+    public List<String> validConsumable() {
+        return Arrays.asList("bomb","invincibility_potion", "invisibility_potion");
+    }
     /**
      * /game/tick/item
      */
     public DungeonResponse tick(String itemUsedId) throws IllegalArgumentException, InvalidActionException {
+
         Position pos = player.getPosition();
         Collectible item = player.getItemById(itemUsedId);
         if (item.getType().equals("bomb")) {
@@ -249,12 +298,48 @@ public class DungeonManiaController {
             player.removeItem(item);
         }
         if (item.getType().equals("invincibility_potion")) {
+            player.consumePotion(item);
             player.removeItem(item);
         }
         if (item.getType().equals("invisibility_potion")) {
+            player.consumePotion(item);
             player.removeItem(item);
         }
+        player.tickPotionEffects();
+        
+        // move Dynamic entities except Player
+        entities.stream().filter(it -> (it instanceof DynamicEntity) && (it instanceof Player == false)).forEach(
+            x -> {
+                DynamicEntity y = (DynamicEntity) x;
+                y.updatePos(null, entities);
+            }
+        );
+        if (this.observer.checkBattle() == true) {
+            entities = removeDeadEntities();
+        }
+        if (!validConsumable().contains(item.getType())) {
+            throw new IllegalArgumentException("itemUsed must be one of bomb, invincibility_potion, invisibility_potion");
+        }
+
+        // check if the bomb will explode
+        List<Entity> toRemove = new ArrayList<>();
+        for (Entity entity : entities) {
+            if (entity.getType().equals("switch")) {
+                FloorSwitch floorSwitch = (FloorSwitch) entity;
+                if (floorSwitch.getActive()) {
+                    toRemove.addAll(floorSwitch.activateNearby(entities, jsonConfig));
+                }
+                
+            }
+        }
+        entities.removeAll(toRemove);
         return getDungeonResponseModel();
+    }
+
+    private List <Entity> removeDeadEntities() {
+        List <Entity> result = new ArrayList<>();
+        result = entities.stream().filter(e -> e instanceof DynamicEntity && ((DynamicEntity)e).getHealth() < 0).collect(Collectors.toList());
+        return result;
     }
 
     /**
@@ -268,14 +353,23 @@ public class DungeonManiaController {
                 p.updatePos(movementDirection, entities);
             }
         );
-
-        // move entities
+        player.tickPotionEffects();
+        boolean battleOccured = this.observer.checkBattle();
+        if (battleOccured) {
+            entities = removeDeadEntities();
+        }
+        // move Dynamic entities except Player
         entities.stream().filter(it -> (it instanceof DynamicEntity) && (it instanceof Player == false)).forEach(
             x -> {
                 DynamicEntity y = (DynamicEntity) x;
                 y.updatePos(movementDirection, entities);
             }
         );
+        battleOccured = this.observer.checkBattle();
+        if (battleOccured) {
+            entities = removeDeadEntities();
+        }
+
         player.pickUp(entities);
         List <Entity> copy = new ArrayList<>();
         copy.addAll(entities);
@@ -285,7 +379,22 @@ public class DungeonManiaController {
                 spawner.tick();
             }
         );
-    
+
+        spiderspawner.tick();
+        
+        // Check if the bomb will explode
+        List<Entity> toRemove = new ArrayList<>();
+        for (Entity entity : entities) {
+            if (entity.getType().equals("switch")) {
+                FloorSwitch floorSwitch = (FloorSwitch) entity;
+                if (floorSwitch.getActive()) {
+                    toRemove.addAll(floorSwitch.activateNearby(entities, jsonConfig));
+                }
+                
+            }
+        }
+        entities.removeAll(toRemove);
+        
         return getDungeonResponseModel();
     }
 
@@ -301,7 +410,7 @@ public class DungeonManiaController {
             throw new IllegalArgumentException();
         }
         Inventory playerInv = player.getInventory();
-        if (!playerInv.hasEnoughMaterials(buildable)) {
+        if (!playerInv.CheckMaterials(buildable)) {
             throw new InvalidActionException("Not enough materials!");
         }
 
@@ -317,6 +426,7 @@ public class DungeonManiaController {
     public DungeonResponse interact(String entityId) throws IllegalArgumentException, InvalidActionException {
         return null;
     }
+
     public boolean switchActive() {
         for (Entity entity : entities) {
             if (entity instanceof FloorSwitch) {
@@ -341,4 +451,42 @@ public class DungeonManiaController {
                 .orElseGet(() -> colliders.stream().filter(x -> x instanceof StaticEntity).findFirst()
                 .orElse(null));
     }
+
+    public List<BattleResponse> listBattleResponses() {
+        // Convert battles to battleResponses
+        List<BattleRecord> listOfBattles = this.observer.getBattleRecords();
+
+        List<BattleResponse> result = new ArrayList<>();
+        listOfBattles.stream().forEach(
+            battle -> {
+                List<RoundResponse> roundResponses = convertRoundRecords(battle.getRounds());
+                DynamicEntity temp = battle.getEnemy();
+                result.add(new BattleResponse(temp.getType(), roundResponses, battle.getInitialPlayerHealth(), battle.getInitialEnemyHealth()));
+            }
+        );
+
+        return result;
+    }
+
+    public List<RoundResponse> convertRoundRecords(List<RoundRecord> roundRecords) {
+        List<RoundResponse> result = new ArrayList<>();
+        roundRecords.stream().forEach(
+            round -> {
+                List<ItemResponse> itemResponses = convertItemResponse(round.getItemsUsed());
+                result.add(new RoundResponse(round.getChangePlayerHealth(), round.getChangeEnemyHealth(), itemResponses));
+            }
+        );
+        return result;
+    }
+
+    private List<ItemResponse> convertItemResponse(List<ItemRecord> itemsUsed) {
+        List <ItemResponse> result = new ArrayList<>();
+        itemsUsed.stream().forEach(
+            item -> {
+                result.add(new ItemResponse(item.getId(), item.getType()));
+            }
+        );
+        return result;
+    }
+
 }

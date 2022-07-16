@@ -80,6 +80,9 @@ public class Inventory {
     }
 
     public Collectible getItemById(String id) {
+        // if (!entities.contains(id)) {
+        //     return null;
+        // }
         for (Collectible item : entities) {
             if (item.getId().equals(id)) {
                 return item;
@@ -101,7 +104,7 @@ public class Inventory {
     }
 
 
-    public boolean hasEnoughMaterials(String buildable) {
+    public boolean CheckMaterials(String buildable) {
         switch (buildable) {
             case "bow":
                 if (getNoItemType("wood") < 1 || getNoItemType("arrow") < 3) {
@@ -109,7 +112,7 @@ public class Inventory {
                 }
                 return true;    
             case "shield":
-                if (getNoItemType("wood") < 2 || (getNoItemType("treasure") < 1 && getNoItemType("key") < 1 && getNoItemType("sun_stone") < 1)) {
+                if (getNoItemType("wood") < 2 || (getNoItemType("treasure") < 1 && getNoItemType("key") < 1)) {
                 return false;
                 }
                 return true;
@@ -128,7 +131,7 @@ public class Inventory {
     }
 
     public boolean buildItem(String buildable, String id) {
-        if (hasEnoughMaterials(buildable) && buildable.equals("bow")) {
+        if (CheckMaterials(buildable) && buildable.equals("bow")) {
             //make bow
             builtItems.add(new Bow(id, config));
             removeItem("wood");
@@ -137,7 +140,7 @@ public class Inventory {
             removeItem("arrow");
             return true;
         }
-        if (hasEnoughMaterials(buildable) && buildable.equals("shield")) {
+        if (CheckMaterials(buildable) && buildable.equals("shield")) {
             //make shield
             builtItems.add(new Shield(id, config));
             removeItem("wood");
@@ -150,5 +153,34 @@ public class Inventory {
             }
         }
         return false;
+    }
+
+    public List<Collectible> getCollectableItems() {
+        return entities;
+    }
+
+    public List<Buildable> getBuildableItems() {
+        return builtItems;
+    }
+
+    public void reduceDurability(String id) {
+        if (buildable.contains(id)) {
+            // Buildable item
+            Buildable item = builtItems.stream().filter(x -> x.getId().equals(id)).collect(Collectors.toList()).get(0);
+            int currentDurability = item.getDurability();
+            item.setDurability(currentDurability - 1);
+        } else {
+            // Collectible item
+            Collectible item = entities.stream().filter(x -> x.getId().equals(id)).collect(Collectors.toList()).get(0);
+            Sword itemSword = ((Sword)item);
+            int currentDurability = itemSword.getDurability();
+            itemSword.setDurability(currentDurability - 1);
+        }
+    }
+
+    public void removeBrokenItems() {
+        // Deleting broken shields and bows
+        builtItems = builtItems.stream().filter(item -> item.getDurability() != 0).collect(Collectors.toList());
+        entities = entities.stream().filter(item -> (item instanceof Sword) && (((Sword)item).getDurability() != 0)).collect(Collectors.toList());
     }
 }

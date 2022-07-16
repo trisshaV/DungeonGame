@@ -5,6 +5,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Queue;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
@@ -14,19 +15,25 @@ import dungeonmania.Boulder;
 import dungeonmania.Entity;
 import dungeonmania.collectible.Bomb;
 import dungeonmania.collectible.Collectible;
+import dungeonmania.collectible.Consumable;
+import dungeonmania.collectible.InvincibilityPotion;
+import dungeonmania.collectible.InvisibilityPotion;
 import dungeonmania.collectible.Key;
 import dungeonmania.response.models.ItemResponse;
 import dungeonmania.static_entity.ActiveBomb;
 import dungeonmania.static_entity.StaticEntity;
 import dungeonmania.util.Direction;
 import dungeonmania.util.Position;
+import javassist.expr.NewArray;
 import dungeonmania.Inventory;
 /**
  * Entity that is controlled by the Player.
  */
 public class Player extends DynamicEntity {
     private Inventory inventory;
-    private List<String> useableItems = Arrays.asList("bomb", "health_potion", "invincibility_potion", "invisibility_potion", null);
+    private List<String> useableItems = Arrays.asList("bomb", "invincibility_potion", "invisibility_potion", null);
+    private List<Collectible> potionQueue = new ArrayList<>();
+    private String status = "NONE";
 
     // Total treasure collected - not current treasure
     private int treasure_collected = 0;
@@ -39,9 +46,10 @@ public class Player extends DynamicEntity {
      */
     public Player(String id, Position xy, JSONObject config) {
         super(id, "player", xy);
-        this.attack = config.getInt("zombie_attack");
-        this.health = config.getInt("zombie_health");
+        this.attack = config.getDouble("player_attack");
+        this.health = config.getDouble("player_health");
         inventory = new Inventory(this, config);
+        this.status = "NONE";
     }
 
     @Override
@@ -51,10 +59,10 @@ public class Player extends DynamicEntity {
 
     public List<String> getBuildables() {
         List<String> buildables = new ArrayList<>();
-        if (inventory.hasEnoughMaterials("bow")) {
+        if (inventory.CheckMaterials("bow")) {
             buildables.add("bow");
         }
-        if (inventory.hasEnoughMaterials("shield")) {
+        if (inventory.CheckMaterials("shield")) {
             buildables.add("shield");
         }
         return buildables;
@@ -118,6 +126,42 @@ public class Player extends DynamicEntity {
         entities.removeAll(toRemove);
     }
 
+    public void consumePotion(Collectible Potion) {
+        potionQueue.add(Potion);
+    }
+
+    public void tickPotionEffects() {
+        if (potionQueue.size() == 0) {
+            this.status = "NONE";
+            return;
+        }
+        else {
+            while (potionQueue.size() != 0) {
+
+                if (potionQueue.get(0) instanceof InvincibilityPotion) {
+                    InvincibilityPotion Potion = (InvincibilityPotion) potionQueue.get(0);
+                    if (Potion.potency()) {
+                        this.status = "INVINCIBLE";
+                        return;
+                    }
+                } else if (potionQueue.get(0) instanceof InvisibilityPotion){
+                    InvisibilityPotion Potion = (InvisibilityPotion) potionQueue.get(0);
+                    if (Potion.potency()) {
+                        this.status = "INVISIBLE";
+                        return;
+                    }
+                } 
+                potionQueue.remove(0);
+            }
+            this.status = "NONE";
+            return;
+        }
+    }
+
+    public String getStatus() {
+        return this.status;
+    }
+
     public List<Collectible> getInventoryList() {
         return inventory.getInven();
     }
@@ -159,6 +203,10 @@ public class Player extends DynamicEntity {
     public void removeItem(Collectible item) {
         inventory.removeItem(item.getType());
     }
+
+    public void removeBrokenItems() {
+        inventory.removeBrokenItems();
+    }
     
     public Key getKey() {
         return (Key) inventory.getItem("key");
@@ -166,5 +214,9 @@ public class Player extends DynamicEntity {
 
     public void removeKey() {
         inventory.removeItem("key");
+    }
+
+    public Collectible getCurrentPotion() {
+        return potionQueue.get(0);
     }
 }
