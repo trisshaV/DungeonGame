@@ -38,6 +38,10 @@ public class GoalsTests {
     @Test
     @DisplayName("Test simple treasure goal")
     public void testSimpleTreasureGoal() {
-
+        DungeonManiaController dmc = new DungeonManiaController();
+        DungeonResponse resp = dmc.newGame("d_treasureGoal", "c_bombTest_placeBombRadius2");
+        assertTrue(resp.getGoals().contains(":treasure"));
+        resp = dmc.tick(Direction.RIGHT);
+        assertFalse(resp.getGoals().contains(":treasure"));
     }
 }
