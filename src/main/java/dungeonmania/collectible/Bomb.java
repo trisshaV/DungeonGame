@@ -21,12 +21,6 @@ public class Bomb extends Collectible {
         radius = config.getInt("bomb_radius");
     }
 
-    @Override
-    public void use() {
-        // TODO Auto-generated method stub
-        
-    }
-
     public int getRadius() {
         return radius;
     }

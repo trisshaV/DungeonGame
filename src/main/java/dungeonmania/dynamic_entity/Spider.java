@@ -47,10 +47,6 @@ public class Spider extends DynamicEntity {
     public String getType() {
         return "spider";
     }
-    public String getDirection() {
-        return direction;
-    }
-    
 
     public void setDirection(String direction) {
         this.direction = direction;
