@@ -439,7 +439,13 @@ public class DungeonManiaController {
      * /game/interact
      */
     public DungeonResponse interact(String entityId) throws IllegalArgumentException, InvalidActionException {
-        return null;
+        Entity target = entities.stream().filter(x -> x.getId() == entityId).findFirst().orElse(null);
+        if (target == null) {
+            throw new IllegalArgumentException();
+        }
+        target.interact(player);
+
+        return getDungeonResponseModel();
     }
 
     public boolean switchActive() {
@@ -502,6 +508,14 @@ public class DungeonManiaController {
             }
         );
         return result;
+    }
+
+    public void removeEntity(String id) {
+        Entity remove = entities.stream().filter(x -> x.getId() == id).findFirst().orElse(null);
+        if (remove != null) {
+            entities.remove(remove);
+        }
+
     }
 
 }

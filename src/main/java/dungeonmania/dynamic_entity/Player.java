@@ -157,6 +157,10 @@ public class Player extends DynamicEntity {
         return (Key) inventory.getItem("key");
     }
 
+    public boolean hasSword() {
+        return  (inventory.getItem("sword") != null);
+    }
+
     public void removeKey() {
         inventory.removeItem("key");
     }

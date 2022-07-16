@@ -2,7 +2,9 @@ package dungeonmania.static_entity;
 
 import dungeonmania.DungeonManiaController;
 import dungeonmania.Entity;
+import dungeonmania.dynamic_entity.Player;
 import dungeonmania.dynamic_entity.Spider;
+import dungeonmania.exceptions.InvalidActionException;
 import dungeonmania.util.Position;
 
 /**
@@ -26,6 +28,19 @@ public class ZombieToastSpawner extends StaticEntity {
         this.zombieHealth = zombieHealth;
     }
 
+    @Override
+    public void interact(Player player) throws InvalidActionException {
+        player.getPosition();
+        // check cardinally adjacent
+        if (!Position.isAdjacent(this.getPosition(), player.getPosition())) {
+            throw new InvalidActionException("Not cardinally adjacent to spawner");
+        }
+        // check has weapon
+        else if (!player.hasSword()) {
+            throw new InvalidActionException("Doesn't have a weapon");
+        }
+        dungeon.removeEntity(this.getId());
+    }
     @Override
     public String getType() {
         return "zombie_toast_spawner";
