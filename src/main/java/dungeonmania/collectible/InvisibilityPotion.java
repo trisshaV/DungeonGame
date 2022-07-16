@@ -14,6 +14,7 @@ import dungeonmania.util.Position;
  */
 public class InvisibilityPotion extends Collectible {
     private int duration;
+
     public InvisibilityPotion(String id, Position xy, JSONObject config) {
         super(id, "invisibility_potion", xy);
         duration = config.getInt("invisibility_potion_duration");
@@ -21,8 +22,17 @@ public class InvisibilityPotion extends Collectible {
 
     @Override
     public void use() {
-        // TODO Auto-generated method stub
-        
+        getPlayer().getInventoryList().remove(this);
+    }
+
+    public boolean potency() {
+        if (duration != 0) {
+            duration = duration - 1;
+            return true;
+        }
+        else {
+            return false;
+        }
     }
 
     @Override

@@ -40,4 +40,22 @@ public class PickUpTests {
         assertEquals(inven.get(0).getType(), inventory.get(0).getType());
     }
 
+    @Test
+    @DisplayName("Test player only picks up one key")
+    public void testPlayerPickupOneKeyOnly() {
+        DungeonManiaController dmc;
+        dmc = new DungeonManiaController();
+        DungeonResponse res = dmc.newGame("d_twoKeyPickup", "c_standard_movement");
+
+        // pick up key
+        res = dmc.tick(Direction.RIGHT);
+        Position pos = getEntities(res, "player").get(0).getPosition();
+        assertEquals(1, getInventory(res, "key").size());
+
+        // tries to pickup another but CANNOT
+        res = dmc.tick(Direction.RIGHT);
+        assertEquals(1, getInventory(res, "key").size());
+        assertNotEquals(pos, getEntities(res, "player").get(0).getPosition());
+    }
+
 }
