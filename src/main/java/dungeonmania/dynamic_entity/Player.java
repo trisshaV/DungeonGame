@@ -72,33 +72,10 @@ public class Player extends DynamicEntity {
         int x = curr.getX();
         int y = curr.getY();
 
-        switch(d) {
-            case DOWN:
-                y += 1;
-                break;
-            case UP:
-                y -= 1;
-                break;
-            case LEFT:
-                x -= 1;
-                break;
-            case RIGHT: 
-                x += 1;
-                break;
-        }
-        Position nextPosition = new Position(x, y);
+        Position nextPosition = curr.translateBy(d);
         // Check next position for obstacles/issues
         List <Entity> collides = l.stream().filter(entity -> entity.getPosition().equals(nextPosition)).collect(Collectors.toList());
-        if (collides.stream().filter(entity -> entity instanceof Boulder).anyMatch(entity -> (!entity.collide(this) && entity != null) == true)) {
-            return;
-        }
-        if (collides.stream().filter(entity -> entity instanceof StaticEntity).anyMatch(entity -> (!entity.collide(this) && entity != null) == true)) {
-            return;
-        }
-        if (collides.stream().filter(entity -> entity instanceof DynamicEntity).anyMatch(entity -> (!entity.collide(this) && entity != null) == true)) {
-            return;
-        }
-        if (collides.stream().filter(entity -> entity instanceof Collectible).anyMatch(entity -> (!entity.collide(this) && entity != null) == true)) {
+        if (collides.stream().anyMatch(entity -> !entity.collide(this))) {
             return;
         }
         this.setPosition(nextPosition);
@@ -111,9 +88,8 @@ public class Player extends DynamicEntity {
 
                 if (entity.getType().equals("key") && inventory.getNoItemType("key") > 0) {
                     // Entity is a key and player is already holding a key
-                    // Dont pick it up
-                    //this.inventory.put(entity, this);
-                    //toRemove.add(entity);
+                    this.inventory.put(entity, this);
+                    toRemove.add(entity);
 
                 } 
                 else if (entity instanceof Collectible) {
@@ -161,30 +137,6 @@ public class Player extends DynamicEntity {
 
     public String getStatus() {
         return this.status;
-    }
-
-    public List<Collectible> getInventoryList() {
-        return inventory.getInven();
-    }
-
-    /**
-     * Given an item name, check if the player has the 
-     * item in inventory or not.
-     * @param item (Collectable Entity)
-     * @return True if player has item, and false otherwise.
-     */
-    public boolean hasItem(String item) {
-        return !(inventory.getItem(item) == null);
-    }
-
-    /**
-     * Given an item name, checks in the player inventory, and if exisits,
-     * return the item as a collectable entity.
-     * @param item (String)
-     * @return The item (Collectable Entity)
-     */
-    public Collectible getItem(String item) {
-        return inventory.getItem(item);
     }
 
     public Collectible getItemById(String id) {
