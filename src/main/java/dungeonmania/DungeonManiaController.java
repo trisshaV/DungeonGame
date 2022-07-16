@@ -44,11 +44,13 @@ import dungeonmania.static_entity.StaticEntity;
 import dungeonmania.static_entity.Wall;
 import dungeonmania.static_entity.ZombieToastSpawner;
 import javassist.expr.Instanceof;
+import javassist.expr.NewArray;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 import java.util.Optional;
 import java.util.Random;
@@ -63,6 +65,7 @@ import org.json.JSONObject;
 public class DungeonManiaController {
 
     private int id;
+    private JSONObject jsonConfig;
     private List<Portal> unpairedPortals = new ArrayList<>();
     private List<Entity> entities = new ArrayList<>();
     private Player player = null;
@@ -114,6 +117,7 @@ public class DungeonManiaController {
         JSONObject json = new JSONObject(dungeonContent);
         JSONObject jsonConfig = new JSONObject(confContent);
         JSONArray jsonEntities = json.getJSONArray("entities");
+        this.jsonConfig = jsonConfig;
 
         spiderspawner = new Spiderspawner(this, jsonConfig.getInt("spider_attack"), jsonConfig.getInt("spider_health"), jsonConfig.getInt("spider_spawn_rate"));
         goalStrategy = newGoalStrategy(json.getJSONObject("goal-condition"));
@@ -193,6 +197,9 @@ public class DungeonManiaController {
                 break;
             case "bomb":
                 newEntity = new Bomb(id, position, jsonConfig);
+                break;
+            case "ActiveBomb":
+                newEntity = new ActiveBomb(id, position);
                 break;
             case "sword":
                 newEntity = new Sword(id, position, jsonConfig);
@@ -290,7 +297,10 @@ public class DungeonManiaController {
             dungeonId, dungeonName, entityResponseList, player.getInventory().getItemResponses(),
             listBattleResponses(), player.getBuildables(), goalStrategy.getGoal(entities));
     }
-
+    
+    public List<String> validConsumable() {
+        return Arrays.asList("bomb","invincibility_potion", "invisibility_potion");
+    }
     /**
      * /game/tick/item
      */
@@ -311,6 +321,7 @@ public class DungeonManiaController {
             player.removeItem(item);
         }
         player.tickPotionEffects();
+        
         // move Dynamic entities except Player
         entities.stream().filter(it -> (it instanceof DynamicEntity) && (it instanceof Player == false)).forEach(
             x -> {
@@ -321,6 +332,22 @@ public class DungeonManiaController {
         if (this.observer.checkBattle() == true) {
             entities = removeDeadEntities();
         }
+        if (!validConsumable().contains(item.getType())) {
+            throw new IllegalArgumentException("itemUsed must be one of bomb, invincibility_potion, invisibility_potion");
+        }
+
+        // check if the bomb will explode
+        List<Entity> toRemove = new ArrayList<>();
+        for (Entity entity : entities) {
+            if (entity.getType().equals("switch")) {
+                FloorSwitch floorSwitch = (FloorSwitch) entity;
+                if (floorSwitch.getActive()) {
+                    toRemove.addAll(floorSwitch.activateNearby(entities, jsonConfig));
+                }
+                
+            }
+        }
+        entities.removeAll(toRemove);
         return getDungeonResponseModel();
     }
 
@@ -369,7 +396,20 @@ public class DungeonManiaController {
         );
 
         spiderspawner.tick();
-            
+        
+        // Check if the bomb will explode
+        List<Entity> toRemove = new ArrayList<>();
+        for (Entity entity : entities) {
+            if (entity.getType().equals("switch")) {
+                FloorSwitch floorSwitch = (FloorSwitch) entity;
+                if (floorSwitch.getActive()) {
+                    toRemove.addAll(floorSwitch.activateNearby(entities, jsonConfig));
+                }
+                
+            }
+        }
+        entities.removeAll(toRemove);
+        
         return getDungeonResponseModel();
     }
 
@@ -385,7 +425,7 @@ public class DungeonManiaController {
             throw new IllegalArgumentException();
         }
         Inventory playerInv = player.getInventory();
-        if (!playerInv.hasEnoughMaterials(buildable)) {
+        if (!playerInv.CheckMaterials(buildable)) {
             throw new InvalidActionException("Not enough materials!");
         }
 
@@ -401,6 +441,7 @@ public class DungeonManiaController {
     public DungeonResponse interact(String entityId) throws IllegalArgumentException, InvalidActionException {
         return null;
     }
+
     public boolean switchActive() {
         for (Entity entity : entities) {
             if (entity instanceof FloorSwitch) {

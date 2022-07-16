@@ -3,7 +3,11 @@ package dungeonmania.static_entity;
 import dungeonmania.Boulder;
 import dungeonmania.Entity;
 import dungeonmania.util.Position;
+
+import java.util.ArrayList;
 import java.util.List;
+
+import org.json.JSONObject;
 /**
  * Acts like empty squares and can ONLY be activated by boulders. Has following properties:
  *      - Other entities can appear on top of it but will not activate it.
@@ -35,6 +39,16 @@ public class FloorSwitch extends StaticEntity {
             active = false;
         }
         return true;
+    }
+
+    public List<Entity> activateNearby(List<Entity> entities, JSONObject config) {
+        for (Entity entity : entities) {
+            if (entity instanceof ActiveBomb && Position.isAdjacent(getPosition(), entity.getPosition())) {
+                ActiveBomb activeBomb = (ActiveBomb) entity;
+                return activeBomb.explode(entities, config);
+            }
+        }
+        return new ArrayList<>();
     }
 
     @Override

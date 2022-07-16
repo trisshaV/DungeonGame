@@ -55,10 +55,10 @@ public class Player extends DynamicEntity {
 
     public List<String> getBuildables() {
         List<String> buildables = new ArrayList<>();
-        if (inventory.hasEnoughMaterials("bow")) {
+        if (inventory.CheckMaterials("bow")) {
             buildables.add("bow");
         }
-        if (inventory.hasEnoughMaterials("shield")) {
+        if (inventory.CheckMaterials("shield")) {
             buildables.add("shield");
         }
         return buildables;

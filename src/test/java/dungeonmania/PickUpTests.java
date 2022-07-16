@@ -29,8 +29,8 @@ import dungeonmania.util.Position;
 
 public class PickUpTests {
     @Test
-    @DisplayName("Player can pick up items")
-    public void testPickUpTreasure() {
+    @DisplayName("Player can pick up an item")
+    public void testPickUpKey() {
         DungeonManiaController dmc = new DungeonManiaController();
         DungeonResponse res = dmc.newGame("d_keyPickUpTest", "bomb_radius_2");
         List<ItemResponse> inventory = new ArrayList<>();
@@ -41,21 +41,52 @@ public class PickUpTests {
     }
 
     @Test
-    @DisplayName("Test player only picks up one key")
-    public void testPlayerPickupOneKeyOnly() {
-        DungeonManiaController dmc;
-        dmc = new DungeonManiaController();
-        DungeonResponse res = dmc.newGame("d_twoKeyPickup", "c_standard_movement");
-
-        // pick up key
+    @DisplayName("Player can pick up multiple different items")
+    public void testPickUpMultipleDifferentItems() {
+        DungeonManiaController dmc = new DungeonManiaController();
+        DungeonResponse res = dmc.newGame("d_keyPickUpTest", "bomb_radius_2");
+        List<ItemResponse> inventory = new ArrayList<>();
+        inventory.add(new ItemResponse("2", "key"));
+        inventory.add(new ItemResponse("3", "arrow"));
+        inventory.add(new ItemResponse("4", "wood"));
         res = dmc.tick(Direction.RIGHT);
-        Position pos = getEntities(res, "player").get(0).getPosition();
-        assertEquals(1, getInventory(res, "key").size());
-
-        // tries to pickup another but CANNOT
+        List<ItemResponse> inven = getInventory(res, "key");
+        assertEquals(inven.get(0).getType(), inventory.get(0).getType());
         res = dmc.tick(Direction.RIGHT);
-        assertEquals(1, getInventory(res, "key").size());
-        assertNotEquals(pos, getEntities(res, "player").get(0).getPosition());
+        inven = getInventory(res, "arrow");
+        assertEquals(inven.get(0).getType(), inventory.get(1).getType());
+        res = dmc.tick(Direction.RIGHT);
+        inven = getInventory(res, "wood");
+        assertEquals(inven.get(0).getType(), inventory.get(2).getType());
     }
 
+    @Test
+    @DisplayName("Player can pick up multiple identical items")
+    public void testPickUpMultipleIdenticalItems() {
+        DungeonManiaController dmc = new DungeonManiaController();
+        DungeonResponse res = dmc.newGame("d_keyPickUpTest", "bomb_radius_2");
+        List<ItemResponse> inventory = new ArrayList<>();
+        inventory.add(new ItemResponse("2", "treasure"));
+        inventory.add(new ItemResponse("3", "treasure"));
+        res = dmc.tick(Direction.LEFT);
+        List<ItemResponse> inven = getInventory(res, "treasure");
+        assertEquals(inven.get(0).getType(), inventory.get(0).getType());
+        res = dmc.tick(Direction.LEFT);
+        inven = getInventory(res, "treasure");
+        assertEquals(inven.get(1).getType(), inventory.get(1).getType());
+    }
+    @Test
+    @DisplayName("Player can only pick up one key")
+    public void testPickUpOnlyOneKey() {
+        DungeonManiaController dmc = new DungeonManiaController();
+        DungeonResponse res = dmc.newGame("d_keyPickUpTest", "bomb_radius_2");
+        List<ItemResponse> inventory = new ArrayList<>();
+        inventory.add(new ItemResponse("2", "key"));
+        res = dmc.tick(Direction.RIGHT);
+        List<ItemResponse> inven = getInventory(res, "key");
+        assertEquals(inven.get(0).getType(), inventory.get(0).getType());
+        res = dmc.tick(Direction.DOWN);
+        int inventory_size = inventory.size();
+        assertEquals(1, inventory_size);
+    }
 }

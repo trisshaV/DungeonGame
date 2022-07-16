@@ -80,6 +80,9 @@ public class Inventory {
     }
 
     public Collectible getItemById(String id) {
+        // if (!entities.contains(id)) {
+        //     return null;
+        // }
         for (Collectible item : entities) {
             if (item.getId().equals(id)) {
                 return item;
@@ -101,7 +104,7 @@ public class Inventory {
     }
 
 
-    public boolean hasEnoughMaterials(String buildable) {
+    public boolean CheckMaterials(String buildable) {
         switch (buildable) {
             case "bow":
                 if (getNoItemType("wood") < 1 || getNoItemType("arrow") < 3) {
@@ -109,7 +112,7 @@ public class Inventory {
                 }
                 return true;    
             case "shield":
-                if (getNoItemType("wood") < 2 || (getNoItemType("treasure") < 1 && getNoItemType("key") < 1 && getNoItemType("sun_stone") < 1)) {
+                if (getNoItemType("wood") < 2 || (getNoItemType("treasure") < 1 && getNoItemType("key") < 1)) {
                 return false;
                 }
                 return true;
@@ -128,7 +131,7 @@ public class Inventory {
     }
 
     public boolean buildItem(String buildable, String id) {
-        if (hasEnoughMaterials(buildable) && buildable.equals("bow")) {
+        if (CheckMaterials(buildable) && buildable.equals("bow")) {
             //make bow
             builtItems.add(new Bow(id, config));
             removeItem("wood");
@@ -137,7 +140,7 @@ public class Inventory {
             removeItem("arrow");
             return true;
         }
-        if (hasEnoughMaterials(buildable) && buildable.equals("shield")) {
+        if (CheckMaterials(buildable) && buildable.equals("shield")) {
             //make shield
             builtItems.add(new Shield(id, config));
             removeItem("wood");
