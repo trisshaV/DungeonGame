@@ -21,9 +21,7 @@ import dungeonmania.dynamic_entity.player.BattleRecord;
 import dungeonmania.dynamic_entity.player.ItemRecord;
 import dungeonmania.dynamic_entity.player.RoundRecord;
 import dungeonmania.exceptions.InvalidActionException;
-import dungeonmania.goal.BoulderGoal;
-import dungeonmania.goal.ExitGoal;
-import dungeonmania.goal.Goal;
+import dungeonmania.goal.*;
 import dungeonmania.response.models.EntityResponse;
 import dungeonmania.response.models.ItemResponse;
 import dungeonmania.response.models.RoundResponse;
@@ -119,8 +117,9 @@ public class DungeonManiaController {
         JSONArray jsonEntities = json.getJSONArray("entities");
         this.jsonConfig = jsonConfig;
 
+        goalStrategy = new SuperGoal(json.getJSONObject("goal-condition"), jsonConfig);
         spiderspawner = new Spiderspawner(this, jsonConfig.getInt("spider_attack"), jsonConfig.getInt("spider_health"), jsonConfig.getInt("spider_spawn_rate"));
-        goalStrategy = newGoalStrategy(json.getJSONObject("goal-condition"));
+
 
         for (int i = 0; i < jsonEntities.length(); i++) {
             JSONObject jsonEntity = jsonEntities.getJSONObject(i);
@@ -137,20 +136,6 @@ public class DungeonManiaController {
         }
         this.observer = new Observer(entities, player);
         return getDungeonResponseModel();
-
-    }
-
-    private Goal newGoalStrategy(JSONObject goalCondition) {
-        String superGoal = goalCondition.getString("goal");
-        switch (superGoal) {
-            case "exit":
-                return new ExitGoal();
-            case "boulder":
-                return new BoulderGoal();
-            default:
-                // TODO: add more
-                return new ExitGoal();
-        }
 
     }
 

@@ -35,6 +35,10 @@ public class Player extends DynamicEntity {
     private List<Collectible> potionQueue = new ArrayList<>();
     private String status = "NONE";
 
+    // Total treasure collected - not current treasure
+    private int treasure_collected = 0;
+    private int enemies_defeated = 0;
+
     /**
      * @param id
      * @param xy
@@ -81,23 +85,19 @@ public class Player extends DynamicEntity {
 
     public void pickUp(List<Entity> entities) {
         List<Entity> toRemove = new ArrayList<>();
-        for (Entity entity : entities) {
-            if (entity.getPosition().equals(super.getPosition()) && !entity.getType().equals("player")) {
-
-                if (entity.getType().equals("key") && inventory.getNoItemType("key") > 0) {
-                    // Entity is a key and player is already holding a key
-                    this.inventory.put(entity, this);
-                    toRemove.add(entity);
-
-                } 
-                else if (entity instanceof Collectible) {
-                    // Pickup the item
-                    this.inventory.put(entity, this);
-                    toRemove.add(entity);
-
-                }
-            }
-        }
+        entities.stream()
+                .filter(entity -> this.getPosition().equals(entity.getPosition())) // same position
+                .filter(entity -> entity instanceof Collectible)
+                .forEach(collectible -> {
+                    if (inventory.getNoItemType("key") > 0 && collectible instanceof Key) {
+                        return;
+                    }
+                    if (collectible.getType().equals("treasure")) {
+                        treasure_collected++;
+                    }
+                    this.inventory.put(collectible, this);
+                    toRemove.add(collectible);
+                });
         entities.removeAll(toRemove);
     }
 
@@ -137,9 +137,43 @@ public class Player extends DynamicEntity {
         return this.status;
     }
 
+    public List<Collectible> getInventoryList() {
+        return inventory.getInven();
+    }
+
+    /**
+     * Given an item name, check if the player has the 
+     * item in inventory or not.
+     * @param item (Collectable Entity)
+     * @return True if player has item, and false otherwise.
+     */
+    public boolean hasItem(String item) {
+        return !(inventory.getItem(item) == null);
+    }
+
+    public int getEnemiesDefeated() {
+        return enemies_defeated;
+    }
+
+    public void addEnemiesDefeated() {
+        enemies_defeated++;
+    }
+
+    /**
+     * Given an item name, checks in the player inventory, and if exists,
+     * return the item as a collectable entity.
+     * @param item (String)
+     * @return The item (Collectable Entity)
+     */
+    public Collectible getItem(String item) {
+        return inventory.getItem(item);
+    }
+
     public Collectible getItemById(String id) {
         return inventory.getItemById(id);
     }
+
+    public int totalTreasureCollected() { return treasure_collected; }
 
     public Inventory getInventory() {
         return inventory;

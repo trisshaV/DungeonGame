@@ -26,6 +26,12 @@ public class ExitGoal implements Goal {
 
     @Override
     public String getGoal(List<Entity> entities) {
-        return isComplete(entities) ? "" : ":exit";
+        return ":exit";
     }
+
+    @Override
+    public boolean isExitGoal() {
+        return true;
+    }
+
 }
