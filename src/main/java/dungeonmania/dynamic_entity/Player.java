@@ -28,6 +28,9 @@ public class Player extends DynamicEntity {
     private Inventory inventory;
     private List<String> useableItems = Arrays.asList("bomb", "health_potion", "invincibility_potion", "invisibility_potion", null);
 
+    // Total treasure collected - not current treasure
+    private int treasure_collected = 0;
+
     /**
      * @param id
      * @param xy
@@ -98,24 +101,19 @@ public class Player extends DynamicEntity {
 
     public void pickUp(List<Entity> entities) {
         List<Entity> toRemove = new ArrayList<>();
-        for (Entity entity : entities) {
-            if (entity.getPosition().equals(super.getPosition()) && !entity.getType().equals("player")) {
-
-                if (entity.getType().equals("key") && inventory.getNoItemType("key") > 0) {
-                    // Entity is a key and player is already holding a key
-                    // Dont pick it up
-                    //this.inventory.put(entity, this);
-                    //toRemove.add(entity);
-
-                } 
-                else if (entity instanceof Collectible) {
-                    // Pickup the item
-                    this.inventory.put(entity, this);
-                    toRemove.add(entity);
-
-                }
-            }
-        }
+        entities.stream()
+                .filter(entity -> this.getPosition().equals(entity.getPosition())) // same position
+                .filter(entity -> entity instanceof Collectible)
+                .forEach(collectible -> {
+                    if (inventory.getNoItemType("key") > 0 && collectible instanceof Key) {
+                        return;
+                    }
+                    if (collectible.getType().equals("treasure")) {
+                        treasure_collected++;
+                    }
+                    this.inventory.put(collectible, this);
+                    toRemove.add(collectible);
+                });
         entities.removeAll(toRemove);
     }
 
@@ -146,6 +144,8 @@ public class Player extends DynamicEntity {
     public Collectible getItemById(String id) {
         return inventory.getItemById(id);
     }
+
+    public int totalTreasureCollected() { return treasure_collected; }
 
     public Inventory getInventory() {
         return inventory;
