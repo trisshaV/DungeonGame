@@ -73,21 +73,41 @@ public class PortalTests {
 
     @Test
     @DisplayName("Player can teleport but target location is blocked")
-    public void testPlayerTeleportsOneBlocked() {
+    public void testPlayerTeleportsOneBlockedLeft() {
         DungeonManiaController dmc;
         dmc = new DungeonManiaController();
         DungeonResponse res = dmc.newGame("d_portalTestOneBlocked", "c_DoorsKeysTest_useKeyWalkThroughOpenDoor");
         res = dmc.tick(Direction.RIGHT);
         assertEquals(new Position(0, 2), getEntities(res, "player").get(0).getPosition());
     }
+
     @Test
-    @DisplayName("Player cannot teleport because all positions are blocked")
-    public void testPlayerTeleportsAllBlocked() {
+    @DisplayName("Player can teleport but target location is blocked")
+    public void testPlayerTeleportsOneBlockedRight() {
         DungeonManiaController dmc;
         dmc = new DungeonManiaController();
-        DungeonResponse res = dmc.newGame("d_portalTestBlocked", "c_DoorsKeysTest_useKeyWalkThroughOpenDoor");
-        res = dmc.tick(Direction.RIGHT);
-        assertEquals(new Position(1, 0), getEntities(res, "player").get(0).getPosition());
+        DungeonResponse res = dmc.newGame("d_portalTestTwoBlocked", "c_DoorsKeysTest_useKeyWalkThroughOpenDoor");
+        res = dmc.tick(Direction.LEFT);
+        assertEquals(new Position(2, 2), getEntities(res, "player").get(0).getPosition());
+    }
+
+    @Test
+    @DisplayName("Player can teleport but target location is blocked")
+    public void testPlayerTeleportsOneBlockedUp() {
+        DungeonManiaController dmc;
+        dmc = new DungeonManiaController();
+        DungeonResponse res = dmc.newGame("d_portalTestThreeBlocked", "c_DoorsKeysTest_useKeyWalkThroughOpenDoor");
+        res = dmc.tick(Direction.LEFT);
+        assertEquals(new Position(1, 1), getEntities(res, "player").get(0).getPosition());
+    }
+    @Test
+    @DisplayName("Player cannot teleport because all positions are blocked")
+    public void testPlayerTeleportsAllBlockedDown() {
+        DungeonManiaController dmc;
+        dmc = new DungeonManiaController();
+        DungeonResponse res = dmc.newGame("d_portalTestFourBlocked", "c_DoorsKeysTest_useKeyWalkThroughOpenDoor");
+        res = dmc.tick(Direction.LEFT);
+        assertEquals(new Position(1, 3), getEntities(res, "player").get(0).getPosition());
     }
     @Test
     @DisplayName("Player can teleport multiple portals")
