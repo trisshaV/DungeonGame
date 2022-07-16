@@ -28,7 +28,7 @@ import dungeonmania.util.Position;
 
 public class PortalTests {
     @Test
-    @DisplayName("Player can teleport")
+    @DisplayName("Player can teleport right")
     public void testPlayerTeleports() {
         DungeonManiaController dmc;
         dmc = new DungeonManiaController();
@@ -37,6 +37,40 @@ public class PortalTests {
         assertEquals(new Position(2, 2), getEntities(res, "player").get(0).getPosition());
 
     }
+
+    @Test
+    @DisplayName("Player can teleport left")
+    public void testPlayerTeleportsLeft() {
+        DungeonManiaController dmc;
+        dmc = new DungeonManiaController();
+        DungeonResponse res = dmc.newGame("d_portalTestSimple2", "c_DoorsKeysTest_useKeyWalkThroughOpenDoor");
+        res = dmc.tick(Direction.LEFT);
+        assertEquals(new Position(0, 2), getEntities(res, "player").get(0).getPosition());
+
+    }
+
+    @Test
+    @DisplayName("Player can teleport up")
+    public void testPlayerTeleportsUp() {
+        DungeonManiaController dmc;
+        dmc = new DungeonManiaController();
+        DungeonResponse res = dmc.newGame("d_portalTestSimple3", "c_DoorsKeysTest_useKeyWalkThroughOpenDoor");
+        res = dmc.tick(Direction.UP);
+        assertEquals(new Position(1, 1), getEntities(res, "player").get(0).getPosition());
+
+    }
+
+    @Test
+    @DisplayName("Player can teleport down")
+    public void testPlayerTeleportsDown() {
+        DungeonManiaController dmc;
+        dmc = new DungeonManiaController();
+        DungeonResponse res = dmc.newGame("d_portalTestSimple4", "c_DoorsKeysTest_useKeyWalkThroughOpenDoor");
+        res = dmc.tick(Direction.DOWN);
+        assertEquals(new Position(1, 3), getEntities(res, "player").get(0).getPosition());
+
+    }
+
     @Test
     @DisplayName("Player can teleport but target location is blocked")
     public void testPlayerTeleportsOneBlocked() {
