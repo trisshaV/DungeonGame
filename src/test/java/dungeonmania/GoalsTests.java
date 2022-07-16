@@ -24,9 +24,9 @@ public class GoalsTests {
     public void testSimpleBoulderGoal() {
         DungeonManiaController dmc = new DungeonManiaController();
         DungeonResponse resp = dmc.newGame("d_boulderGoal", "c_standard_movement");
-        assertTrue(resp.getGoals().contains(":boulder"));
+        assertTrue(resp.getGoals().contains(":boulders"));
         resp = dmc.tick(Direction.RIGHT);
-        assertFalse(resp.getGoals().contains(":boulder"));
+        assertFalse(resp.getGoals().contains(":boulders"));
     }
 
     @Test
@@ -43,5 +43,38 @@ public class GoalsTests {
         assertTrue(resp.getGoals().contains(":treasure"));
         resp = dmc.tick(Direction.RIGHT);
         assertFalse(resp.getGoals().contains(":treasure"));
+    }
+
+    @Test
+    @DisplayName("Test composite goals")
+    public void testCompositeGoals() {
+        DungeonManiaController dmc = new DungeonManiaController();
+        DungeonResponse resp = dmc.newGame("d_treasureGoal", "c_bombTest_placeBombRadius2");
+        assertTrue(resp.getGoals().contains(":treasure"));
+        assertTrue(resp.getGoals().contains(":exit"));
+        assertTrue(resp.getGoals().contains(":boulders"));
+        resp = dmc.tick(Direction.DOWN);
+        // should have achieved boulders
+        assertTrue(resp.getGoals().contains(":treasure"));
+        assertTrue(resp.getGoals().contains(":exit"));
+        assertFalse(resp.getGoals().contains(":boulders"));
+        // go to exit, cannot achieve exit
+        resp = dmc.tick(Direction.LEFT);
+        assertTrue(resp.getGoals().contains(":treasure"));
+        assertTrue(resp.getGoals().contains(":exit"));
+        assertFalse(resp.getGoals().contains(":boulders"));
+        dmc.tick(Direction.RIGHT);
+        // collect treasure, now treasure goal is achieved
+        resp = dmc.tick(Direction.RIGHT);
+        assertFalse(resp.getGoals().contains(":treasure"));
+        assertTrue(resp.getGoals().contains(":exit"));
+        assertFalse(resp.getGoals().contains(":boulders"));
+        dmc.tick(Direction.LEFT);
+        // now going to exit finishes the game
+        resp = dmc.tick(Direction.LEFT);
+        assertFalse(resp.getGoals().contains(":treasure"));
+        assertFalse(resp.getGoals().contains(":exit"));
+        assertFalse(resp.getGoals().contains(":boulders"));
+
     }
 }
