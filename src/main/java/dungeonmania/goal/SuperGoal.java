@@ -21,6 +21,9 @@ public class SuperGoal implements Goal {
             case "treasure":
                 goals.add(new TreasureGoal(config.getInt("treasure_goal")));
                 break;
+            case "enemies":
+                goals.add(new EnemiesGoal(config.getInt("enemy_goal")));
+                break;
             case "AND": {
                 JSONObject subgoal1 = condition.getJSONArray("subgoals").getJSONObject(0);
                 JSONObject subgoal2 = condition.getJSONArray("subgoals").getJSONObject(1);

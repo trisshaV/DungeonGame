@@ -180,6 +180,10 @@ public class Player extends DynamicEntity {
         return enemies_defeated;
     }
 
+    public void addEnemiesDefeated() {
+        enemies_defeated++;
+    }
+
     /**
      * Given an item name, checks in the player inventory, and if exists,
      * return the item as a collectable entity.

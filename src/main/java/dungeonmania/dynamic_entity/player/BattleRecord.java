@@ -117,7 +117,10 @@ public class BattleRecord {
             enemy.setHealth(newEnemyHealth);
             player.setHealth(newPlayerHealth);
         }
-
+        if (enemy.getHealth() <= 0) {
+            Player p = (Player) player;
+            p.addEnemiesDefeated();
+        }
     }
 
     /**
