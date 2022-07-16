@@ -5,8 +5,6 @@ import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import javax.servlet.FilterRegistration.Dynamic;
-
 import dungeonmania.Inventory;
 import dungeonmania.collectible.Bow;
 import dungeonmania.collectible.Buildable;
@@ -29,7 +27,15 @@ public class BattleRecord {
         this.enemy = enemy;
         this.initialPlayerHealth = player.getHealth();
         this.initialEnemyHealth = enemy.getHealth();
-        startBattle(player);
+        // One round Battle if Player is INVINCIBLE
+        if (((Player)player).getStatus().equals("INVINCIBLE")) {
+            Collectible currentPotion = ((Player)player).getCurrentPotion();
+            List<Object> itemUsed = new ArrayList<>();
+            itemUsed.add(currentPotion);
+            addRoundRecord(0, -1 * enemy.getHealth(), itemUsed);
+        } else {
+            startBattle(player);
+        }
     }
     
     private void addRoundRecord(double changePlayerHealth, double changeEnemyHealth, List <Object> battleItems) {

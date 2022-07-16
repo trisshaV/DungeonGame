@@ -302,7 +302,6 @@ public class DungeonManiaController {
             player.removeItem(item);
         }
         if (item.getType().equals("invincibility_potion")) {
-            player.consumePotion(item);
             player.removeItem(item);
         }
         if (item.getType().equals("invisibility_potion")) {

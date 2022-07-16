@@ -206,4 +206,8 @@ public class Player extends DynamicEntity {
     public void removeKey() {
         inventory.removeItem("key");
     }
+
+    public Collectible getCurrentPotion() {
+        return potionQueue.get(0);
+    }
 }
