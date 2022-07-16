@@ -69,8 +69,6 @@ public class Player extends DynamicEntity {
      */
     public void updatePos(Direction d, List<Entity> l) {
         Position curr = this.getPosition();
-        int x = curr.getX();
-        int y = curr.getY();
 
         Position nextPosition = curr.translateBy(d);
         // Check next position for obstacles/issues
