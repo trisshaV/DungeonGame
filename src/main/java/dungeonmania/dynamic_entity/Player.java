@@ -30,6 +30,7 @@ public class Player extends DynamicEntity {
 
     // Total treasure collected - not current treasure
     private int treasure_collected = 0;
+    private int enemies_defeated = 0;
 
     /**
      * @param id
@@ -131,8 +132,12 @@ public class Player extends DynamicEntity {
         return !(inventory.getItem(item) == null);
     }
 
+    public int getEnemiesDefeated() {
+        return enemies_defeated;
+    }
+
     /**
-     * Given an item name, checks in the player inventory, and if exisits,
+     * Given an item name, checks in the player inventory, and if exists,
      * return the item as a collectable entity.
      * @param item (String)
      * @return The item (Collectable Entity)
