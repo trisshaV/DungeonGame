@@ -40,26 +40,19 @@ public class Mercenary extends DynamicEntity {
 
     public void updatePos(Direction d, List<Entity> l) {
         if (status.equals("HOSTILE")) {
-            // Check potion status
-            /*
-            if (Potion status is invisible) {
+            Player p = (Player)l.stream().filter(x -> x instanceof Player).findFirst().orElse(null);
+            if (p.getStatus().equals("INVISIBLE")) {
                 randomHostile(l);
-            } else if (Potion status is invunerable) {
-                runHostile(l);
+            } else if (p.getStatus().equals("INVINCILBLE")) {
+                randomHostile(l);
             } else {
                 chaseHostile(l);
             }
-            */
-            chaseHostile(l);
         }
     }
     
     private void chaseHostile(List <Entity> l) {
         Entity p = l.stream().filter(x -> x instanceof Player).findFirst().orElse(null);
-        if (p == null) {
-            // Player has deceased
-            return;
-        }
         Position playerPos = p.getPosition();
         int x1 = playerPos.getX();
         int y1 = playerPos.getY();

@@ -14,13 +14,6 @@ public class Wood extends Collectible {
         super(id, "wood", xy);
     }
 
-    /**
-     * Uses wood to build bows and shields. 
-     */
-    public void use() {
-        getPlayer().getInventoryList().remove((Collectible)this);
-    }
-
     @Override
     public String getType() {
         return "wood";

@@ -12,12 +12,6 @@ public class Arrow extends Collectible {
     public Arrow(String id, Position xy, JSONObject config) {
         super(id, "arrow", xy);
     }
-    /**
-     * Uses arrows to build bows.
-     */
-    public void use() {
-        getPlayer().getInventoryList().remove((Collectible)this);
-    }
 
     @Override
     public String getType() {
