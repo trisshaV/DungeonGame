@@ -1,6 +1,7 @@
 package dungeonmania.MoveableEntityTests;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static dungeonmania.TestUtils.getEntities;
 
 import java.util.ArrayList;
@@ -10,7 +11,9 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import dungeonmania.DungeonManiaController;
+import dungeonmania.exceptions.InvalidActionException;
 import dungeonmania.response.models.DungeonResponse;
+import dungeonmania.response.models.EntityResponse;
 import dungeonmania.util.Direction;
 import dungeonmania.util.Position;
 
@@ -45,7 +48,7 @@ public class MercenaryTest {
     
     @Test
     @DisplayName("Test basic movement of mercenary chasing player")
-    public void ChaseMovement() {
+    public void testChaseMovement() {
     
         /*
         *  [  ]   [  ]  wall  wall  wall  wall  wall
@@ -76,6 +79,35 @@ public class MercenaryTest {
         res = dmc.tick(Direction.LEFT);
         res = dmc.tick(Direction.LEFT);
         assertEquals(finalPosition, getEntities(res, "mercenary").get(0).getPosition());
+    }
+
+    @Test
+    @DisplayName("Test random movement of mercenary")
+    public void testRandomMovement() throws IllegalArgumentException, InvalidActionException {
+         /*
+        *  wall   [  ]  wall  [  ] 
+        *  play   wall  [  ]  wall 
+        *  invis  wall  merc  wall 
+        *  [  ]   wall  [  ]  wall  
+        *  [  ]   [  ]  wall  [  ]
+        */
+        DungeonManiaController dmc = new DungeonManiaController();
+        DungeonResponse res = dmc.newGame("d_mercenary_RandomMovement", "c_UnbrokenWeaponsWithSpiderTests");
+        EntityResponse potionOne = getEntities(res, "invisibility_potion").get(0);
+        // Pick up potion and consume;
+        res = dmc.tick(Direction.DOWN);
+        res = dmc.tick(potionOne.getId());
+
+        Position pos = getEntities(res, "mercenary").get(0).getPosition();
+        Position previousPos = new Position(pos.getX(), pos.getY());
+
+        // Assert Random Movement of Zombie toast
+        for (int i = 0; i <= 2; ++i) {
+            res = dmc.tick(Direction.UP);
+            assertNotEquals(previousPos, getEntities(res, "mercenary").get(0).getPosition());
+            previousPos = getEntities(res, "mercenary").get(0).getPosition();
+        }
+
     }
     
 }
