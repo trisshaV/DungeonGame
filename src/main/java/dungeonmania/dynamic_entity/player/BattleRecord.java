@@ -71,7 +71,6 @@ public class BattleRecord {
 
             // itemsInRoundUsed will have { List of Swords, List of Bows, List of Shields}
             List <List<Object>> itemsInRoundUsed = itemsAvaliable(player);
-
             // Calculate modifiers
             if (itemsInRoundUsed.get(0).size() != 0) {
                 List<Object> swordsUsed = itemsInRoundUsed.get(0);
@@ -81,9 +80,8 @@ public class BattleRecord {
             }
 
             if (itemsInRoundUsed.get(1).size() != 0) {
-                bowModifier = itemsInRoundUsed.get(0).size();
+                bowModifier = itemsInRoundUsed.get(1).size() + 1;
             }
-
             if (itemsInRoundUsed.get(2).size() != 0) {
                 List<Object> shieldsUsed = itemsInRoundUsed.get(2);
                 Shield temp = (Shield)shieldsUsed.get(0);
@@ -100,10 +98,8 @@ public class BattleRecord {
             // Convert itemsInRoundUsed into single list of items used
             List <Object> battleItems = convertToList(itemsInRoundUsed);
             addRoundRecord(-1 * modifiedEnemyDamage, -1 * modifiedPlayerDamage, battleItems);
-
             // Remove broken items
             ((Player)player).removeBrokenItems();
-
             enemy.setHealth(newEnemyHealth);
             player.setHealth(newPlayerHealth);
         }
@@ -117,7 +113,6 @@ public class BattleRecord {
         List<Buildable> BowsUsed = (List<Buildable>)(List<?>) itemsUsed.get(1);
         List<Buildable> ShieldsUsed = (List<Buildable>)(List<?>) itemsUsed.get(2);
         
-
         SwordsUsed.stream().forEach(
             x -> {
                 int currentDurability = x.getDurability();
@@ -154,11 +149,9 @@ public class BattleRecord {
         List <Collectible> CollectableItems = i.getCollectableItems();
         List <Buildable> BuildableItems = i.getBuildableItems();
 
-              
         listsOfItems.add(CollectableItems.stream().filter(item -> item instanceof Sword).collect(Collectors.toList()));
         listsOfItems.add(BuildableItems.stream().filter(item -> item instanceof Bow).collect(Collectors.toList()));
         listsOfItems.add(BuildableItems.stream().filter(item -> item instanceof Shield).collect(Collectors.toList()));
-
         return listsOfItems;
     }
 

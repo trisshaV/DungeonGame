@@ -19,12 +19,11 @@ import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import dungeonmania.exceptions.InvalidActionException;
 import dungeonmania.response.models.BattleResponse;
 import dungeonmania.response.models.DungeonResponse;
-import dungeonmania.response.models.EntityResponse;
 import dungeonmania.response.models.RoundResponse;
 import dungeonmania.util.Direction;
-import dungeonmania.util.Position;
 
 
 public class BattleTests {
@@ -101,56 +100,204 @@ public class BattleTests {
     @Test
     @DisplayName("Test basic battle calculations - mercenary - player loses")
     public void testHealthBelowZeroMercenary() {
-       DungeonManiaController controller = new DungeonManiaController();
-       DungeonResponse postBattleResponse = genericMercenarySequence(controller, "c_battleTests_basicMercenaryPlayerDies");
-       BattleResponse battle = postBattleResponse.getBattles().get(0);
-       assertBattleCalculations("mercenary", battle, false, "c_battleTests_basicMercenaryPlayerDies");
+        DungeonManiaController controller = new DungeonManiaController();
+        DungeonResponse postBattleResponse = genericMercenarySequence(controller, "c_battleTests_basicMercenaryPlayerDies");
+        BattleResponse battle = postBattleResponse.getBattles().get(0);
+        assertBattleCalculations("mercenary", battle, false, "c_battleTests_basicMercenaryPlayerDies");
     }
     
     @Test
     @DisplayName("Test basic battle calculations - mercenary - player wins")
     public void testRoundCalculationsMercenary() {
-       DungeonManiaController controller = new DungeonManiaController();
-       DungeonResponse postBattleResponse = genericMercenarySequence(controller, "c_battleTests_basicMercenaryMercenaryDies");
-       BattleResponse battle = postBattleResponse.getBattles().get(0);
-       assertBattleCalculations("mercenary", battle, true, "c_battleTests_basicMercenaryMercenaryDies");
+        DungeonManiaController controller = new DungeonManiaController();
+        DungeonResponse postBattleResponse = genericMercenarySequence(controller, "c_battleTests_basicMercenaryMercenaryDies");
+        BattleResponse battle = postBattleResponse.getBattles().get(0);
+        assertBattleCalculations("mercenary", battle, true, "c_battleTests_basicMercenaryMercenaryDies");
     }
     
     @Test
     @DisplayName("Test basic battle calculations - spider - player loses")
     public void testHealthBelowZeroSpider() {
-       DungeonManiaController controller = new DungeonManiaController();
-       DungeonResponse postBattleResponse = genericSpiderSequence(controller, "c_battleTests_basicSpiderPlayerDies");
-       BattleResponse battle = postBattleResponse.getBattles().get(0);
-       assertBattleCalculations("spider", battle, false, "c_battleTests_basicSpiderPlayerDies");
+        DungeonManiaController controller = new DungeonManiaController();
+        DungeonResponse postBattleResponse = genericSpiderSequence(controller, "c_battleTests_basicSpiderPlayerDies");
+        BattleResponse battle = postBattleResponse.getBattles().get(0);
+        assertBattleCalculations("spider", battle, false, "c_battleTests_basicSpiderPlayerDies");
     }
 
     @Test
     @DisplayName("Test basic battle calculations - spider - player wins")
     public void testRoundCalculationsSpider() {
        DungeonManiaController controller = new DungeonManiaController();
-       DungeonResponse postBattleResponse = genericSpiderSequence(controller, "c_battleTests_basicSpiderSpiderDies");
-       BattleResponse battle = postBattleResponse.getBattles().get(0);
-       assertBattleCalculations("spider", battle, true, "c_battleTests_basicSpiderSpiderDies");
+        DungeonResponse postBattleResponse = genericSpiderSequence(controller, "c_battleTests_basicSpiderSpiderDies");
+        BattleResponse battle = postBattleResponse.getBattles().get(0);
+        assertBattleCalculations("spider", battle, true, "c_battleTests_basicSpiderSpiderDies");
     }
 
     @Test
     @DisplayName("Test basic battle calculations - zombie_toast - player wins")
     public void testRoundCalculationsZombieToast() {
-       DungeonManiaController controller = new DungeonManiaController();
-       DungeonResponse postBattleResponse = genericZombieSequence(controller, "c_battleTests_basicZombieZombieDies");
-       BattleResponse battle = postBattleResponse.getBattles().get(0);
-       assertBattleCalculations("zombie", battle, true, "c_battleTests_basicZombieZombieDies");
+        DungeonManiaController controller = new DungeonManiaController();
+        DungeonResponse postBattleResponse = genericZombieSequence(controller, "c_battleTests_basicZombieZombieDies");
+        BattleResponse battle = postBattleResponse.getBattles().get(0);
+        assertBattleCalculations("zombie", battle, true, "c_battleTests_basicZombieZombieDies");
     }
 
     @Test
     @DisplayName("Test basic battle calculations - zombie_toast - zombie wins")
     public void testHealthBelowZeroZombieToast() {
-       DungeonManiaController controller = new DungeonManiaController();
-       DungeonResponse postBattleResponse = genericZombieSequence(controller, "c_battleTests_basicZombiePlayerDies");
-       BattleResponse battle = postBattleResponse.getBattles().get(0);
-       assertBattleCalculations("zombie", battle, false, "c_battleTests_basicZombiePlayerDies");
+        DungeonManiaController controller = new DungeonManiaController();
+        DungeonResponse postBattleResponse = genericZombieSequence(controller, "c_battleTests_basicZombiePlayerDies");
+        BattleResponse battle = postBattleResponse.getBattles().get(0);
+        assertBattleCalculations("zombie", battle, false, "c_battleTests_basicZombiePlayerDies");
+    }
+    
+    private void assertBattleCalculationsWithUnbrokenWeapons(String enemyType, BattleResponse battle, boolean enemyDies, String configFilePath, List<Integer> numberOfWeapons) {
+        List<RoundResponse> rounds = battle.getRounds();
+        double playerHealth = Double.parseDouble(getValueFromConfigFile("player_health", configFilePath));
+        double enemyHealth = Double.parseDouble(getValueFromConfigFile(enemyType + "_health", configFilePath));
+        double playerAttack = Double.parseDouble(getValueFromConfigFile("player_attack", configFilePath));
+        double enemyAttack = Double.parseDouble(getValueFromConfigFile(enemyType + "_attack", configFilePath));
+
+        // Adjust attack accord to weapons that exist
+        double swordAttack = Double.parseDouble(getValueFromConfigFile("sword_attack", configFilePath));
+        double shieldDefense = Double.parseDouble(getValueFromConfigFile("shield_defence", configFilePath));
+        // add shield defense
+        enemyAttack = enemyAttack - shieldDefense * numberOfWeapons.get(2);
+        // Add sword Attack
+        playerAttack = playerAttack + swordAttack * numberOfWeapons.get(0);
+        // Add bow modifier
+        playerAttack = (numberOfWeapons.get(1) + 1) * playerAttack;
+
+        for (RoundResponse round : rounds) {
+            assertEquals(round.getDeltaCharacterHealth(), -(enemyAttack / 10));
+            assertEquals(round.getDeltaEnemyHealth(), -(playerAttack / 5));
+            enemyHealth += round.getDeltaEnemyHealth();
+            playerHealth += round.getDeltaCharacterHealth();
+        }
+        if (enemyDies) {
+            assertTrue(enemyHealth <= 0);
+        } else {
+            assertTrue(playerHealth <= 0);
+        }
+    }
+    
+    @Test
+    @DisplayName("Test battle with sword")
+    public void testSwordBattle() {
+
+        /*
+         *  [  ] [  ] [  ] [  ] swor boul
+         *  arro arro arro wood play spid
+         *  [  ] [  ] [  ] [  ] wood [  ]
+         *  [  ] [  ] [  ] [  ] wood [  ]
+         *  [  ] [  ] [  ] [  ] key  [  ]
+         */
+
+
+        DungeonManiaController dmc = new DungeonManiaController();
+        dmc.newGame("d_UnbrokenWeaponTest", "c_UnbrokenWeaponsWithSpiderTests");
+
+        // Pickup Sword
+        dmc.tick(Direction.UP);
+        dmc.tick(Direction.DOWN);
+
+        // Battle
+        DungeonResponse postBattleResponse = dmc.tick(Direction.RIGHT);
+        BattleResponse battle = postBattleResponse.getBattles().get(0);
+
+        // List of integers as {Sword Bow Shield}
+        // 1 sword is used
+        List<Integer> weaponsUsed = new ArrayList<>();
+        weaponsUsed.add(1);
+        weaponsUsed.add(0);
+        weaponsUsed.add(0);
+
+        assertBattleCalculationsWithUnbrokenWeapons("spider", battle, true, "c_UnbrokenWeaponsWithSpiderTests", weaponsUsed);
     }
 
+    @Test
+    @DisplayName("Test battle with bow")
+    public void testBowBattle() throws IllegalArgumentException, InvalidActionException {
+
+         /*
+         *  [  ] [  ] [  ] [  ] swor boul
+         *  arro arro arro wood play spid
+         *  [  ] [  ] [  ] [  ] wood [  ]
+         *  [  ] [  ] [  ] [  ] wood [  ]
+         *  [  ] [  ] [  ] [  ] key  [  ]
+         */
+
+
+        DungeonManiaController dmc = new DungeonManiaController();
+        dmc.newGame("d_UnbrokenWeaponTest", "c_UnbrokenWeaponsWithSpiderTests");
+
+        // Pickup materials for bow
+        dmc.tick(Direction.LEFT);
+        dmc.tick(Direction.LEFT);
+        dmc.tick(Direction.LEFT);
+        dmc.tick(Direction.LEFT);
+        dmc.tick(Direction.RIGHT);
+        dmc.tick(Direction.RIGHT);
+        dmc.tick(Direction.RIGHT);
+        dmc.tick(Direction.RIGHT);
+
+        // Craft bow
+        dmc.build("bow");
+
+        // Battle
+        DungeonResponse postBattleResponse = dmc.tick(Direction.RIGHT);
+        BattleResponse battle = postBattleResponse.getBattles().get(0);
+
+        // List of integers as {Sword Bow Shield}
+        // 1 bow is used
+        List<Integer> weaponsUsed = new ArrayList<>();
+        weaponsUsed.add(0);
+        weaponsUsed.add(1);
+        weaponsUsed.add(0);
+
+        assertBattleCalculationsWithUnbrokenWeapons("spider", battle, true, "c_UnbrokenWeaponsWithSpiderTests", weaponsUsed);
+    }
+
+    @Test
+    @DisplayName("Test battle with shield")
+    public void testShieldBattle() throws IllegalArgumentException, InvalidActionException {
+
+         /*
+         *  [  ] [  ] [  ] [  ] swor boul
+         *  arro arro arro wood play spid
+         *  [  ] [  ] [  ] [  ] wood [  ]
+         *  [  ] [  ] [  ] [  ] wood [  ]
+         *  [  ] [  ] [  ] [  ] key  [  ]
+         */
+
+
+        DungeonManiaController dmc = new DungeonManiaController();
+        dmc.newGame("d_UnbrokenWeaponTest", "c_UnbrokenWeaponsWithSpiderTests");
+
+        // Pickup materials for bow
+        dmc.tick(Direction.DOWN);
+        dmc.tick(Direction.DOWN);
+        dmc.tick(Direction.DOWN);
+        dmc.tick(Direction.UP);
+        dmc.tick(Direction.UP);
+        dmc.tick(Direction.UP);
+
+
+        // Craft bow
+        dmc.build("shield");
+
+        // Battle
+        DungeonResponse postBattleResponse = dmc.tick(Direction.RIGHT);
+        BattleResponse battle = postBattleResponse.getBattles().get(0);
+
+        // List of integers as {Sword Bow Shield}
+        // 1 bow is used
+        List<Integer> weaponsUsed = new ArrayList<>();
+        weaponsUsed.add(0);
+        weaponsUsed.add(0);
+        weaponsUsed.add(1);
+
+        assertBattleCalculationsWithUnbrokenWeapons("spider", battle, true, "c_UnbrokenWeaponsWithSpiderTests", weaponsUsed);
+    }
 
 }
