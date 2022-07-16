@@ -49,7 +49,7 @@ public class GoalsTests {
     @DisplayName("Test composite goals")
     public void testCompositeGoals() {
         DungeonManiaController dmc = new DungeonManiaController();
-        DungeonResponse resp = dmc.newGame("d_treasureGoal", "c_bombTest_placeBombRadius2");
+        DungeonResponse resp = dmc.newGame("d_complexGoals_exitLast", "c_bombTest_placeBombRadius2");
         assertTrue(resp.getGoals().contains(":treasure"));
         assertTrue(resp.getGoals().contains(":exit"));
         assertTrue(resp.getGoals().contains(":boulders"));
