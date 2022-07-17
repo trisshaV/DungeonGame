@@ -111,8 +111,8 @@ public class MercenaryTest {
     }
 
     @Test
-    @DisplayName("Test invincible movement of mercenary")
-    public void testInvincibleMovement() throws IllegalArgumentException, InvalidActionException {
+    @DisplayName("Test invincible movement with msingle mercenary")
+    public void testInvincibleMovementSingle() throws IllegalArgumentException, InvalidActionException {
          /*
         *  [  ] [  ]  wall wall wall
         *  wall invin play [  ] merc
@@ -136,7 +136,53 @@ public class MercenaryTest {
         // Assert Invincible Movement of Mercenary
         assertEquals(new Position(x, y), getEntities(res, "mercenary").get(0).getPosition());
 
+    }
+    
+    @Test
+    @DisplayName("Test invincible movement of mercenary")
+    public void testInvincibleMovementMultiple() throws IllegalArgumentException, InvalidActionException {
+         /*
+        *  wall wall wall  wall  wall wall wall
+        *  wall [  ] wall  [  ]  merc [  ] wall
+        *  wall wall wall  [  ]  wall merc wall
+        *  wall [  ] [  ]  invin play [  ] wall
+        *  wall merc wall  [  ]  wall wall wall
+        *  wall [  ] merc  [  ]  wall [  ] wall
+        *  wall wall  wall  wall wall wall wall
+        */
+        DungeonManiaController dmc = new DungeonManiaController();
+        DungeonResponse res = dmc.newGame("d_mercenaryInvincible", "c_UnbrokenWeaponsWithSpiderTests");
+        EntityResponse potionOne = getEntities(res, "invincibility_potion").get(0);
+        
+        // Pick up potion;
+        res = dmc.tick(Direction.LEFT);
+        Position pos = getEntities(res, "player").get(0).getPosition();
+        int x = pos.getX();
+        int y = pos.getY();
+
+        // Consume potion
+        res = dmc.tick(potionOne.getId());
+        
+        // 4 positions which should be empty
+        Position pos1 = new Position(x-2, y );
+        Position pos2 = new Position(x+2, y );
+        Position pos3 = new Position( x ,y+2);
+        Position pos4 = new Position( x ,y-2);
+
+        // Assert Invincible Movement of Mercenary
+        List <EntityResponse> listOfMercenaries = getEntities(res, "mercenary"); 
+        listOfMercenaries.stream().forEach(
+            mercenary -> {
+                Position mercPos = mercenary.getPosition();
+                assertNotEquals(pos1, mercPos);
+                assertNotEquals(pos2, mercPos);
+                assertNotEquals(pos3, mercPos);
+                assertNotEquals(pos4, mercPos);
+            }
+        );
+
 
     }
+    
     
 }
