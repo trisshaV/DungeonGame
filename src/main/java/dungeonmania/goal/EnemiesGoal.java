@@ -4,6 +4,7 @@ import dungeonmania.Entity;
 import dungeonmania.dynamic_entity.Player;
 
 import java.util.List;
+import java.util.Optional;
 
 public class EnemiesGoal implements Goal {
     private final int required;
@@ -23,9 +24,14 @@ public class EnemiesGoal implements Goal {
      */
     @Override
     public boolean isComplete(List<Entity> entities) {
-        Player p = (Player) entities.stream().filter(e -> e instanceof Player).findFirst().get();
-        return p.getEnemiesDefeated() >= required &&
-               entities.stream().anyMatch(e -> e.getType().contains("spawner"));
+        Optional<Player> maybePlayer = entities.stream()
+            .filter(e -> e instanceof Player)
+            .map(p -> (Player) p)
+            .findFirst();
+        if (maybePlayer.isEmpty())
+            return false;
+        return maybePlayer.get().getEnemiesDefeated() >= required &&
+               entities.stream().noneMatch(e -> e.getType().contains("spawner"));
     }
 
     /**
