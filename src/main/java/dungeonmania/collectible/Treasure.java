@@ -11,10 +11,20 @@ import dungeonmania.util.Position;
  */
 public class Treasure extends Collectible {
 
+    /**
+     * Treasure Constructor
+     * @param id
+     * @param xy
+     * @param config
+     */
     public Treasure(String id, Position xy, JSONObject config) {
         super(id, "treasure", xy);
     }
 
+    /**
+     * Gets type
+     * @return the type, i.e. "treasure"
+     */
     @Override
     public String getType() {
         return "treasure";
