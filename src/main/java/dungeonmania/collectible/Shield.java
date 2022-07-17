@@ -3,16 +3,24 @@ package dungeonmania.collectible;
 import org.json.JSONObject;
 
 public class Shield extends Buildable{
-    private int durability;
+    private int shieldDefense = 0;
+
+    /**
+     * Shield Constructor
+     * @param id
+     * @param config
+     */
     public Shield(String id, JSONObject config) {
         super(id, "shield");
-        durability = config.getInt("shield_durability");
-    }
-    public int getDurability() {
-        return durability;
+        this.setDurability(config.getInt("shield_durability"));
+        shieldDefense = config.getInt("shield_defence");
     }
 
-    public void setDurability(int num) {
-        this.durability = num;
+    /**
+     * Gets shield defence
+     * @return the shield defence
+     */
+    public int getShieldDefense() {
+        return shieldDefense;
     }
 }

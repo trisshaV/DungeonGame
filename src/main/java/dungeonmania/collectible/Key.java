@@ -13,30 +13,39 @@ import dungeonmania.util.Position;
  *          as mentioned above and also consequently makes the correspnding door be locked forever.
  */
 public class Key extends Collectible {
-
     private int keyId;
 
+    /**
+     * Key Constructor
+     * @param id
+     * @param xy
+     * @param keyId
+     */
     public Key(String id, Position xy, int keyId) {
         super(id, "key", xy);
         this.keyId = keyId;
     }
-
+    
     /**
-     * Is called if the key is used to craft a shield or open a door.
+     * Sets key Id
+     * @param id
      */
-    public void use() {
-        getPlayer().getInventoryList().remove(this);
-    }
-
     public void setKeyId(int id) {
         keyId = id;
     }
 
+    /**
+     * Gets key Id
+     * @return the Id of key
+     */
     public int getKeyId() {
         return keyId;
     }
 
-
+    /**
+     * Gets type
+     * @return the type, i.e. "key"
+     */
     @Override
     public String getType() {
         return "key";

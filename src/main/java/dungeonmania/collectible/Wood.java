@@ -10,17 +10,20 @@ import dungeonmania.util.Position;
  */
 public class Wood extends Collectible {
 
+    /**
+     * Wood Constructor
+     * @param id
+     * @param xy
+     * @param config
+     */
     public Wood(String id, Position xy, JSONObject config) {
         super(id, "wood", xy);
     }
 
     /**
-     * Uses wood to build bows and shields. 
+     * Gets type
+     * @return the type, i.e. "wood"
      */
-    public void use() {
-        getPlayer().getInventoryList().remove((Collectible)this);
-    }
-
     @Override
     public String getType() {
         return "wood";

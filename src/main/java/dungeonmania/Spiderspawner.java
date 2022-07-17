@@ -1,16 +1,21 @@
 package dungeonmania;
 
-import dungeonmania.dynamic_entity.Spider;
-
 public class Spiderspawner {
-    DungeonManiaController dungeon;
-    int spiderAttack;
-    int spiderHealth;
-    int spiderSpawnRate;
-    int spiderTick;
-    boolean active;
+    private DungeonManiaController dungeon;
+    private int spiderAttack;
+    private int spiderHealth;
+    private int spiderSpawnRate;
+    private int spiderTick;
+    private boolean active;
 
 
+    /**
+     * Spiderspawner Constructor
+     * @param dungeon
+     * @param spiderAttack
+     * @param spiderHealth
+     * @param spiderSpawnRate
+     */
     public Spiderspawner(DungeonManiaController dungeon, int spiderAttack, int spiderHealth, int spiderSpawnRate) {
         this.dungeon = dungeon;
         this.spiderTick = 0;
@@ -24,6 +29,9 @@ public class Spiderspawner {
         this.spiderTick = 0;
     }
 
+    /**
+     * Tick for spiders
+     */
     public void tick() {
         if (active == true) {
             spiderTick += 1;

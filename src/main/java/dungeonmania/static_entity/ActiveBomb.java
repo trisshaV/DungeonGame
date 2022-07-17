@@ -9,18 +9,40 @@ import dungeonmania.Entity;
 import dungeonmania.util.Position;
 
 public class ActiveBomb extends StaticEntity{
+    /**
+     * ActiveBomb Constructor
+     * @param id
+     * @param xy
+     */
     public ActiveBomb(String id, Position xy) {
         super(id, "bomb", xy);
     }
+    
+    /**
+     * Collision detection
+     * @param entity
+     * @return boolean of collision status
+     */
     @Override
     public boolean collide(Entity entity) {
         return false;
     }
+    
+    /**
+     * Gets type
+     * @return the type, i.e. "bomb"
+     */
     @Override
     public String getType() {
         return "bomb";
     }
 
+    /**
+     * Explode the bomb
+     * @param entities
+     * @param config
+     * @return update of current entities
+     */
     public List<Entity> explode(List<Entity> entities, JSONObject config) {
         int radius = config.getInt("bomb_radius");
         List<Entity> toRemove = new ArrayList<>();
@@ -39,7 +61,6 @@ public class ActiveBomb extends StaticEntity{
             }
             positions.addAll(copy);
         }
-
         for (Position position : positions) {
             for (Entity entity : entities) {
                 if (!entity.getType().equals("player") && positions.contains(entity.getPosition())) {

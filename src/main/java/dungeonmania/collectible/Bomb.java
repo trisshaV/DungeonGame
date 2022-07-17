@@ -16,21 +16,30 @@ import dungeonmania.util.Position;
  */
 public class Bomb extends Collectible {
     public int radius;
+
+    /**
+     * Bomb Constructor
+     * @param id
+     * @param xy
+     * @param config
+     */
     public Bomb(String id, Position xy, JSONObject config) {
         super(id, "bomb", xy);
         radius = config.getInt("bomb_radius");
     }
 
-    @Override
-    public void use() {
-        // TODO Auto-generated method stub
-        
-    }
-
+    /**
+     * Gets radius
+     * @return the radius
+     */
     public int getRadius() {
         return radius;
     }
 
+    /**
+     * Gets type
+     * @return the type, i.e. "bomb"
+     */
     @Override
     public String getType() {
         return "bomb";

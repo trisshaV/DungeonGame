@@ -4,10 +4,10 @@ import dungeonmania.dynamic_entity.Player;
 import dungeonmania.response.models.ItemResponse;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.json.JSONArray;
 import org.json.JSONObject;
 
 import dungeonmania.collectible.*;
@@ -16,7 +16,7 @@ public class Inventory {
     
     private Player player;
     private List<Collectible> entities; 
-    private List<String> buildable;
+    private List<String> buildable = Arrays.asList("bow", "shield");
     private List<Buildable> builtItems;
     private JSONObject config;
 
@@ -31,6 +31,11 @@ public class Inventory {
         this.config = config;
     }
 
+    /**
+     * Puts collectibles in Player
+     * @param entity
+     * @param player
+     */
     public void put(Entity entity, Player player){
         if (entity instanceof Collectible) {
             Collectible ent = (Collectible) entity;
@@ -39,11 +44,18 @@ public class Inventory {
         }
     }
 
-    // Getters and Setters
+    /**
+     * Sets Player
+     * @param player
+     */
     public void setPlayer(Player player) {
         this.player = player;
     }
 
+    /**
+     * Gets item responses
+     * @return responses of items
+     */
     public List<ItemResponse> getItemResponses() {
         List<ItemResponse> itemResponses = entities.stream()
                                                    .map(Collectible::toItemResponse)
@@ -53,11 +65,6 @@ public class Inventory {
         }
 
         return  itemResponses;
-    }
-
-
-    public List<Collectible> getInven() {
-        return entities;
     }
 
     public int getNoItemType(String type) {
@@ -70,6 +77,11 @@ public class Inventory {
         return number;
     }
 
+    /**
+     * Gets items
+     * @param type
+     * @return the items
+     */
     public Collectible getItem(String type) {
         for (Collectible item : entities) {
             if (item.getType().equals(type)) {
@@ -79,10 +91,12 @@ public class Inventory {
         return null;
     }
 
+    /**
+     * Get collectibles by id
+     * @param id
+     * @return collectibles according to id
+     */
     public Collectible getItemById(String id) {
-        // if (!entities.contains(id)) {
-        //     return null;
-        // }
         for (Collectible item : entities) {
             if (item.getId().equals(id)) {
                 return item;
@@ -90,19 +104,6 @@ public class Inventory {
         }
         return null;
     }
-
-    public Key getKey(int keyId) {
-        for (Collectible item : entities) {
-            if (item.getType().equals("key")) {
-                Key itm = (Key) item;
-                if (itm.getKeyId() == keyId) {
-                    return itm;
-                }
-            }
-        }
-        return null;
-    }
-
 
     public boolean CheckMaterials(String buildable) {
         switch (buildable) {
@@ -121,6 +122,10 @@ public class Inventory {
         }
     }
 
+    /**
+     * Remove an item
+     * @param itemToRemove
+     */
     public void removeItem(String itemToRemove) {
         for (Collectible item : entities) {
             if (item.getType().equals(itemToRemove)) {
@@ -130,6 +135,12 @@ public class Inventory {
         }
     }
 
+    /**
+     * Build an item
+     * @param buildable
+     * @param id
+     * @return item built
+     */
     public boolean buildItem(String buildable, String id) {
         if (CheckMaterials(buildable) && buildable.equals("bow")) {
             //make bow
@@ -153,5 +164,45 @@ public class Inventory {
             }
         }
         return false;
+    }
+
+    /**
+     * Gets collectable items
+     * @return items that are collectable
+     */
+    public List<Collectible> getCollectableItems() {
+        return entities;
+    }
+
+    /**
+     * Gets buildable items
+     * @return items that are buildable
+     */
+    public List<Buildable> getBuildableItems() {
+        return builtItems;
+    }
+
+    public void reduceDurability(String type, String id) {
+        if (buildable.contains(type)) {
+            // Buildable item
+            Buildable item = builtItems.stream().filter(x -> x.getId().equals(id)).collect(Collectors.toList()).get(0);
+            int currentDurability = item.getDurability();
+            item.setDurability(currentDurability - 1);
+        } else {
+            // Collectible item
+            Collectible item = entities.stream().filter(x -> x.getId().equals(id)).collect(Collectors.toList()).get(0);
+            Sword itemSword = ((Sword)item);
+            int currentDurability = itemSword.getDurability();
+            itemSword.setDurability(currentDurability - 1);
+        }
+    }
+
+    /**
+     * Remove items that have been broken
+     */
+    public void removeBrokenItems() {
+        // Deleting broken shields and bows
+        builtItems = builtItems.stream().filter(item -> item.getDurability() != 0).collect(Collectors.toList());
+        entities = entities.stream().filter(item -> (item instanceof Sword) && (((Sword)item).getDurability() != 0)).collect(Collectors.toList());
     }
 }

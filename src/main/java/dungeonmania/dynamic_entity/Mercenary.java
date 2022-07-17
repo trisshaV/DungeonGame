@@ -1,9 +1,7 @@
 package dungeonmania.dynamic_entity;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import org.json.JSONObject;
 
@@ -26,41 +24,43 @@ import dungeonmania.util.Position;
 public class Mercenary extends DynamicEntity {
 
     private String status = "HOSTILE";
-
-    @Override
-    public String getType() {
-        return "mercenary";
-    }
     
+    /**
+     * Mercenary Constrcutor
+     * @param id
+     * @param xy
+     * @param config
+     */
     public Mercenary(String id, Position xy, JSONObject config) {
         super(id, "mercenary", xy);
-        this.attack = config.getInt("mercenary_attack");
-        this.health = config.getInt("mercenary_health");
-
+        this.attack = config.getDouble("mercenary_attack");
+        this.health = config.getDouble("mercenary_health");
     }
 
+    /**
+     * Updates position
+     * @param d
+     * @param l
+     */
     public void updatePos(Direction d, List<Entity> l) {
         if (status.equals("HOSTILE")) {
-            // Check potion status
-            /*
-            if (Potion status is invisible) {
+            Player p = (Player)l.stream().filter(x -> x instanceof Player).findFirst().orElse(null);
+            if (p.getStatus().equals("INVISIBLE")) {
                 randomHostile(l);
-            } else if (Potion status is invunerable) {
-                runHostile(l);
+            } else if (p.getStatus().equals("INVINCILBLE")) {
+                randomHostile(l);
             } else {
                 chaseHostile(l);
             }
-            */
-            chaseHostile(l);
         }
     }
     
+    /**
+     * Chases
+     * @param l
+     */
     private void chaseHostile(List <Entity> l) {
         Entity p = l.stream().filter(x -> x instanceof Player).findFirst().orElse(null);
-        if (p == null) {
-            // Player has deceased
-            return;
-        }
         Position playerPos = p.getPosition();
         int x1 = playerPos.getX();
         int y1 = playerPos.getY();
@@ -111,11 +111,32 @@ public class Mercenary extends DynamicEntity {
     }
 
 
+    /**
+     * Random movement of hostile
+     * @param l
+     */
     private void randomHostile(List<Entity> l) {
         RandomMovement move = new RandomMovement();
         Position nextPosition = move.randPosition(this, l);
         if (!nextPosition.equals(null)) {
             this.setPosition(nextPosition);
         }
+    }
+
+    /**
+     * Gets status
+     * @return the status
+     */
+    public String getStatus() {
+        return status;
+    }
+
+    /**
+     * Gets type
+     * @return the type, i.e "mercenary"
+     */
+    @Override
+    public String getType() {
+        return "mercenary";
     }
 }
