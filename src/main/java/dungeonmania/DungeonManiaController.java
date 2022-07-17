@@ -589,4 +589,14 @@ public class DungeonManiaController {
             entities.remove(remove);
         }
     }
+
+    public String getMercStatus() {
+        for (Entity entity : entities) {
+            if (entity instanceof Mercenary) {
+                Mercenary check = (Mercenary) entity;
+                return check.getStatus();
+            }
+        }
+       return null;
+    }
 }

@@ -254,4 +254,11 @@ public class Player extends DynamicEntity {
     public Collectible getCurrentPotion() {
         return potionQueue.get(0);
     }
+    /**
+     * Returns amount of coins player has 
+     * @return
+     */
+    public int getCoins() {
+        return inventory.getNoItemType("treasure");
+    }
 }
