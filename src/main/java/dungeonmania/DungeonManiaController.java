@@ -253,7 +253,7 @@ public class DungeonManiaController {
             return getRandomPosition();
         }
         return randomPos;
-        
+       
     }
 
     /**
@@ -338,9 +338,6 @@ public class DungeonManiaController {
     public DungeonResponse tick(String itemUsedId) throws IllegalArgumentException, InvalidActionException {
         Position pos = player.getPosition();
         Collectible item = player.getItemById(itemUsedId);
-        if (item.getType().equals(null)) {
-            throw new InvalidActionException("itemUsed is not in the player's Inventory");
-        }
         if (item.getType().equals("bomb")) {
             entities.add(new ActiveBomb(itemUsedId, pos));
             player.removeItem(item);
