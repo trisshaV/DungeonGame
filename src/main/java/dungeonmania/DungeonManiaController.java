@@ -385,9 +385,9 @@ public class DungeonManiaController {
      * Get rid of deceased entities from game
      * @return deceased entities
      */
-    private List <Entity> removeDeadEntities() {
+    private List<Entity> removeDeadEntities() {
         List <Entity> result = new ArrayList<>();
-        result = entities.stream().filter(e -> e instanceof DynamicEntity && ((DynamicEntity)e).getHealth() < 0).collect(Collectors.toList());
+        result = entities.stream().filter(e -> e instanceof DynamicEntity && ((DynamicEntity)e).getHealth() > 0).collect(Collectors.toList());
         return result;
     }
 
