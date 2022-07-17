@@ -7,7 +7,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.json.JSONArray;
 import org.json.JSONObject;
 
 import dungeonmania.collectible.*;
@@ -31,6 +30,11 @@ public class Inventory {
         this.config = config;
     }
 
+    /**
+     * Puts collectibles in Player
+     * @param entity
+     * @param player
+     */
     public void put(Entity entity, Player player){
         if (entity instanceof Collectible) {
             Collectible ent = (Collectible) entity;
@@ -39,11 +43,18 @@ public class Inventory {
         }
     }
 
-    // Getters and Setters
+    /**
+     * Sets Player
+     * @param player
+     */
     public void setPlayer(Player player) {
         this.player = player;
     }
 
+    /**
+     * Gets item responses
+     * @return responses of items
+     */
     public List<ItemResponse> getItemResponses() {
         List<ItemResponse> itemResponses = entities.stream()
                                                    .map(Collectible::toItemResponse)
@@ -55,11 +66,19 @@ public class Inventory {
         return  itemResponses;
     }
 
-
+    /**
+     * get inventory
+     * @return the inventory
+     */
     public List<Collectible> getInven() {
         return entities;
     }
 
+    /**
+     * Gets number of items
+     * @param type
+     * @return item and corresponding number
+     */
     public int getNoItemType(String type) {
         int number = 0;
         for (Collectible item : entities) {
@@ -70,6 +89,11 @@ public class Inventory {
         return number;
     }
 
+    /**
+     * Gets items
+     * @param type
+     * @return the items
+     */
     public Collectible getItem(String type) {
         for (Collectible item : entities) {
             if (item.getType().equals(type)) {
@@ -79,10 +103,12 @@ public class Inventory {
         return null;
     }
 
+    /**
+     * Get collectibles by id
+     * @param id
+     * @return collectibles according to id
+     */
     public Collectible getItemById(String id) {
-        // if (!entities.contains(id)) {
-        //     return null;
-        // }
         for (Collectible item : entities) {
             if (item.getId().equals(id)) {
                 return item;
@@ -91,6 +117,11 @@ public class Inventory {
         return null;
     }
 
+    /**
+     * Gets key
+     * @param keyId
+     * @return the key
+     */
     public Key getKey(int keyId) {
         for (Collectible item : entities) {
             if (item.getType().equals("key")) {
@@ -104,6 +135,11 @@ public class Inventory {
     }
 
 
+    /**
+     * Check buildable materials present
+     * @param buildable
+     * @return boolean of current materials collected meets requirements
+     */
     public boolean CheckMaterials(String buildable) {
         switch (buildable) {
             case "bow":
@@ -121,6 +157,10 @@ public class Inventory {
         }
     }
 
+    /**
+     * Remove an item
+     * @param itemToRemove
+     */
     public void removeItem(String itemToRemove) {
         for (Collectible item : entities) {
             if (item.getType().equals(itemToRemove)) {
@@ -130,6 +170,12 @@ public class Inventory {
         }
     }
 
+    /**
+     * Build an item
+     * @param buildable
+     * @param id
+     * @return item built
+     */
     public boolean buildItem(String buildable, String id) {
         if (CheckMaterials(buildable) && buildable.equals("bow")) {
             //make bow
@@ -155,14 +201,26 @@ public class Inventory {
         return false;
     }
 
+    /**
+     * Gets collectable items
+     * @return items that are collectable
+     */
     public List<Collectible> getCollectableItems() {
         return entities;
     }
 
+    /**
+     * Gets buildable items
+     * @return items that are buildable
+     */
     public List<Buildable> getBuildableItems() {
         return builtItems;
     }
 
+    /**
+     * Reduce state of duarability for relevant entities
+     * @param id
+     */
     public void reduceDurability(String id) {
         if (buildable.contains(id)) {
             // Buildable item
@@ -178,6 +236,9 @@ public class Inventory {
         }
     }
 
+    /**
+     * Remove items that have been broken
+     */
     public void removeBrokenItems() {
         // Deleting broken shields and bows
         builtItems = builtItems.stream().filter(item -> item.getDurability() != 0).collect(Collectors.toList());
