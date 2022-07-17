@@ -5,6 +5,7 @@ import dungeonmania.Entity;
 import dungeonmania.dynamic_entity.Player;
 import dungeonmania.dynamic_entity.Spider;
 import dungeonmania.exceptions.InvalidActionException;
+import dungeonmania.response.models.EntityResponse;
 import dungeonmania.util.Position;
 
 /**
@@ -57,6 +58,10 @@ public class ZombieToastSpawner extends StaticEntity {
         dungeon.removeEntity(this.getId());
     }
     
+    @Override 
+    public EntityResponse getEntityResponse() {
+        return new EntityResponse(getId(), getType(), getPosition(), true);
+	}
     /**
      * Gets type
      * @return the type, i.e. "zombie_toast_spawner"
