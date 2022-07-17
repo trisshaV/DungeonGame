@@ -48,16 +48,16 @@ import org.json.JSONObject;
 
 public class DungeonManiaController {
 
-    private int id;
-    private JSONObject jsonConfig;
+    private int id = 0;
+    private JSONObject jsonConfig = null;
     private List<Portal> unpairedPortals = new ArrayList<>();
     private List<Entity> entities = new ArrayList<>();
     private Player player = null;
 	private String dungeonId = "1";
     private Goal goalStrategy = null;
-	private String dungeonName;
+	private String dungeonName = null;
     private Observer observer = null;
-    private Spiderspawner spiderspawner;
+    private Spiderspawner spiderspawner = null;
 
     /**
      * Gets skin
@@ -102,6 +102,8 @@ public class DungeonManiaController {
      * @throws IllegalArgumentException
      */
     public DungeonResponse newGame(String dungeonName, String configName) throws IllegalArgumentException {
+
+        clearHistory();
         this.dungeonName = dungeonName;
         String confContent;
         String dungeonContent;
