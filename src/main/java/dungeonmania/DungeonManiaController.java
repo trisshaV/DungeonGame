@@ -50,13 +50,13 @@ public class DungeonManiaController {
 
     private int id;
     private JSONObject jsonConfig;
-    private List<Portal> unpairedPortals = new ArrayList<>();
-    private List<Entity> entities = new ArrayList<>();
-    private Player player = null;
-	private String dungeonId = "1";
-    private Goal goalStrategy = null;
+    private List<Portal> unpairedPortals;
+    private List<Entity> entities;
+    private Player player;
+	private String dungeonId = "0";
+    private Goal goalStrategy;
 	private String dungeonName;
-    private Observer observer = null;
+    private Observer observer;
     private Spiderspawner spiderspawner;
 
     /**
@@ -103,6 +103,11 @@ public class DungeonManiaController {
      */
     public DungeonResponse newGame(String dungeonName, String configName) throws IllegalArgumentException {
         this.dungeonName = dungeonName;
+        unpairedPortals = new ArrayList<>();
+        entities = new ArrayList<>();
+        player = null;
+        dungeonId = String.valueOf(Integer.parseInt(dungeonId) + 1);
+
         String confContent;
         String dungeonContent;
         try {
@@ -128,7 +133,6 @@ public class DungeonManiaController {
         id = entities.size();
 
         // Create observer
-        Player player = null;
         for (Entity entity : entities) {
             if (entity.getType().equals("player")) {
                 player = (Player)entity;
