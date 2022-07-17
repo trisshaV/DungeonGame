@@ -102,8 +102,7 @@ public class DungeonManiaController {
      * @throws IllegalArgumentException
      */
     public DungeonResponse newGame(String dungeonName, String configName) throws IllegalArgumentException {
-
-        clearHistory();
+        
         this.dungeonName = dungeonName;
         String confContent;
         String dungeonContent;
