@@ -9,6 +9,11 @@ import dungeonmania.static_entity.FloorSwitch;
 
 public class BoulderGoal implements Goal {
 
+    /**
+     * Checks completed
+     * @param entities
+     * @return boolean confirmation of completion
+     */
     @Override
     public boolean isComplete(List<Entity> entities) {
         List<Entity> boulders = entities.stream()
@@ -28,11 +33,19 @@ public class BoulderGoal implements Goal {
             });
     }
 
+    /**
+     * Gets goals
+     * @return the goals, i.e. ":boulders"
+     */
     @Override
     public String getGoal(List<Entity> entities) {
         return ":boulders";
     }
 
+    /**
+     * Status of exit goal
+     * @return boolean of exit goal status
+     */
     @Override
     public boolean isExitGoal() {
         return false;
