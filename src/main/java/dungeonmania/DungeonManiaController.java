@@ -47,7 +47,6 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 public class DungeonManiaController {
-
     private int id;
     private JSONObject jsonConfig;
     private List<Portal> unpairedPortals;
@@ -58,6 +57,7 @@ public class DungeonManiaController {
 	private String dungeonName;
     private Observer observer;
     private Spiderspawner spiderspawner;
+
 
     /**
      * Gets skin
@@ -102,6 +102,7 @@ public class DungeonManiaController {
      * @throws IllegalArgumentException
      */
     public DungeonResponse newGame(String dungeonName, String configName) throws IllegalArgumentException {
+        
         this.dungeonName = dungeonName;
         unpairedPortals = new ArrayList<>();
         entities = new ArrayList<>();
@@ -257,7 +258,7 @@ public class DungeonManiaController {
             return getRandomPosition();
         }
         return randomPos;
-        
+       
     }
 
     /**
@@ -342,6 +343,12 @@ public class DungeonManiaController {
     public DungeonResponse tick(String itemUsedId) throws IllegalArgumentException, InvalidActionException {
         Position pos = player.getPosition();
         Collectible item = player.getItemById(itemUsedId);
+        if (item == null) {
+            throw new InvalidActionException("itemUsed is not in the player's inventory");
+        }
+        if (!validConsumable().contains(item.getType())) {
+            throw new IllegalArgumentException("itemUsed must be one of bomb, invincibility_potion, invisibility_potion");
+        }
         if (item.getType().equals("bomb")) {
             entities.add(new ActiveBomb(itemUsedId, pos));
             player.removeItem(item);
@@ -365,9 +372,6 @@ public class DungeonManiaController {
         );
         if (this.observer.checkBattle() == true) {
             entities = removeDeadEntities();
-        }
-        if (!validConsumable().contains(item.getType())) {
-            throw new IllegalArgumentException("itemUsed must be one of bomb, invincibility_potion, invisibility_potion");
         }
 
         // check if the bomb will explode
