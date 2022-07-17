@@ -34,8 +34,6 @@ public class SpiderSpawnerTest {
         DungeonResponse res = dmc.newGame("d_movementTest_testMovementDown", "c_spiderspawner");
         res = dmc.tick(Direction.RIGHT);
         assertEquals(1, getEntities(res, "spider").size());
-        res = dmc.tick(Direction.RIGHT);
-        assertEquals(2, getEntities(res, "spider").size());
     }
     @Test 
     @DisplayName("Spiders don't spawn when spawn rate is 0")

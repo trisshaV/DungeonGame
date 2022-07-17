@@ -15,41 +15,28 @@ public class Observer {
     public boolean playerDeceased = false;
     public List<BattleRecord> battleRecords = new ArrayList<>();
 
-    private List<DynamicEntity> entities;
-    private Player player;
-
     /**
      * Observer contructor
      * @param entitiesList
      * @param player
      */
-    public Observer(List<Entity> entitiesList, Player player) {
-        List<Entity> temp = entitiesList.stream().filter(entity -> entity instanceof DynamicEntity && !(entity instanceof Player)).collect(Collectors.toList());
-        entities = new ArrayList<>();
-        temp.stream().forEach(
-            e -> {
-                if (e instanceof Mercenary && ((Mercenary)e).getStatus().equals("HOSTILE")) {
-                    entities.add((DynamicEntity)e);
-                } else {
-                    entities.add((DynamicEntity)e);
-                }
-            }
-        );
-        this.player = player;
+    public Observer() {
     }
 
     /**
      * Checks battles
      * @return relevant recordings
      */
-    public boolean checkBattle() {
+    public boolean checkBattle(List <Entity> entities) {
+
+        Entity player = entities.stream().filter(x -> x.getType().equals("player")).findFirst().get();
         Position playerPos = player.getPosition();
-        int numBattles = battleRecords.size();
-        entities.stream().forEach(
+        int numBattles = battleRecords.size();  
+        entities.stream().filter(x -> x instanceof DynamicEntity && !(x instanceof Player)).forEach(
             e -> {
                 Position entityPosition = e.getPosition();
                 if (playerPos.equals(entityPosition)) {
-                    BattleRecord newBattle = new BattleRecord(e, player);
+                    BattleRecord newBattle = new BattleRecord((DynamicEntity)e, (DynamicEntity)player);
                     battleRecords.add(newBattle);
                 }
             }

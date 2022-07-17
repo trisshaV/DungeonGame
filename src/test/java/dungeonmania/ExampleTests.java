@@ -45,7 +45,7 @@ public class ExampleTests {
         // assert after movement
         assertEquals(expectedPlayer, actualPlayer);
     }
-    /*
+    
     @Test
     @DisplayName("Test player can use a key to open and walk through a door")
     public void useKeyWalkThroughOpenDoor() {
@@ -63,8 +63,8 @@ public class ExampleTests {
         assertEquals(0, getInventory(res, "key").size());
         assertNotEquals(pos, getEntities(res, "player").get(0).getPosition());
     }
-    */
-    /*
+    
+    
     @Test
     @DisplayName("Test basic movement of spiders")
     public void basicMovement() {
@@ -97,8 +97,7 @@ public class ExampleTests {
             }
         }
     }
-    */
-    /*   
+    
     @Test
     @DisplayName("Test surrounding entities are removed when placing a bomb next to an active switch with config file bomb radius set to 2")
     public void placeBombRadius2() {
@@ -131,8 +130,8 @@ public class ExampleTests {
         assertEquals(0, getEntities(res, "treasure").size());
         assertEquals(1, getEntities(res, "player").size());
     }
-    */
-    /*
+    
+    
     @Test
     @DisplayName("Testing a map with 4 conjunction goal")
     public void andAll() {
@@ -170,7 +169,7 @@ public class ExampleTests {
         res = dmc.tick(Direction.DOWN);
         assertEquals("", getGoals(res));
     }
-    */
+    
 
     private static DungeonResponse genericMercenarySequence(DungeonManiaController controller, String configFile) {
         /*
