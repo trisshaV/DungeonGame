@@ -32,7 +32,11 @@ public class GoalsTests {
     @Test
     @DisplayName("Test simple enemies goal")
     public void testSimpleEnemiesGoal() {
-
+        DungeonManiaController dmc = new DungeonManiaController();
+        DungeonResponse resp = dmc.newGame("d_battleTest_enemiesGoal", "c_battleTests_basicMercenaryMercenaryDies");
+        assertTrue(resp.getGoals().contains(":enemies"));
+        resp = dmc.tick(Direction.RIGHT);
+        assertFalse(resp.getGoals().contains(":enemies"));
     }
 
     @Test
@@ -46,7 +50,7 @@ public class GoalsTests {
     }
 
     @Test
-    @DisplayName("Test composite goals")
+    @DisplayName("Test composite goals AND")
     public void testCompositeGoals() {
         DungeonManiaController dmc = new DungeonManiaController();
         DungeonResponse resp = dmc.newGame("d_complexGoals_exitLast", "c_bombTest_placeBombRadius2");
@@ -75,6 +79,25 @@ public class GoalsTests {
         assertFalse(resp.getGoals().contains(":treasure"));
         assertFalse(resp.getGoals().contains(":exit"));
         assertFalse(resp.getGoals().contains(":boulders"));
+    }
 
+    @Test
+    @DisplayName("Test complex goals OR")
+    void testCompositeGoalsOR() {
+        DungeonManiaController dmc = new DungeonManiaController();
+        DungeonResponse resp = dmc.newGame("d_complexGoals_OR", "c_bombTest_placeBombRadius2");
+        assertTrue(resp.getGoals().contains(":treasure"));
+        assertTrue(resp.getGoals().contains(":exit"));
+        assertTrue(resp.getGoals().contains(":boulders"));
+        resp = dmc.tick(Direction.DOWN);
+        // should have achieved boulders
+        assertTrue(resp.getGoals().contains(":treasure"));
+        assertTrue(resp.getGoals().contains(":exit"));
+        assertFalse(resp.getGoals().contains(":boulders"));
+        // go to exit, cannot achieve exit
+        resp = dmc.tick(Direction.LEFT);
+        assertFalse(resp.getGoals().contains(":treasure"));
+        assertFalse(resp.getGoals().contains(":exit"));
+        assertFalse(resp.getGoals().contains(":boulders"));
     }
 }

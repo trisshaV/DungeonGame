@@ -64,4 +64,33 @@ public class InteractTest {
         assertThrows(InvalidActionException.class, () -> dmc.interact(getEntities(dmc.tick(Direction.RIGHT), "zombie_toast_spawner").get(0).getId()));
         
     }
+
+    @Test
+    @DisplayName("Interact Merc Valid")
+    public void testInteractMercValid() {
+        DungeonManiaController dmc;
+        dmc = new DungeonManiaController();
+        DungeonResponse res = dmc.newGame("d_interactMercValid", "c_DoorsKeysTest_useKeyWalkThroughOpenDoor");
+        assertDoesNotThrow(() ->  dmc.interact(getEntities(dmc.tick(Direction.RIGHT), "mercenary").get(0).getId()));
+        assertEquals("FRIENDLY", dmc.getMercStatus());
+    }
+
+    @Test
+    @DisplayName("Interact Merc Out of Range")
+    public void testInteractMercOutOfRange() {
+        DungeonManiaController dmc;
+        dmc = new DungeonManiaController();
+        DungeonResponse res = dmc.newGame("d_interactMercInvalidRange", "c_DoorsKeysTest_useKeyWalkThroughOpenDoor");
+        assertThrows(InvalidActionException.class , () ->  dmc.interact(getEntities(dmc.tick(Direction.RIGHT), "mercenary").get(0).getId()));
+        
+    }
+
+    @Test 
+    @DisplayName("interact Merc Not Enough Coins") 
+    public void testInteractMercNotEnoughCoins() {
+        DungeonManiaController dmc;
+        dmc = new DungeonManiaController();
+        DungeonResponse res = dmc.newGame("d_interactMercInvalidCoins", "c_DoorsKeysTest_useKeyWalkThroughOpenDoor");
+        assertThrows(InvalidActionException.class , () ->  dmc.interact(getEntities(dmc.tick(Direction.RIGHT), "mercenary").get(0).getId()));
+    }
 }
