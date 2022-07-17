@@ -139,7 +139,7 @@ public class DungeonManiaController {
                 player = (Player)entity;
             }
         }
-        this.observer = new Observer(entities, player);
+        this.observer = new Observer();
         return getDungeonResponseModel();
     }
 
@@ -370,7 +370,7 @@ public class DungeonManiaController {
                 y.updatePos(null, entities);
             }
         );
-        if (this.observer.checkBattle() == true) {
+        if (this.observer.checkBattle(entities) == true) {
             entities = removeDeadEntities();
         }
 
@@ -395,7 +395,7 @@ public class DungeonManiaController {
      */
     private List<Entity> removeDeadEntities() {
         List <Entity> result = new ArrayList<>();
-        result = entities.stream().filter(e -> e instanceof DynamicEntity && ((DynamicEntity)e).getHealth() > 0).collect(Collectors.toList());
+        result = entities.stream().filter(e -> !(e instanceof DynamicEntity) || ((e instanceof DynamicEntity) && ((DynamicEntity)e).getHealth() > 0)).collect(Collectors.toList());
         return result;
     }
 
@@ -414,7 +414,7 @@ public class DungeonManiaController {
             }
         );
         player.tickPotionEffects();
-        boolean battleOccured = this.observer.checkBattle();
+        boolean battleOccured = this.observer.checkBattle(entities);
         if (battleOccured) {
             entities = removeDeadEntities();
         }
@@ -425,7 +425,7 @@ public class DungeonManiaController {
                 y.updatePos(movementDirection, entities);
             }
         );
-        battleOccured = this.observer.checkBattle();
+        battleOccured = this.observer.checkBattle(entities);
         if (battleOccured) {
             entities = removeDeadEntities();
         }
