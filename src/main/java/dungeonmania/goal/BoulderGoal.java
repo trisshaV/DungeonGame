@@ -50,5 +50,4 @@ public class BoulderGoal implements Goal {
     public boolean isExitGoal() {
         return false;
     }
-
 }

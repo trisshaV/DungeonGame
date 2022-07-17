@@ -10,6 +10,11 @@ import dungeonmania.util.Position;
 
 public class ExitGoal implements Goal {
 
+    /**
+     * Checks completed
+     * @param entities
+     * @return boolean confirmation of completion
+     */
     @Override
     public boolean isComplete(List<Entity> entities) { 
         Optional<Entity> maybe_player =  entities.stream()
@@ -24,14 +29,21 @@ public class ExitGoal implements Goal {
             .anyMatch(e -> e instanceof Exit);
     }
 
+    /**
+     * Gets goals
+     * @return the goals, i.e. ":exit"
+     */
     @Override
     public String getGoal(List<Entity> entities) {
         return ":exit";
     }
 
+    /**
+     * Status of exit goal
+     * @return boolean of exit goal status
+     */
     @Override
     public boolean isExitGoal() {
         return true;
     }
-
 }
