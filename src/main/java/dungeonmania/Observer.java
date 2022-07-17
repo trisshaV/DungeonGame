@@ -36,7 +36,6 @@ public class Observer {
             e -> {
                 Position entityPosition = e.getPosition();
                 if (playerPos.equals(entityPosition)) {
-                    System.out.println("hi");
                     BattleRecord newBattle = new BattleRecord((DynamicEntity)e, (DynamicEntity)player);
                     battleRecords.add(newBattle);
                 }

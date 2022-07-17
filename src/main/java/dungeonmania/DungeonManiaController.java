@@ -395,9 +395,7 @@ public class DungeonManiaController {
      */
     private List<Entity> removeDeadEntities() {
         List <Entity> result = new ArrayList<>();
-        System.out.println(entities);
         result = entities.stream().filter(e -> !(e instanceof DynamicEntity) || ((e instanceof DynamicEntity) && ((DynamicEntity)e).getHealth() > 0)).collect(Collectors.toList());
-        System.out.println(result);
         return result;
     }
 
