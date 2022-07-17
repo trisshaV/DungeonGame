@@ -81,8 +81,8 @@ public class Mercenary extends DynamicEntity {
             Player p = (Player)l.stream().filter(x -> x instanceof Player).findFirst().orElse(null);
             if (p.getStatus().equals("INVISIBLE")) {
                 randomHostile(l);
-            } else if (p.getStatus().equals("INVINCILBLE")) {
-                randomHostile(l);
+            } else if (p.getStatus().equals("INVINCIBLE")) {
+                runAway(l);
             } else {
                 chaseHostile(l);
             }
@@ -172,5 +172,60 @@ public class Mercenary extends DynamicEntity {
     @Override
     public String getType() {
         return "mercenary";
+    }
+
+    /**
+     * Runs away from player
+     * @param List <Entity> 
+     */
+    private void runAway(List <Entity> l) {
+        Entity p = l.stream().filter(x -> x instanceof Player).findFirst().orElse(null);
+        Position playerPos = p.getPosition();
+        int x1 = playerPos.getX();
+        int y1 = playerPos.getY();
+
+        Position current = this.getPosition();
+        int x2 = current.getX();
+        int y2 = current.getY();
+
+        // Two possible positions for Mercenary to move to
+        if (x1 > x2) {
+            x2 -= 1;
+        } else if (x2 > x1) {
+            x2 += 1;
+        }
+
+        if (y1 > y2) {
+            y2 -= 1;
+        } else if (y2 > y1) {
+            y2 += 1;
+        }
+
+        Position nextPosition1 = new Position(x2, current.getY());
+        Position nextPosition2 = new Position(current.getX(), y2);
+
+        boolean checkPos2 = true;
+        if (x2 != current.getX()) {
+            List <Entity> collides = l.stream().filter(entity -> entity.getPosition().equals(nextPosition1)).collect(Collectors.toList());
+
+            if (collides.size() == 0) {
+                this.setPosition(nextPosition1);
+                checkPos2 = false;
+            } else if (collides.stream().filter(entity -> (entity.equals(null) || entity.collide(this)) == true).collect(Collectors.toList()).size() != 0) {
+                this.setPosition(nextPosition1);
+                checkPos2 = false;
+            }
+        }
+        if (checkPos2 == true && y2 != current.getY()) {
+            List <Entity> collides = l.stream().filter(entity -> entity.getPosition().equals(nextPosition2)).collect(Collectors.toList());
+            if (collides.size() == 0) {
+                this.setPosition(nextPosition2);
+                return;
+            } else if (collides.stream().filter(entity -> (entity.equals(null) || entity.collide(this)) == true).collect(Collectors.toList()).size() != 0) {
+                this.setPosition(nextPosition2);
+                return;
+            }
+        }
+        return;
     }
 }
