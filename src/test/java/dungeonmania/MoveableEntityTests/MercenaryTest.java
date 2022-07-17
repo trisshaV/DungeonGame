@@ -101,12 +101,41 @@ public class MercenaryTest {
         Position pos = getEntities(res, "mercenary").get(0).getPosition();
         Position previousPos = new Position(pos.getX(), pos.getY());
 
-        // Assert Random Movement of Zombie toast
+        // Assert Random Movement of Mercenary
         for (int i = 0; i <= 1; ++i) {
             res = dmc.tick(Direction.UP);
             assertNotEquals(previousPos, getEntities(res, "mercenary").get(0).getPosition());
             previousPos = getEntities(res, "mercenary").get(0).getPosition();
         }
+
+    }
+
+    @Test
+    @DisplayName("Test invincible movement of mercenary")
+    public void testInvincibleMovement() throws IllegalArgumentException, InvalidActionException {
+         /*
+        *  [  ] [  ]  wall wall wall
+        *  wall invin play [  ] merc
+        *  [  ] [  ]  wall wall wall
+        */
+        DungeonManiaController dmc = new DungeonManiaController();
+        DungeonResponse res = dmc.newGame("d_mercenaryInvincible", "c_UnbrokenWeaponsWithSpiderTests");
+        EntityResponse potionOne = getEntities(res, "invincibility_potion").get(0);
+        Position pos = getEntities(res, "mercenary").get(0).getPosition();
+        
+        // Pick up potion;
+        res = dmc.tick(Direction.LEFT);
+        int x = pos.getX();
+        int y = pos.getY();
+        assertEquals(new Position(x-1, y), getEntities(res, "mercenary").get(0).getPosition());
+
+        // Consume potion
+        res = dmc.tick(potionOne.getId());
+        
+
+        // Assert Invincible Movement of Mercenary
+        assertEquals(new Position(x, y), getEntities(res, "mercenary").get(0).getPosition());
+
 
     }
     

@@ -47,7 +47,7 @@ public class Mercenary extends DynamicEntity {
             Player p = (Player)l.stream().filter(x -> x instanceof Player).findFirst().orElse(null);
             if (p.getStatus().equals("INVISIBLE")) {
                 randomHostile(l);
-            } else if (p.getStatus().equals("INVINCILBLE")) {
+            } else if (p.getStatus().equals("INVINCIBLE")) {
                 randomHostile(l);
             } else {
                 chaseHostile(l);
