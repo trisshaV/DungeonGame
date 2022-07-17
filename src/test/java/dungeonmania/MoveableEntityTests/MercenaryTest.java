@@ -137,7 +137,7 @@ public class MercenaryTest {
         assertEquals(new Position(x, y), getEntities(res, "mercenary").get(0).getPosition());
 
     }
-    
+
     @Test
     @DisplayName("Test invincible movement of mercenary")
     public void testInvincibleMovementMultiple() throws IllegalArgumentException, InvalidActionException {
