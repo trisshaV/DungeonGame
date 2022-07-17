@@ -6,6 +6,8 @@ import java.util.stream.Collectors;
 import org.json.JSONObject;
 
 import dungeonmania.Entity;
+import dungeonmania.exceptions.InvalidActionException;
+import dungeonmania.response.models.EntityResponse;
 import dungeonmania.util.Direction;
 import dungeonmania.util.Position;
 
@@ -24,7 +26,8 @@ import dungeonmania.util.Position;
 public class Mercenary extends DynamicEntity {
 
     private String status = "HOSTILE";
-    
+    private int bribeRadius;
+    private int bribeAmount;
     /**
      * Mercenary Constrcutor
      * @param id
@@ -35,8 +38,39 @@ public class Mercenary extends DynamicEntity {
         super(id, "mercenary", xy);
         this.attack = config.getDouble("mercenary_attack");
         this.health = config.getDouble("mercenary_health");
+        this.bribeRadius = config.getInt("bribe_radius");
+        this.bribeAmount = config.getInt("bribe_amount");
     }
 
+    /**
+     * Mercenary interact, allows player to bribe mercenary
+     * @param player
+     */
+    @Override
+    public void interact(Player player) throws InvalidActionException {
+        // check radius
+        Position distance = Position.calculatePositionBetween(player.getPosition(), this.getPosition());
+        double radius = Math.sqrt(Math.pow(distance.getX(), 2) + Math.pow(distance.getY(), 2));
+        if (radius > bribeRadius) {
+            throw new InvalidActionException("Too far from mercenary");
+        }
+        // check coins
+        if (player.getCoins() < bribeAmount) {
+            throw new InvalidActionException("Not enough coins");
+        }
+        // set status to friendly 
+        status = "FRIENDLY";
+        
+    }
+
+    @Override
+    public EntityResponse getEntityResponse() {
+        
+        if (status.equals("FRIENDLY")) {
+            return new EntityResponse(getId(), getType(), getPosition(), false);
+        }
+        return new EntityResponse(getId(), getType(), getPosition(), true);
+	}
     /**
      * Updates position
      * @param d

@@ -385,9 +385,9 @@ public class DungeonManiaController {
      * Get rid of deceased entities from game
      * @return deceased entities
      */
-    private List <Entity> removeDeadEntities() {
+    private List<Entity> removeDeadEntities() {
         List <Entity> result = new ArrayList<>();
-        result = entities.stream().filter(e -> e instanceof DynamicEntity && ((DynamicEntity)e).getHealth() < 0).collect(Collectors.toList());
+        result = entities.stream().filter(e -> e instanceof DynamicEntity && ((DynamicEntity)e).getHealth() > 0).collect(Collectors.toList());
         return result;
     }
 
@@ -588,5 +588,15 @@ public class DungeonManiaController {
         if (remove != null) {
             entities.remove(remove);
         }
+    }
+
+    public String getMercStatus() {
+        for (Entity entity : entities) {
+            if (entity instanceof Mercenary) {
+                Mercenary check = (Mercenary) entity;
+                return check.getStatus();
+            }
+        }
+       return null;
     }
 }
