@@ -13,12 +13,21 @@ import dungeonmania.util.Position;
  *      - Spawners can be destroyed by a Player (that has a weapon) only if they are on a cardinally adjacent square to it.
  */
 public class ZombieToastSpawner extends StaticEntity {
-    DungeonManiaController dungeon;
-    int spawnRate;
-    int currentTick;
-    int zombieAttack;
-    int zombieHealth;
+    private DungeonManiaController dungeon;
+    private int spawnRate;
+    private int currentTick;
+    private int zombieAttack;
+    private int zombieHealth;
 
+    /**
+     * ZombieToastSpawner Constructor
+     * @param dungeon
+     * @param id
+     * @param xy
+     * @param spawnRate
+     * @param zombieAttack
+     * @param zombieHealth
+     */
     public ZombieToastSpawner(DungeonManiaController dungeon, String id, Position xy, int spawnRate, int zombieAttack, int zombieHealth) {
         super(id, "zombie_toast_spawner", xy);
         this.dungeon = dungeon;
@@ -28,6 +37,12 @@ public class ZombieToastSpawner extends StaticEntity {
         this.zombieHealth = zombieHealth;
     }
 
+    /**
+     * Interaction of Player and spawner
+     * @param player
+     * @return destruction of spawner
+     * @throws InvalidActionException
+     */
     @Override
     public void interact(Player player) throws InvalidActionException {
         player.getPosition();
@@ -41,11 +56,19 @@ public class ZombieToastSpawner extends StaticEntity {
         }
         dungeon.removeEntity(this.getId());
     }
+    
+    /**
+     * Gets type
+     * @return the type, i.e. "zombie_toast_spawner"
+     */
     @Override
     public String getType() {
         return "zombie_toast_spawner";
     }
     
+    /**
+     * Tick for zombie_toast_spawner
+     */
     public void tick() {
         currentTick += 1;
         if (currentTick == spawnRate) {
@@ -68,8 +91,13 @@ public class ZombieToastSpawner extends StaticEntity {
             }
         }
     }
+
+    /**
+     * Check for collision with spider
+     * @param entity
+     * @return the collision status
+     */
     public boolean collide(Entity entity) {
         return entity instanceof Spider;
     }
-
 }

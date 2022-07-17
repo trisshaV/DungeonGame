@@ -2,13 +2,10 @@ package dungeonmania;
 
 import dungeonmania.collectible.Arrow;
 import dungeonmania.collectible.Bomb;
-import dungeonmania.collectible.Bow;
-import dungeonmania.collectible.Buildable;
 import dungeonmania.collectible.Collectible;
 import dungeonmania.collectible.InvincibilityPotion;
 import dungeonmania.collectible.InvisibilityPotion;
 import dungeonmania.collectible.Key;
-import dungeonmania.collectible.Shield;
 import dungeonmania.collectible.Sword;
 import dungeonmania.collectible.Treasure;
 import dungeonmania.collectible.Wood;
@@ -27,9 +24,6 @@ import dungeonmania.response.models.ItemResponse;
 import dungeonmania.response.models.RoundResponse;
 import dungeonmania.response.models.BattleResponse;
 import dungeonmania.response.models.DungeonResponse;
-import dungeonmania.response.models.ItemResponse;
-import dungeonmania.response.models.EntityResponse;
-import dungeonmania.static_entity.*;
 import dungeonmania.util.Direction;
 import dungeonmania.util.FileLoader;
 import dungeonmania.util.Position;
@@ -41,21 +35,13 @@ import dungeonmania.static_entity.Portal;
 import dungeonmania.static_entity.StaticEntity;
 import dungeonmania.static_entity.Wall;
 import dungeonmania.static_entity.ZombieToastSpawner;
-import javassist.expr.Instanceof;
-import javassist.expr.NewArray;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Objects;
 import java.util.UUID;
-import java.util.Optional;
 import java.util.Random;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
-
-import javax.servlet.FilterRegistration.Dynamic;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -69,39 +55,54 @@ public class DungeonManiaController {
     private Player player = null;
 	private String dungeonId = "1";
     private Goal goalStrategy = null;
-    private String goal = "";
 	private String dungeonName;
     private Observer observer = null;
     private Spiderspawner spiderspawner;
 
+    /**
+     * Gets skin
+     * @return skin, i.e. "default"
+     */
     public String getSkin() {
         return "default";
     }
 
+    /**
+     * Gets localisation
+     * @return localisation, i.e., "en_US"
+     */
     public String getLocalisation() {
         return "en_US";
     }
 
     /**
+     * Load dungeons
      * /dungeons
+     * @return dungeons
      */
     public static List<String> dungeons() {
         return FileLoader.listFileNamesInResourceDirectory("dungeons");
     }
 
     /**
+     * Load configs
      * /configs
+     * @return configs
      */
     public static List<String> configs() {
         return FileLoader.listFileNamesInResourceDirectory("configs");
     }
 
     /**
+     * Create a new game
      * /game/new
+     * @param dungeonName
+     * @param configName
+     * @return dungeon response model for the new game created
+     * @throws IllegalArgumentException
      */
     public DungeonResponse newGame(String dungeonName, String configName) throws IllegalArgumentException {
         this.dungeonName = dungeonName;
-
         String confContent;
         String dungeonContent;
         try {
@@ -120,7 +121,6 @@ public class DungeonManiaController {
         goalStrategy = new SuperGoal(json.getJSONObject("goal-condition"), jsonConfig);
         spiderspawner = new Spiderspawner(this, jsonConfig.getInt("spider_attack"), jsonConfig.getInt("spider_health"), jsonConfig.getInt("spider_spawn_rate"));
 
-
         for (int i = 0; i < jsonEntities.length(); i++) {
             JSONObject jsonEntity = jsonEntities.getJSONObject(i);
             addEntity(String.valueOf(i), jsonEntity, jsonConfig);
@@ -136,9 +136,14 @@ public class DungeonManiaController {
         }
         this.observer = new Observer(entities, player);
         return getDungeonResponseModel();
-
     }
 
+    /**
+     * Add entities to game before start
+     * @param id
+     * @param jsonEntity
+     * @param jsonConfig
+     */
     private void addEntity(String id, JSONObject jsonEntity, JSONObject jsonConfig) {
         String type = jsonEntity.getString("type");
         Position position = new Position(jsonEntity.getInt("x"), jsonEntity.getInt("y"));
@@ -222,11 +227,21 @@ public class DungeonManiaController {
         }
         entities.add(newEntity);
     }
+    
+    /**
+     * Spawn spiders in game
+     * @param attack
+     * @param health
+     */
     public void spawnSpider(int attack, int health) {
         Entity newEntity = new Spider(UUID.randomUUID().toString(), getRandomPosition(), attack, health);
         entities.add(newEntity);
     }
 
+    /**
+     * Gets random position
+     * @return random positions
+     */
     public Position getRandomPosition() {
         Entity player = entities.stream().filter(x -> x instanceof Player).findFirst().get();
         Player target = (Player) player;
@@ -241,15 +256,30 @@ public class DungeonManiaController {
         
     }
 
+    /**
+     * Spawns Zombie Toast
+     * @param attack
+     * @param health
+     * @param position
+     */
     public void spawnToast(int attack, int health, Position position) {
         Entity newEntity = new ZombieToast(UUID.randomUUID().toString(), position, attack, health);
         entities.add(newEntity);
     }
     
+    /**
+     * Adds portals to game
+     * @param add
+     */
     public void addPortal(Portal add) {
         unpairedPortals.add(add);
     }
 
+    /**
+     * Checks for partner portals
+     * @param finder
+     * @return corresponding portal
+     */
     public Portal checkForPartner(Portal finder) {
         for (Portal portal : unpairedPortals) {
             if (portal.getColour().equals(finder.getColour()) && !(finder.equals(portal))) {
@@ -260,6 +290,11 @@ public class DungeonManiaController {
         return null;
     }
 
+    /**
+     * Finds keys
+     * @param i
+     * @return corresponding key
+     */
     public Key findKey(int i) {
         for (Entity entity: entities) {
             if (entity instanceof Key) {
@@ -272,7 +307,9 @@ public class DungeonManiaController {
         return null;
     }
     /**
+     * Gets dunegeon response models
      * /game/dungeonResponseModel
+     * @return dungeon response model
      */
     public DungeonResponse getDungeonResponseModel() {
         List<EntityResponse> entityResponseList = entities.stream()
@@ -283,14 +320,22 @@ public class DungeonManiaController {
             listBattleResponses(), player.getBuildables(), goalStrategy.getGoal(entities));
     }
     
+    /**
+     * Checks for entity is consumable
+     * @return any valid consumable
+     */
     public List<String> validConsumable() {
         return Arrays.asList("bomb","invincibility_potion", "invisibility_potion");
     }
     /**
+     * In game ticks
      * /game/tick/item
+     * @param itemUsedId
+     * @return executed ticks for game
+     * @throws IllegalArgumentException
+     * @throws InvalidActionException
      */
     public DungeonResponse tick(String itemUsedId) throws IllegalArgumentException, InvalidActionException {
-
         Position pos = player.getPosition();
         Collectible item = player.getItemById(itemUsedId);
         if (item.getType().equals("bomb")) {
@@ -336,6 +381,10 @@ public class DungeonManiaController {
         return getDungeonResponseModel();
     }
 
+    /**
+     * Get rid of deceased entities from game
+     * @return deceased entities
+     */
     private List <Entity> removeDeadEntities() {
         List <Entity> result = new ArrayList<>();
         result = entities.stream().filter(e -> e instanceof DynamicEntity && ((DynamicEntity)e).getHealth() < 0).collect(Collectors.toList());
@@ -343,7 +392,10 @@ public class DungeonManiaController {
     }
 
     /**
+     * In game ticks for movement
      * /game/tick/movement
+     * @param movementDirection
+     * @return executed ticks for movement
      */
     public DungeonResponse tick(Direction movementDirection) {
         //move player
@@ -369,7 +421,6 @@ public class DungeonManiaController {
         if (battleOccured) {
             entities = removeDeadEntities();
         }
-
         player.pickUp(entities);
         List <Entity> copy = new ArrayList<>();
         copy.addAll(entities);
@@ -379,7 +430,6 @@ public class DungeonManiaController {
                 spawner.tick();
             }
         );
-
         spiderspawner.tick();
         
         // Check if the bomb will explode
@@ -394,7 +444,6 @@ public class DungeonManiaController {
             }
         }
         entities.removeAll(toRemove);
-        
         return getDungeonResponseModel();
     }
 
@@ -403,7 +452,12 @@ public class DungeonManiaController {
     }
 
     /**
+     * Check if buildable entity can be constructed
      * /game/build
+     * @param buildable
+     * @return corresponding validity, and if so buildable id and dungeon response model
+     * @throws IllegalArgumentException
+     * @throws InvalidActionException
      */
     public DungeonResponse build(String buildable) throws IllegalArgumentException, InvalidActionException {
         if (!validBuildables().contains(buildable)) {
@@ -421,7 +475,12 @@ public class DungeonManiaController {
     }
 
     /**
+     * Interactions in game
      * /game/interact
+     * @param entityId
+     * @return congruent interactions
+     * @throws IllegalArgumentException
+     * @throws InvalidActionException
      */
     public DungeonResponse interact(String entityId) throws IllegalArgumentException, InvalidActionException {
         Entity target = entities.stream().filter(x -> x.getId() == entityId).findFirst().orElse(null);
@@ -429,10 +488,13 @@ public class DungeonManiaController {
             throw new IllegalArgumentException();
         }
         target.interact(player);
-
         return getDungeonResponseModel();
     }
 
+    /**
+     * Active status of switch
+     * @return boolean of status
+     */
     public boolean switchActive() {
         for (Entity entity : entities) {
             if (entity instanceof FloorSwitch) {
@@ -442,11 +504,20 @@ public class DungeonManiaController {
         }
        return false;
     }
+    /**
+     * Status of exit reached
+     * @return boolean of exit status
+     */
     public boolean exitReached() {
         Exit exit = (Exit) entities.stream().filter(x -> x instanceof Exit).findFirst().orElse(null);
         return exit.getActive();
     }
     
+    /**
+     * Checks for static entity collisions
+     * @param pos
+     * @return relevant collisions
+     */
     public Entity checkStaticCollision(Position pos) {
         List<Entity> colliders = this.entities.stream()
                 .filter(x -> x.getPosition().equals(pos))
@@ -458,6 +529,10 @@ public class DungeonManiaController {
                 .orElse(null));
     }
 
+    /**
+     * List battle responses
+     * @return corresponding responses from battles
+     */
     public List<BattleResponse> listBattleResponses() {
         // Convert battles to battleResponses
         List<BattleRecord> listOfBattles = this.observer.getBattleRecords();
@@ -470,10 +545,14 @@ public class DungeonManiaController {
                 result.add(new BattleResponse(temp.getType(), roundResponses, battle.getInitialPlayerHealth(), battle.getInitialEnemyHealth()));
             }
         );
-
         return result;
     }
 
+    /**
+     * Conversion of round records
+     * @param roundRecords
+     * @return converted records of rounds
+     */
     public List<RoundResponse> convertRoundRecords(List<RoundRecord> roundRecords) {
         List<RoundResponse> result = new ArrayList<>();
         roundRecords.stream().forEach(
@@ -485,6 +564,11 @@ public class DungeonManiaController {
         return result;
     }
 
+    /**
+     * Conversion of item responses
+     * @param itemsUsed
+     * @return converted responses of items
+     */
     private List<ItemResponse> convertItemResponse(List<ItemRecord> itemsUsed) {
         List <ItemResponse> result = new ArrayList<>();
         itemsUsed.stream().forEach(
@@ -495,12 +579,14 @@ public class DungeonManiaController {
         return result;
     }
 
+    /**
+     * Remove an entity
+     * @param id
+     */
     public void removeEntity(String id) {
         Entity remove = entities.stream().filter(x -> x.getId() == id).findFirst().orElse(null);
         if (remove != null) {
             entities.remove(remove);
         }
-
     }
-
 }

@@ -22,6 +22,11 @@ public class BattleRecord {
     private double initialPlayerHealth;
     private double initialEnemyHealth;
 
+    /**
+     * BattleRecord Constructor
+     * @param enemy
+     * @param player
+     */
     public BattleRecord(DynamicEntity enemy, DynamicEntity player) {
         this.enemy = enemy;
         this.initialPlayerHealth = player.getHealth();
@@ -128,7 +133,6 @@ public class BattleRecord {
      * @param List<List<Object>>, Player
      */
     private void updateDurability(List<List<Object>> itemsUsed, Player player) {
-
         // Unchecked Type cast, itemsUsed has been safely type checked from method itemsAvaliable
         List<Sword> SwordsUsed = (List<Sword>)(List<?>) itemsUsed.get(0);
         List<Buildable> BowsUsed = (List<Buildable>)(List<?>) itemsUsed.get(1);
@@ -176,27 +180,44 @@ public class BattleRecord {
         return listsOfItems;
     }
 
+    /**
+     * Converts to list
+     * @param listsOfItems
+     * @return list
+     */
     private List <Object> convertToList(List<List<Object>> listsOfItems) {
         return listsOfItems.stream().flatMap(Collection::stream).collect(Collectors.toList());
     }
 
+    /**
+     * Gets rounds
+     * @return the rounds
+     */
     public List<RoundRecord> getRounds() {
         return rounds; 
     }
 
+    /**
+     * Gets initial player health
+     * @return the initial player health
+     */
     public double getInitialPlayerHealth() {
         return initialPlayerHealth;
     }
 
+    /**
+     * Gets initial enemy health
+     * @return the initial enemy health
+     */
     public double getInitialEnemyHealth() {
         return initialEnemyHealth;
     }
 
+    /**
+     * gets enemy
+     * @return the enemy
+     */
     public DynamicEntity getEnemy() {
         return enemy;
     }
-
-    
-
-    
 }

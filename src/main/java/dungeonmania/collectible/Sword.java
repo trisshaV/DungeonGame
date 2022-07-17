@@ -16,24 +16,46 @@ public class Sword extends Collectible {
     private int attack;
     private int durability;
     
+    /**
+     * Sword Constructor
+     * @param id
+     * @param xy
+     * @param config
+     */
     public Sword(String id, Position xy, JSONObject config) {
         super(id, "sword", xy);
         attack = config.getInt("sword_attack");
         durability = config.getInt("sword_durability");
     }
 
+    /**
+     * Get attack
+     * @return the attack
+     */
     public int getAtack() {
         return attack;
     }
     
+    /**
+     * Gets durability
+     * @return the durability
+     */
     public int getDurability() {
         return durability;
     }
 
+    /**
+     * Sets durability
+     * @param num
+     */
     public void setDurability(int num) {
         this.durability = num;
     }
 
+    /**
+     * Gets type
+     * @return the type, i.e. "sword"
+     */
     @Override
     public String getType() {
         return "sword";

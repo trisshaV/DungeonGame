@@ -3,28 +3,17 @@ package dungeonmania.dynamic_entity;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Queue;
-import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 import org.json.JSONObject;
 
-import dungeonmania.Boulder;
 import dungeonmania.Entity;
-import dungeonmania.collectible.Bomb;
 import dungeonmania.collectible.Collectible;
-import dungeonmania.collectible.Consumable;
 import dungeonmania.collectible.InvincibilityPotion;
 import dungeonmania.collectible.InvisibilityPotion;
 import dungeonmania.collectible.Key;
-import dungeonmania.response.models.ItemResponse;
-import dungeonmania.static_entity.ActiveBomb;
-import dungeonmania.static_entity.StaticEntity;
 import dungeonmania.util.Direction;
 import dungeonmania.util.Position;
-import javassist.expr.NewArray;
 import dungeonmania.Inventory;
 /**
  * Entity that is controlled by the Player.
@@ -40,6 +29,7 @@ public class Player extends DynamicEntity {
     private int enemies_defeated = 0;
 
     /**
+     * Player Constructor
      * @param id
      * @param xy
      * @param config
@@ -52,11 +42,19 @@ public class Player extends DynamicEntity {
         this.status = "NONE";
     }
 
+    /**
+     * Gets type
+     * @return the type, i.e. "player"
+     */
     @Override
     public String getType() {
         return "player";
     }
 
+    /**
+     * Gets buildables
+     * @return the buildables
+     */
     public List<String> getBuildables() {
         List<String> buildables = new ArrayList<>();
         if (inventory.CheckMaterials("bow")) {
@@ -70,10 +68,11 @@ public class Player extends DynamicEntity {
 
     /**
      * Updates the new position of Player given a direction
+     * @param d
+     * @param l
      */
     public void updatePos(Direction d, List<Entity> l) {
         Position curr = this.getPosition();
-
         Position nextPosition = curr.translateBy(d);
         // Check next position for obstacles/issues
         List <Entity> collides = l.stream().filter(entity -> entity.getPosition().equals(nextPosition)).collect(Collectors.toList());
@@ -83,6 +82,10 @@ public class Player extends DynamicEntity {
         this.setPosition(nextPosition);
     }
 
+    /**
+     * Picks up items
+     * @param entities
+     */
     public void pickUp(List<Entity> entities) {
         List<Entity> toRemove = new ArrayList<>();
         entities.stream()
@@ -101,10 +104,17 @@ public class Player extends DynamicEntity {
         entities.removeAll(toRemove);
     }
 
+    /**
+     * Consumes potions
+     * @param Potion
+     */
     public void consumePotion(Collectible Potion) {
         potionQueue.add(Potion);
     }
 
+    /**
+     * Ticks for potion effects
+     */
     public void tickPotionEffects() {
         if (potionQueue.size() == 0) {
             this.status = "NONE";
@@ -133,6 +143,10 @@ public class Player extends DynamicEntity {
         }
     }
 
+    /**
+     * Gets status
+     * @return the status
+     */
     public String getStatus() {
         return this.status;
     }
@@ -147,10 +161,17 @@ public class Player extends DynamicEntity {
         return !(inventory.getItem(item) == null);
     }
 
+    /**
+     * Gets enemies defeated
+     * @return the number of defeated enemies
+     */
     public int getEnemiesDefeated() {
         return enemies_defeated;
     }
 
+    /**
+     * Enemy count
+     */
     public void addEnemiesDefeated() {
         enemies_defeated++;
     }
@@ -165,36 +186,71 @@ public class Player extends DynamicEntity {
         return inventory.getItem(item);
     }
 
+    /**
+     * Get items by Id
+     * @param id
+     * @return the item according to Id
+     */
     public Collectible getItemById(String id) {
         return inventory.getItemById(id);
     }
 
+    /**
+     * Total treasure collected
+     * @return all treasure obtained
+     */
     public int totalTreasureCollected() { return treasure_collected; }
 
+    /**
+     * Gets inventory
+     * @return inventory
+     */
     public Inventory getInventory() {
         return inventory;
     }
 
+    /**
+     * Remove an item
+     * @param item
+     */
     public void removeItem(Collectible item) {
         inventory.removeItem(item.getType());
     }
 
+    /**
+     * Remove the broken items
+     */
     public void removeBrokenItems() {
         inventory.removeBrokenItems();
     }
     
+    /**
+     * Gets key
+     * @return the key
+     */
     public Key getKey() {
         return (Key) inventory.getItem("key");
     }
 
+    /**
+     * Checks for sword
+     * @return presence of sword
+     */
     public boolean hasSword() {
         return  (inventory.getItem("sword") != null);
     }
 
+    /**
+     * Remove a key
+     */
     public void removeKey() {
         inventory.removeItem("key");
     }
 
+    /**
+     * Gets current position
+     * @return the current position
+     */
     public Collectible getCurrentPotion() {
         return potionQueue.get(0);
     }

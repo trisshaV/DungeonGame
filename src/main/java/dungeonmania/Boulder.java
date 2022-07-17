@@ -2,7 +2,6 @@ package dungeonmania;
 
 import dungeonmania.dynamic_entity.Player;
 import dungeonmania.static_entity.FloorSwitch;
-import dungeonmania.static_entity.Wall;
 import dungeonmania.util.Position;
 
 /**
@@ -16,12 +15,22 @@ import dungeonmania.util.Position;
 public class Boulder extends Entity {
 
     private DungeonManiaController dungeon;
-
+    /**
+     * Constuctor for Boulder
+     * @param dungeon
+     * @param id
+     * @param xy
+     */
     public Boulder(DungeonManiaController dungeon, String id, Position xy) {
         super(id, "boulder", xy);
         this.dungeon = dungeon;
     }
 
+    /**
+     * Accounts for collisions of player and FloorSwitch
+     * @param entity
+     * @return boolean occurence of collision
+     */
     public boolean collide(Entity entity) {
         if (entity.getType().equals("player")) {
             Player player = (Player) entity;
@@ -44,8 +53,11 @@ public class Boulder extends Entity {
         return false;
     }
     
+    /**
+     * Gets the type of entity
+     * @return the type of entity, i.e. "boulder"
+     */
     public String getType() {
         return "boulder";
     }
-    
 }
