@@ -341,6 +341,9 @@ public class DungeonManiaController {
         if (item == null) {
             throw new InvalidActionException("itemUsed is not in the player's inventory");
         }
+        if (!validConsumable().contains(item.getType())) {
+            throw new IllegalArgumentException("itemUsed must be one of bomb, invincibility_potion, invisibility_potion");
+        }
         if (item.getType().equals("bomb")) {
             entities.add(new ActiveBomb(itemUsedId, pos));
             player.removeItem(item);
@@ -364,9 +367,6 @@ public class DungeonManiaController {
         );
         if (this.observer.checkBattle() == true) {
             entities = removeDeadEntities();
-        }
-        if (!validConsumable().contains(item.getType())) {
-            throw new IllegalArgumentException("itemUsed must be one of bomb, invincibility_potion, invisibility_potion");
         }
 
         // check if the bomb will explode
