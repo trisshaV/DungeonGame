@@ -11,11 +11,16 @@ import dungeonmania.util.Position;
  *      - Once it is opened, it remains opened.
  */
 public class Door extends StaticEntity {
-    Key key;
-    State opened;
-    State closed;
-    State state;
+    private Key key;
+    private State opened;
+    private State closed;
+    private State state;
 
+    /**
+     * Door Constructor
+     * @param id
+     * @param xy
+     */
     public Door(String id, Position xy) {
         // need to call super for static entity 
         super(id, "door", xy);
@@ -24,31 +29,59 @@ public class Door extends StaticEntity {
         this.state = closed;
     }
 
-    // Returns true if moved to door, false otherwise
+    /**
+     * Check if collision
+     * @param entity
+     * @return true if moved to door, false otherwise
+     */
     public boolean collide(Entity entity) {
         return state.interact(entity);
     }
 
+    /**
+     * Gets opened door
+     * @return opened state
+     */
     public State getOpened() {
         return opened;
     }
 
+    /**
+     * Gets closed door
+     * @return closed state
+     */
     public State getClosed() {
         return closed;
     }
 
+    /**
+     * Gets type
+     * @return the type, i.e. "door"
+     */
     public String getType() {
         return "door";
     }
 
+    /**
+     * Gets key
+     * @return the key
+     */
     public Key getKey() {
         return key;
     }
 
+    /**
+     * Sets key
+     * @param key
+     */
     public void setKey(Key key) {
         this.key = key;
     }
 
+    /**
+     * Sets state
+     * @param state
+     */
     public void setState(State state) {
         this.state = state;
     }  
