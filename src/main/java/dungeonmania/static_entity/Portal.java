@@ -11,16 +11,28 @@ import dungeonmania.util.Position;
  *      - Otherwise will teleport the entity to an avaliable cardinally adjacent square at the coresponding portal side.
  */
 public class Portal extends StaticEntity {
-    DungeonManiaController dungeon;
-    Position linkPosition;
-    String colour;
+    private DungeonManiaController dungeon;
+    private Position linkPosition;
+    private String colour;
 
+    /**
+     * Portal Constructor
+     * @param dungeon
+     * @param id
+     * @param xy
+     * @param colour
+     */
     public Portal(DungeonManiaController dungeon, String id, Position xy, String colour) {
         super(id, "portal", xy);
         this.dungeon = dungeon;
         this.colour = colour;
     }
 
+    /**
+     * Checks for collision
+     * @param entity
+     * @return boolean of collision status
+     */
     public boolean collide(Entity entity) {
         if (entity.getType().equals("player")) {
             Player player = (Player) entity;
@@ -62,19 +74,28 @@ public class Portal extends StaticEntity {
         return true;
     }
 
+    /**
+     * Gets type
+     * @return the type, i.e. "portal"
+     */
     @Override
     public String getType() {
         return "portal";
     }
 
+    /**
+     * Gets colour
+     * @return the colour
+     */
     public String getColour() {
         return colour;
     }
 
+    /**
+     * Sets link position
+     * @param linkPosition
+     */
     public void setLinkPosition(Position linkPosition) {
         this.linkPosition = linkPosition;
     }
-
-   
-    
 }
