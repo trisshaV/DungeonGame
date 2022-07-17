@@ -1,6 +1,5 @@
 package dungeonmania.static_entity;
 
-import dungeonmania.Boulder;
 import dungeonmania.Entity;
 import dungeonmania.util.Position;
 
@@ -17,20 +16,40 @@ import org.json.JSONObject;
 public class FloorSwitch extends StaticEntity {
     private boolean active;
 
+    /**
+     * FloorSwitch Constructor
+     * @param id
+     * @param xy
+     */
     public FloorSwitch(String id, Position xy) {
         super(id,"switch", xy);
         active = false;
     }
 
+    /**
+     * FloorSwitch Constructor
+     * @param id
+     * @param xy
+     * @param active
+     */
     public FloorSwitch(String id, Position xy, boolean active) {
         super(id,"switch", xy);
         this.active = active;
     }
 
+    /**
+     * Get activity
+     * @return active state
+     */
     public boolean getActive() {
         return active;
     }
 
+    /**
+     * Check for collision
+     * @param entity
+     * @return boolean of collision status
+     */
     public boolean collide(Entity entity) {
         if (entity.getType().equals("boulder")) {
             active = true;
@@ -41,6 +60,12 @@ public class FloorSwitch extends StaticEntity {
         return true;
     }
 
+    /**
+     * Trigger bomb explosion
+     * @param entities
+     * @param config
+     * @return array of entities
+     */
     public List<Entity> activateNearby(List<Entity> entities, JSONObject config) {
         for (Entity entity : entities) {
             if (entity instanceof ActiveBomb && Position.isAdjacent(getPosition(), entity.getPosition())) {
@@ -51,9 +76,12 @@ public class FloorSwitch extends StaticEntity {
         return new ArrayList<>();
     }
 
+    /**
+     * Gets type
+     * @return the type, i.e. "switch"
+     */
     @Override
     public String getType() {
         return "switch";
     }
-
 }

@@ -15,11 +15,21 @@ import dungeonmania.util.Position;
 public class InvincibilityPotion extends Collectible {
     private int duration;
 
+    /**
+     * InvincibilityPotion Constructor
+     * @param id
+     * @param xy
+     * @param config
+     */
     public InvincibilityPotion(String id, Position xy, JSONObject config) {
         super(id, "invincibility_potion", xy);
         duration = config.getInt("invincibility_potion_duration");
     }
 
+    /**
+     * Potency of potion effects
+     * @return expiration of potion
+     */
     public boolean potency() {
         if (duration != 0) {
             duration = duration - 1;
@@ -30,6 +40,10 @@ public class InvincibilityPotion extends Collectible {
         }
     }
 
+    /**
+     * Gets type
+     * @return the type, i.e. "invincibility_potion"
+     */
     @Override
     public String getType() {
         return "invincibility_potion";

@@ -13,24 +13,43 @@ public class Exit extends StaticEntity {
     DungeonManiaController dungeon;
     boolean active;
 
+    /**
+     * Exit Constructor
+     * @param id
+     * @param xy
+     * @param dungeon
+     */
     public Exit(String id, Position xy, DungeonManiaController dungeon) {
         super(id, "exit", xy);
         this.dungeon = dungeon;
         active = false;
     }
 
-    public boolean collide(Entity entity) {
-        // TODO: add and condition that every OTHER goal has been achieved 
+    /**
+     * Checks for collision
+     * @param entity
+     * @return boolean of collision status
+     */
+    public boolean collide(Entity entity) { 
         if (entity instanceof Player) {
             active = true;
         }
         return true;
     }
+    
+    /**
+     * Gets type
+     * @return the type, i.e. "exit"
+     */
     @Override
     public String getType() {
         return "exit";
     }
 
+    /**
+     * Gets activity
+     * @return active state
+     */
     public boolean getActive() {
         return active;
     }

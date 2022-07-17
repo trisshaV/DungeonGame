@@ -18,6 +18,11 @@ public class Observer {
     private List<DynamicEntity> entities;
     private Player player;
 
+    /**
+     * Observer contructor
+     * @param entitiesList
+     * @param player
+     */
     public Observer(List<Entity> entitiesList, Player player) {
         List<Entity> temp = entitiesList.stream().filter(entity -> entity instanceof DynamicEntity && !(entity instanceof Player)).collect(Collectors.toList());
         entities = new ArrayList<>();
@@ -33,6 +38,10 @@ public class Observer {
         this.player = player;
     }
 
+    /**
+     * Checks battles
+     * @return relevant recordings
+     */
     public boolean checkBattle() {
         Position playerPos = player.getPosition();
         int numBattles = battleRecords.size();
@@ -52,10 +61,18 @@ public class Observer {
         }
     }
 
+    /**
+     * Checks if player has deceased
+     * @return
+     */
     public boolean isPlayerDeceased() {
         return playerDeceased;
     }
 
+    /**
+     * Gets battle records
+     * @return records of battles
+     */
     public List<BattleRecord> getBattleRecords() {
         return battleRecords;
     }  

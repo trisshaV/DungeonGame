@@ -9,10 +9,20 @@ import dungeonmania.util.Position;
  */
 public class Arrow extends Collectible {
 
+    /**
+     * Arrow Constructor
+     * @param id
+     * @param xy
+     * @param config
+     */
     public Arrow(String id, Position xy, JSONObject config) {
         super(id, "arrow", xy);
     }
 
+    /**
+     * Gets type
+     * @return the type, i.e. "arrow"
+     */
     @Override
     public String getType() {
         return "arrow";

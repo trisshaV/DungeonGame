@@ -6,10 +6,19 @@ import dungeonmania.dynamic_entity.Player;
 public class ClosedState implements State {
     Door door;
 
+    /**
+     * ClosedState Constructor
+     * @param door
+     */
     public ClosedState(Door door) {
         this.door = door;
     }
 
+    /**
+     * Interaction of Player and Doors
+     * @param entity
+     * @return boolean of player interaction
+     */
     public boolean interact(Entity entity) {
         if (entity.getType().equals("player")) {
             Player player =  (Player) entity;

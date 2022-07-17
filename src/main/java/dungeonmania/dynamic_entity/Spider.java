@@ -3,7 +3,6 @@ package dungeonmania.dynamic_entity;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import org.json.JSONObject;
 
@@ -22,13 +21,16 @@ import dungeonmania.util.Position;
  */
 public class Spider extends DynamicEntity {
     private String direction;
-
     private boolean cycleStart = false;
-
     private List<Position> cyclePositions;
-
     private int currentPosition;
 
+    /**
+     * Spider Constructor
+     * @param id
+     * @param xy
+     * @param config
+     */
     public Spider(String id, Position xy, JSONObject config) {
         super(id, "spider", xy);
         this.attack = config.getDouble("spider_attack");
@@ -36,6 +38,14 @@ public class Spider extends DynamicEntity {
         this.direction = "clockwise";
         cyclePositions = generatePositions(this.getPosition());
     }
+
+    /**
+     * Spider Constructor
+     * @param id
+     * @param xy
+     * @param attack
+     * @param health
+     */
     public Spider(String id, Position xy, int attack, int health) {
         super(id, "spider", xy);
         this.attack = attack;
@@ -44,16 +54,28 @@ public class Spider extends DynamicEntity {
         cyclePositions = generatePositions(this.getPosition());
     }
 
+    /**
+     * Gets type
+     * @return the type, i.e. "spider"
+     */
     public String getType() {
         return "spider";
     }
 
+    /**
+     * Sets direction
+     * @param direction
+     */
     public void setDirection(String direction) {
         this.direction = direction;
     }
     
+    /**
+     * Updates Position
+     * @param d
+     * @param l
+     */
     public void updatePos(Direction d, List<Entity> l) {
-
         // boulder
         // call change Direction
         if (cycleStart == false) {
@@ -64,7 +86,6 @@ public class Spider extends DynamicEntity {
             if (listEntities.stream().anyMatch(entity -> !entity.collide(this) && !entity.equals(null) == true)) {
                 return;
             }
-             
             currentPosition = 0;
             cycleStart = true;
             this.setPosition(cyclePositions.get(currentPosition));
@@ -72,7 +93,6 @@ public class Spider extends DynamicEntity {
         }
 
         int result = checkCycle(l);
-
         currentPosition += result;
 
         if (currentPosition > 7) {
@@ -83,6 +103,11 @@ public class Spider extends DynamicEntity {
         this.setPosition(cyclePositions.get(currentPosition));
     }
     
+    /**
+     * Generate positions
+     * @param centre
+     * @return the generated positions
+     */
     private List<Position> generatePositions(Position centre) {
         List<Position> result = new ArrayList<Position>();
         int x = centre.getX();
@@ -99,8 +124,12 @@ public class Spider extends DynamicEntity {
         return result;
     }
 
+    /**
+     * Checks for cycles
+     * @param l
+     * @return
+     */
     private int checkCycle(List<Entity> l) {
-
         int clockwiseIndex = currentPosition + 1;
         int anticlockwiseIndex = currentPosition -1;
         
@@ -118,15 +147,12 @@ public class Spider extends DynamicEntity {
         List <Entity> listEntities1 = l.stream().filter(x -> x.getPosition().equals(checkClockwise)).collect(Collectors.toList());
         List <Entity> listEntities2 = l.stream().filter(x -> x.getPosition().equals(checkAnticlockwise)).collect(Collectors.toList());
 
-
         if (listEntities1.stream().anyMatch(entity -> !entity.collide(this) && !entity.equals(null) == true)) {
             clockwise = false;
         }
-
         if (listEntities2.stream().anyMatch(entity -> !entity.collide(this) && !entity.equals(null) == true)) {
             anticlockwise = false;
         }
-
         if (direction.equals("clockwise")) {
             if (clockwise == false) {
                 if (anticlockwise == true) {
@@ -144,7 +170,6 @@ public class Spider extends DynamicEntity {
             }
             return 0;
         }
-        
         return -1;
     }
 }

@@ -1,6 +1,5 @@
 package dungeonmania.collectible;
 import dungeonmania.util.Position;
-import org.json.JSONObject;
 
 public abstract class BattleItems extends Collectible{
     private int durability;
@@ -14,10 +13,18 @@ public abstract class BattleItems extends Collectible{
         super(id, type, xy);
     }
 
+    /**
+     * Gets durability
+     * @return the durability
+     */
     public int getDurability() {
         return durability;
     }
 
+    /**
+     * Sets durability
+     * @param num
+     */
     public void setDurability(int num) {
         this.durability = num;
     }

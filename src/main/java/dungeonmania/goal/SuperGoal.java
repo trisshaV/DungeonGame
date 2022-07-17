@@ -9,6 +9,12 @@ import java.util.List;
 public class SuperGoal implements Goal {
     private String relation = "";
     private List<Goal> goals = new ArrayList<>();
+
+    /**
+     * SuperGoal Constructor
+     * @param condition
+     * @param config
+     */
     public SuperGoal(JSONObject condition, JSONObject config) {
         String type = condition.getString("goal");
         switch (type) {
@@ -44,6 +50,12 @@ public class SuperGoal implements Goal {
                 break;
         }
     }
+
+    /**
+     * Checks completed
+     * @param entities
+     * @return boolean confirmation of completion
+     */
     @Override
     public boolean isComplete(List<Entity> entities) {
         if (relation.equals("AND")) {
@@ -52,6 +64,10 @@ public class SuperGoal implements Goal {
         return goals.stream().anyMatch(x -> x.isComplete(entities));
     }
 
+    /**
+     * Gets goal
+     * @return the goals
+     */
     @Override
     public String getGoal(List<Entity> entities) {
         // complete, show no remaining
@@ -75,6 +91,10 @@ public class SuperGoal implements Goal {
                 .orElse("") + starter;
     }
 
+    /**
+     * Status of exit goal
+     * @return boolean of exit goal status
+     */
     @Override
     public boolean isExitGoal() {
         return goals.stream().anyMatch(Goal::isExitGoal);
