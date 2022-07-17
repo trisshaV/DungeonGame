@@ -10,9 +10,18 @@ import dungeonmania.util.Position;
 
 public class RandomMovement {
 
+    /**
+     * Constructor
+     */
     public RandomMovement() {
     }
     
+    /**
+     * Random posiiton
+     * @param d
+     * @param l
+     * @return the random position
+     */
     public Position randPosition(Entity d, List<Entity> l) {
         Position middle = d.getPosition();
         int x = middle.getX();
