@@ -88,8 +88,6 @@ public class BattleTests {
             assertEquals(round.getDeltaEnemyHealth(), -(playerAttack / 5));
             enemyHealth += round.getDeltaEnemyHealth();
             playerHealth += round.getDeltaCharacterHealth();
-            System.out.println(enemyHealth);
-            System.out.println(playerHealth);
         }
         if (enemyDies) {
             assertTrue(enemyHealth <= 0);

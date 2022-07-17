@@ -4,6 +4,7 @@ import dungeonmania.dynamic_entity.Player;
 import dungeonmania.response.models.ItemResponse;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -15,7 +16,7 @@ public class Inventory {
     
     private Player player;
     private List<Collectible> entities; 
-    private List<String> buildable;
+    private List<String> buildable = Arrays.asList("bow", "shield");
     private List<Buildable> builtItems;
     private JSONObject config;
 
@@ -66,19 +67,6 @@ public class Inventory {
         return  itemResponses;
     }
 
-    /**
-     * get inventory
-     * @return the inventory
-     */
-    public List<Collectible> getInven() {
-        return entities;
-    }
-
-    /**
-     * Gets number of items
-     * @param type
-     * @return item and corresponding number
-     */
     public int getNoItemType(String type) {
         int number = 0;
         for (Collectible item : entities) {
@@ -117,29 +105,6 @@ public class Inventory {
         return null;
     }
 
-    /**
-     * Gets key
-     * @param keyId
-     * @return the key
-     */
-    public Key getKey(int keyId) {
-        for (Collectible item : entities) {
-            if (item.getType().equals("key")) {
-                Key itm = (Key) item;
-                if (itm.getKeyId() == keyId) {
-                    return itm;
-                }
-            }
-        }
-        return null;
-    }
-
-
-    /**
-     * Check buildable materials present
-     * @param buildable
-     * @return boolean of current materials collected meets requirements
-     */
     public boolean CheckMaterials(String buildable) {
         switch (buildable) {
             case "bow":
@@ -217,12 +182,8 @@ public class Inventory {
         return builtItems;
     }
 
-    /**
-     * Reduce state of duarability for relevant entities
-     * @param id
-     */
-    public void reduceDurability(String id) {
-        if (buildable.contains(id)) {
+    public void reduceDurability(String type, String id) {
+        if (buildable.contains(type)) {
             // Buildable item
             Buildable item = builtItems.stream().filter(x -> x.getId().equals(id)).collect(Collectors.toList()).get(0);
             int currentDurability = item.getDurability();
