@@ -137,10 +137,6 @@ public class Player extends DynamicEntity {
         return this.status;
     }
 
-    public List<Collectible> getInventoryList() {
-        return inventory.getInven();
-    }
-
     /**
      * Given an item name, check if the player has the 
      * item in inventory or not.

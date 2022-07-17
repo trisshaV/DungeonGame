@@ -170,6 +170,41 @@ public class SpiderTest {
             assertEquals(movementTrajectory.get(nextPositionElement), getEntities(res, "spider").get(0).getPosition());
         }
     }
+
+    @Test
+    @DisplayName("Test advanced movement of spiders changing direction constantly")
+    public void advancedMovement() {
+        DungeonManiaController dmc;
+        dmc = new DungeonManiaController();
+        DungeonResponse res = dmc.newGame("d_spiderTest_advanced", "c_spiderTest_basicMovement");
+        Position pos = getEntities(res, "spider").get(0).getPosition();
+        
+        List<Position> movementTrajectory = new ArrayList<Position>();
+        int x = pos.getX();
+        int y = pos.getY();
+        int nextPositionElement = 0;
+        movementTrajectory.add(new Position(x  , y-1));
+        movementTrajectory.add(new Position(x+1, y-1));
+        movementTrajectory.add(new Position(x+1, y  ));
+        movementTrajectory.add(new Position(x+1, y-1));
+        movementTrajectory.add(new Position(x  , y-1));
+        movementTrajectory.add(new Position(x-1, y-1));
+        movementTrajectory.add(new Position(x-1,   y));
+        movementTrajectory.add(new Position(x-1, y-1));
+        movementTrajectory.add(new Position(x  , y-1));
+        movementTrajectory.add(new Position(x+1, y-1));
+        movementTrajectory.add(new Position(x+1,   y));
+        movementTrajectory.add(new Position(x+1, y-1));
+        
+        // Assert Anticlockwise Circular Movement of Spider 
+        for (int i = 0; i <= 11; ++i) {
+            res = dmc.tick(Direction.UP);
+            assertEquals(movementTrajectory.get(nextPositionElement), getEntities(res, "spider").get(0).getPosition());
+            nextPositionElement++;      
+        }
+    }
+
+
     
     
 }

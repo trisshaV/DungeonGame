@@ -134,24 +134,25 @@ public class BattleRecord {
         List<Buildable> BowsUsed = (List<Buildable>)(List<?>) itemsUsed.get(1);
         List<Buildable> ShieldsUsed = (List<Buildable>)(List<?>) itemsUsed.get(2);
         
+        Inventory i = player.getInventory();
         SwordsUsed.stream().forEach(
             x -> {
-                int currentDurability = x.getDurability();
-                x.setDurability(currentDurability - 1);
+                String id = x.getId();
+                i.reduceDurability("sword", id);
             }
         );
 
         BowsUsed.stream().forEach(
             x -> {
-                int currentDurability = x.getDurability();
-                x.setDurability(currentDurability - 1);
+                String id = x.getId();
+                i.reduceDurability("bow", id);
             }
         );
 
         ShieldsUsed.stream().forEach(
             x -> {
-                int currentDurability = x.getDurability();
-                x.setDurability(currentDurability - 1);
+                String id = x.getId();
+                i.reduceDurability("shield", id);
             }
         );
 

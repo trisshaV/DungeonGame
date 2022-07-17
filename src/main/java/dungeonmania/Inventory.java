@@ -4,6 +4,7 @@ import dungeonmania.dynamic_entity.Player;
 import dungeonmania.response.models.ItemResponse;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -16,7 +17,7 @@ public class Inventory {
     
     private Player player;
     private List<Collectible> entities; 
-    private List<String> buildable;
+    private List<String> buildable = Arrays.asList("bow", "shield");
     private List<Buildable> builtItems;
     private JSONObject config;
 
@@ -55,11 +56,6 @@ public class Inventory {
         return  itemResponses;
     }
 
-
-    public List<Collectible> getInven() {
-        return entities;
-    }
-
     public int getNoItemType(String type) {
         int number = 0;
         for (Collectible item : entities) {
@@ -80,9 +76,6 @@ public class Inventory {
     }
 
     public Collectible getItemById(String id) {
-        // if (!entities.contains(id)) {
-        //     return null;
-        // }
         for (Collectible item : entities) {
             if (item.getId().equals(id)) {
                 return item;
@@ -90,19 +83,6 @@ public class Inventory {
         }
         return null;
     }
-
-    public Key getKey(int keyId) {
-        for (Collectible item : entities) {
-            if (item.getType().equals("key")) {
-                Key itm = (Key) item;
-                if (itm.getKeyId() == keyId) {
-                    return itm;
-                }
-            }
-        }
-        return null;
-    }
-
 
     public boolean CheckMaterials(String buildable) {
         switch (buildable) {
@@ -163,8 +143,8 @@ public class Inventory {
         return builtItems;
     }
 
-    public void reduceDurability(String id) {
-        if (buildable.contains(id)) {
+    public void reduceDurability(String type, String id) {
+        if (buildable.contains(type)) {
             // Buildable item
             Buildable item = builtItems.stream().filter(x -> x.getId().equals(id)).collect(Collectors.toList()).get(0);
             int currentDurability = item.getDurability();
