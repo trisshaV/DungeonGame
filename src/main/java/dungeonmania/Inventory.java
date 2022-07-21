@@ -77,6 +77,12 @@ public class Inventory {
         return number;
     }
 
+    public void removeNoItemType(String type, int number) {
+        for (int i = 0; i < number; i++) {
+            removeItem("treasure");
+        }
+    }
+
     /**
      * Gets items
      * @param type
