@@ -636,6 +636,7 @@ public class DungeonManiaController implements Serializable{
                         
         }catch (Exception e) {
             e.printStackTrace();
+            throw new IllegalArgumentException();
         }         
         
        return getDungeonResponseModel();
@@ -660,6 +661,7 @@ public class DungeonManiaController implements Serializable{
                         
         }catch (Exception e) {
             e.printStackTrace();
+            throw new IllegalArgumentException();
         }         
         
         return getDungeonResponseModel();

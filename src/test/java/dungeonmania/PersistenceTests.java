@@ -1,7 +1,7 @@
 package dungeonmania;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static dungeonmania.TestUtils.getPlayer;
 
 import org.junit.jupiter.api.DisplayName;
@@ -81,5 +81,14 @@ public class PersistenceTests {
         
         // assert after loading
         assertEquals(expectedPlayer.getPosition(), savedPlayer.getPosition());
+    }
+
+    @Test
+    @DisplayName("Test throws IllegalArgumentException if load file does not exist")
+    public void testThrowsExceptionForNoLoadFile() {
+        assertThrows(IllegalArgumentException.class, () -> {
+            DungeonManiaController dmc = new DungeonManiaController();
+            dmc.loadGame("game2");
+        });
     }
 }
