@@ -19,10 +19,10 @@ public class RandomMovement {
     /**
      * Random posiiton
      * @param d
-     * @param l
+     * @param i
      * @return the random position
      */
-    public Position randPosition(Entity d, List<Entity> l) {
+    public Position randPosition(Entity d, List<Entity> i) {
         Position middle = d.getPosition();
         int x = middle.getX();
         int y = middle.getY();
@@ -39,7 +39,7 @@ public class RandomMovement {
             Random rand = new Random();
             int result = rand.nextInt(newPositions.size());
 
-            List <Entity> temp = l.stream().filter(e -> e.getPosition().equals(newPositions.get(result))).collect(Collectors.toList());
+            List <Entity> temp = i.stream().filter(e -> e.getPosition().equals(newPositions.get(result))).collect(Collectors.toList());
             Position nextPosition = newPositions.remove(result);
             if (temp.size() == 0) {
                 return nextPosition;

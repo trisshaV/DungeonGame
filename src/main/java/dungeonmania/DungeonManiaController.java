@@ -10,6 +10,7 @@ import dungeonmania.collectible.Sword;
 import dungeonmania.collectible.Treasure;
 import dungeonmania.collectible.Wood;
 import dungeonmania.dynamic_entity.DynamicEntity;
+import dungeonmania.dynamic_entity.Hydra;
 import dungeonmania.dynamic_entity.Mercenary;
 import dungeonmania.dynamic_entity.Player;
 import dungeonmania.dynamic_entity.Spider;
@@ -226,6 +227,9 @@ public class DungeonManiaController {
                     partner.setLinkPosition(newPortal.getPosition());
                     newPortal.setLinkPosition(partner.getPosition());
                 }
+                break;
+            case "hydra":
+                newEntity = new Hydra(id, position, jsonConfig);
                 break;
         default:
             return;
