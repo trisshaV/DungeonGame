@@ -175,20 +175,13 @@ public class BuildTests {
     @DisplayName("Player can build the sceptre (with 2 arrows + key + sun stone)")
     public void testBuildSceptreRecipe3() throws IllegalArgumentException, InvalidActionException {
         DungeonManiaController dmc = new DungeonManiaController();
-        DungeonResponse res = dmc.newGame("test_new", "simple");
+        DungeonResponse res = dmc.newGame("d_buildSceptre", "simple");
         List<ItemResponse> inventory = new ArrayList<>();
         inventory.add(new ItemResponse("0", "sceptre"));
 
         res = dmc.tick(Direction.RIGHT);
-        res = dmc.tick(Direction.UP);
         res = dmc.tick(Direction.RIGHT);
         res = dmc.tick(Direction.RIGHT);
-        res = dmc.tick(Direction.RIGHT);
-        res = dmc.tick(Direction.DOWN);
-        res = dmc.tick(Direction.UP);
-        res = dmc.tick(Direction.RIGHT);
-        res = dmc.tick(Direction.RIGHT);
-        res = dmc.tick(Direction.DOWN);
         res = dmc.tick(Direction.RIGHT);
 
         res = dmc.build("sceptre");
@@ -201,17 +194,12 @@ public class BuildTests {
     @DisplayName("Player can build the sceptre (with 2 arrows + treasure + sun stone)")
     public void testBuildSceptreRecipe4() throws IllegalArgumentException, InvalidActionException {
         DungeonManiaController dmc = new DungeonManiaController();
-        DungeonResponse res = dmc.newGame("test_new", "simple");
+        DungeonResponse res = dmc.newGame("d_buildSceptre2", "simple");
         List<ItemResponse> inventory = new ArrayList<>();
         inventory.add(new ItemResponse("0", "sceptre"));
 
         res = dmc.tick(Direction.RIGHT);
-        res = dmc.tick(Direction.UP);
         res = dmc.tick(Direction.RIGHT);
-        res = dmc.tick(Direction.RIGHT);
-        res = dmc.tick(Direction.RIGHT);
-        res = dmc.tick(Direction.RIGHT);
-        res = dmc.tick(Direction.DOWN);
         res = dmc.tick(Direction.RIGHT);
         res = dmc.tick(Direction.RIGHT);
 
