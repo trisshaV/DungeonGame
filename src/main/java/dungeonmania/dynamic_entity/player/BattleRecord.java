@@ -109,7 +109,7 @@ public class BattleRecord {
             }
             double modifiedPlayerDamage = ((bowModifier * (playerAttack + swordAdd))/5);
             double modifiedEnemyDamage = ((enemyAttack - shieldMinus) / 10);
-            newEnemyHealth = enemy.getHealth() - modifiedPlayerDamage;
+            newEnemyHealth = enemy.newHealth(modifiedPlayerDamage);
             newPlayerHealth = player.getHealth() - modifiedEnemyDamage;
             // Update durability of equipment
             updateDurability(itemsInRoundUsed, (Player)player);

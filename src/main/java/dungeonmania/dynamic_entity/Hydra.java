@@ -1,6 +1,7 @@
 package dungeonmania.dynamic_entity;
 
 import java.util.List;
+import java.util.Random;
 
 import org.json.JSONObject;
 
@@ -34,5 +35,14 @@ public class Hydra extends DynamicEntity {
         return "hydra";
     }
     
+    @Override
+    public double newHealth(double PlayerDamage) {
+        // If we hit the chance that a Hydra increases health
+        if (new Random().nextDouble() <= healthIncreaseRate) {
+            return this.getHealth() + healthIncreaseAmnt;
+        } else {
+            return this.getHealth() - PlayerDamage;
+        }
+    }
     
 }

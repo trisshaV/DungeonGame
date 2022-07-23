@@ -58,4 +58,8 @@ public abstract class DynamicEntity extends Entity {
     public void setHealth(double health) {
         this.health = health;
     }
+
+    public double newHealth(double PlayerDamage) {
+        return this.getHealth() - PlayerDamage;
+    }
 }
