@@ -661,6 +661,7 @@ public class DungeonManiaController implements Serializable{
                         
         }catch (Exception e) {
             e.printStackTrace();
+            // throws excpetion
             throw new IllegalArgumentException();
         }         
         
