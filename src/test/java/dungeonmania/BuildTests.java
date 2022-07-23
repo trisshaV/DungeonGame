@@ -111,4 +111,113 @@ public class BuildTests {
         inven = getInventory(res, "bow");
         assertEquals(inventory.get(1).getType(), inven.get(0).getType());
     }
+
+    @Test
+    @DisplayName("Player can build the midnight armour")
+    public void testBuildArmour() throws IllegalArgumentException, InvalidActionException {
+        DungeonManiaController dmc = new DungeonManiaController();
+        DungeonResponse res = dmc.newGame("test_new", "simple");
+        List<ItemResponse> inventory = new ArrayList<>();
+        inventory.add(new ItemResponse("0", "midnight_armour"));
+
+        res = dmc.tick(Direction.RIGHT);
+        res = dmc.tick(Direction.RIGHT);
+        res = dmc.build("midnight_armour");
+        List<ItemResponse> inven = getInventory(res, "midnight_armour");
+        assertEquals(1, inven.size());
+        assertEquals(inventory.get(0).getType(), inven.get(0).getType());
+    }
+
+    @Test
+    @DisplayName("Player can build the sceptre (with wood + key + sun stone)")
+    public void testBuildSceptreRecipe1() throws IllegalArgumentException, InvalidActionException {
+        DungeonManiaController dmc = new DungeonManiaController();
+        DungeonResponse res = dmc.newGame("test_new", "simple");
+        List<ItemResponse> inventory = new ArrayList<>();
+        inventory.add(new ItemResponse("0", "sceptre"));
+
+        res = dmc.tick(Direction.RIGHT);
+        res = dmc.tick(Direction.UP);
+        res = dmc.tick(Direction.RIGHT);
+        res = dmc.tick(Direction.RIGHT);
+        res = dmc.tick(Direction.DOWN);
+        res = dmc.tick(Direction.RIGHT);
+        res = dmc.build("sceptre");
+        List<ItemResponse> inven = getInventory(res, "sceptre");
+        assertEquals(1, inven.size());
+        assertEquals(inventory.get(0).getType(), inven.get(0).getType());
+    }
+
+    @Test
+    @DisplayName("Player can build the sceptre (with wood + treasure + sun stone)")
+    public void testBuildSceptreRecipe2() throws IllegalArgumentException, InvalidActionException {
+        DungeonManiaController dmc = new DungeonManiaController();
+        DungeonResponse res = dmc.newGame("test_new", "simple");
+        List<ItemResponse> inventory = new ArrayList<>();
+        inventory.add(new ItemResponse("0", "sceptre"));
+
+        res = dmc.tick(Direction.RIGHT);
+        res = dmc.tick(Direction.UP);
+        res = dmc.tick(Direction.RIGHT);
+        res = dmc.tick(Direction.RIGHT);
+        res = dmc.tick(Direction.DOWN);
+        res = dmc.tick(Direction.DOWN);
+        res = dmc.tick(Direction.RIGHT);
+        res = dmc.tick(Direction.RIGHT);
+        res = dmc.tick(Direction.UP);
+        res = dmc.build("sceptre");
+        List<ItemResponse> inven = getInventory(res, "sceptre");
+        assertEquals(1, inven.size());
+        assertEquals(inventory.get(0).getType(), inven.get(0).getType());
+    }
+
+    @Test
+    @DisplayName("Player can build the sceptre (with 2 arrows + key + sun stone)")
+    public void testBuildSceptreRecipe3() throws IllegalArgumentException, InvalidActionException {
+        DungeonManiaController dmc = new DungeonManiaController();
+        DungeonResponse res = dmc.newGame("test_new", "simple");
+        List<ItemResponse> inventory = new ArrayList<>();
+        inventory.add(new ItemResponse("0", "sceptre"));
+
+        res = dmc.tick(Direction.RIGHT);
+        res = dmc.tick(Direction.UP);
+        res = dmc.tick(Direction.RIGHT);
+        res = dmc.tick(Direction.RIGHT);
+        res = dmc.tick(Direction.RIGHT);
+        res = dmc.tick(Direction.DOWN);
+        res = dmc.tick(Direction.UP);
+        res = dmc.tick(Direction.RIGHT);
+        res = dmc.tick(Direction.RIGHT);
+        res = dmc.tick(Direction.DOWN);
+        res = dmc.tick(Direction.RIGHT);
+
+        res = dmc.build("sceptre");
+        List<ItemResponse> inven = getInventory(res, "sceptre");
+        assertEquals(1, inven.size());
+        assertEquals(inventory.get(0).getType(), inven.get(0).getType());
+    }
+
+    @Test
+    @DisplayName("Player can build the sceptre (with 2 arrows + treasure + sun stone)")
+    public void testBuildSceptreRecipe4() throws IllegalArgumentException, InvalidActionException {
+        DungeonManiaController dmc = new DungeonManiaController();
+        DungeonResponse res = dmc.newGame("test_new", "simple");
+        List<ItemResponse> inventory = new ArrayList<>();
+        inventory.add(new ItemResponse("0", "sceptre"));
+
+        res = dmc.tick(Direction.RIGHT);
+        res = dmc.tick(Direction.UP);
+        res = dmc.tick(Direction.RIGHT);
+        res = dmc.tick(Direction.RIGHT);
+        res = dmc.tick(Direction.RIGHT);
+        res = dmc.tick(Direction.RIGHT);
+        res = dmc.tick(Direction.DOWN);
+        res = dmc.tick(Direction.RIGHT);
+        res = dmc.tick(Direction.RIGHT);
+
+        res = dmc.build("sceptre");
+        List<ItemResponse> inven = getInventory(res, "sceptre");
+        assertEquals(1, inven.size());
+        assertEquals(inventory.get(0).getType(), inven.get(0).getType());
+    }
 }

@@ -16,7 +16,7 @@ public class Inventory {
     
     private Player player;
     private List<Collectible> entities; 
-    private List<String> buildable = Arrays.asList("bow", "shield");
+    private List<String> buildable = Arrays.asList("bow", "shield", "sceptre", "midnight_armour");
     private List<Buildable> builtItems;
     private JSONObject config;
 
@@ -114,7 +114,17 @@ public class Inventory {
                 return true;    
             case "shield":
                 if (getNoItemType("wood") < 2 || (getNoItemType("treasure") < 1 && getNoItemType("key") < 1)) {
-                return false;
+                    return false;
+                }
+                return true;
+            case "sceptre":
+                if (getNoItemType("sun_stone") < 1 || (getNoItemType("wood") < 1 && getNoItemType("arrow") < 2) || (getNoItemType("key") < 1 && getNoItemType("treasure") < 1)) {
+                    return false;
+                }
+                return true;
+            case "midnight_armour":
+                if (getNoItemType("sword") < 1 || (getNoItemType("sun_stone") < 1)) {
+                    return false;
                 }
                 return true;
             default:
@@ -160,6 +170,30 @@ public class Inventory {
                 removeItem("treasure");
             } else if (getNoItemType("key") >= 1) {
                 removeItem("key");
+            return true;
+            }
+        }
+        if (CheckMaterials(buildable) && buildable.equals("midnight_armour")) {
+            //make midnight_armour
+            builtItems.add(new MidnightArmour(id, config));
+            removeItem("sword");
+            removeItem("sun_stone");
+            return true;
+        }
+        if (CheckMaterials(buildable) && buildable.equals("sceptre")) {
+            //make midnight_armour
+            builtItems.add(new Sceptre(id, config));
+            removeItem("sun_stone");
+            if (getNoItemType("treasure") >= 1) {
+                removeItem("treasure");
+            } else if (getNoItemType("key") >= 1) {
+                removeItem("key");
+                }
+            if (getNoItemType("wood") >= 1) {
+                removeItem("wood");
+            } else if (getNoItemType("arrow") >= 2) {
+                removeItem("arrow");
+                removeItem("arrow");
             return true;
             }
         }

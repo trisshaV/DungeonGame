@@ -63,6 +63,12 @@ public class Player extends DynamicEntity {
         if (inventory.CheckMaterials("shield")) {
             buildables.add("shield");
         }
+        if (inventory.CheckMaterials("sceptre")) {
+            buildables.add("sceptre");
+        }
+        if (inventory.CheckMaterials("midnight_armour")) {
+            buildables.add("midnight_armour");
+        }
         return buildables;
     }
 

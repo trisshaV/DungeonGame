@@ -460,7 +460,7 @@ public class DungeonManiaController {
     }
 
     public List<String> validBuildables() {
-        return Arrays.asList("bow", "shield");
+        return Arrays.asList("bow", "shield", "sceptre", "midnight_armour");
     }
 
     /**
