@@ -35,6 +35,13 @@ import dungeonmania.static_entity.Portal;
 import dungeonmania.static_entity.StaticEntity;
 import dungeonmania.static_entity.Wall;
 import dungeonmania.static_entity.ZombieToastSpawner;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.FileWriter;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -46,15 +53,15 @@ import java.util.stream.Collectors;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-public class DungeonManiaController {
+public class DungeonManiaController implements Serializable{
     private int id;
     private JSONObject jsonConfig;
     private List<Portal> unpairedPortals;
     private List<Entity> entities;
     private Player player;
-	private String dungeonId = "0";
+    private String dungeonId = "0";
     private Goal goalStrategy;
-	private String dungeonName;
+    private String dungeonName;
     private Observer observer;
     private Spiderspawner spiderspawner;
 
@@ -407,7 +414,7 @@ public class DungeonManiaController {
      */
     public DungeonResponse tick(Direction movementDirection) {
         //move player
-    	entities.stream().filter(it -> it instanceof Player).forEach(
+        entities.stream().filter(it -> it instanceof Player).forEach(
             x -> {
                 Player p = (Player) x;
                 p.updatePos(movementDirection, entities);
@@ -612,21 +619,66 @@ public class DungeonManiaController {
      * /game/save
      */
     public DungeonResponse saveGame(String name) throws IllegalArgumentException {
-        return null;
+        
+        
+        ArrayList<Object> objects = new ArrayList<>();
+        
+        objects.add(player.getPosition().getX());  
+        objects.add(player.getPosition().getY());  
+        
+        try {
+            FileOutputStream f = new FileOutputStream(new File(name + ".game.dat"));
+            ObjectOutputStream o = new ObjectOutputStream(f);
+            
+            o.writeObject(objects);
+            
+            o.close();
+                        
+        }catch (Exception e) {
+            e.printStackTrace();
+        }         
+        
+       return getDungeonResponseModel();
     }
 
     /**
      * /game/load
      */
     public DungeonResponse loadGame(String name) throws IllegalArgumentException {
-        return null;
+        
+        try {
+            
+            FileInputStream fi = new FileInputStream(new File(name + ".game.dat"));
+            ObjectInputStream oi = new ObjectInputStream(fi);
+            
+            ArrayList<Object> objects = (ArrayList<Object>) oi.readObject();
+            
+            player.setPosition(new Position((Integer)objects.get(0),
+            (Integer)objects.get(1)));
+           
+            oi.close();
+                        
+        }catch (Exception e) {
+            e.printStackTrace();
+        }         
+        
+        return getDungeonResponseModel();
     }
 
     /**
      * /games/all
      */
     public List<String> allGames() {
-        return new ArrayList<>();
+        
+        List<String> games = new ArrayList<>();
+        
+        File f = new File(".");
+        for (String name: f.list()){
+            if (name.endsWith(".game.dat")){
+                games.add(name.substring(0, name.indexOf(".game.dat")));
+            }
+        }        
+        return games;
     }
 
 }
