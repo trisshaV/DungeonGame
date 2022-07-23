@@ -618,7 +618,7 @@ public class DungeonManiaController implements Serializable{
     /**
      * /game/save
      */
-    public DungeonResponse saveGame(String name) throws IllegalArgumentException {
+    public DungeonResponse saveGame(String name) {
         
         
         ArrayList<Object> objects = new ArrayList<>();
@@ -636,7 +636,6 @@ public class DungeonManiaController implements Serializable{
                         
         }catch (Exception e) {
             e.printStackTrace();
-            throw new IllegalArgumentException();
         }         
         
        return getDungeonResponseModel();
