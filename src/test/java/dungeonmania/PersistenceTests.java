@@ -91,4 +91,22 @@ public class PersistenceTests {
             dmc.loadGame("game2");
         });
     }
+
+    @Test
+    @DisplayName("Test for listing all save files")
+    public void testListAllSaves(){
+        
+        DungeonManiaController dmc = new DungeonManiaController();
+        
+        dmc.newGame("d_movementTest_testMovementDown", "c_movementTest_testMovementDown");
+
+        // move player downward
+        dmc.tick(Direction.DOWN);      
+        
+        // save game
+        dmc.saveGame("game1");
+        
+        // list all saves
+        dmc.allGames();
+    }
 }
