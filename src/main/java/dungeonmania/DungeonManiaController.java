@@ -480,9 +480,8 @@ public class DungeonManiaController {
             throw new InvalidActionException("Not enough materials!");
         }
 
-        if (playerInv.buildItem(buildable, String.valueOf(id))) {
-            id ++;
-        }
+        playerInv.buildItem(buildable, String.valueOf(id));
+        id ++;
         return getDungeonResponseModel();
     }
 

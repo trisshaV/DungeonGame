@@ -1,5 +1,9 @@
 package dungeonmania.collectible;
 
+import org.json.JSONObject;
+
+import dungeonmania.Inventory;
+
 public abstract class Buildable {
 	private final String id;
 	private String type;
@@ -53,4 +57,10 @@ public abstract class Buildable {
     public void setDurability(int num) {
         this.durability = num;
     }
+
+	static boolean checkMaterials(Inventory i) {
+		return true;
+	}
+
+	static void buildItem(Inventory i) {};
 }
