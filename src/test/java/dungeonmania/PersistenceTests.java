@@ -62,8 +62,8 @@ public class PersistenceTests {
     
     
     @Test
-    @DisplayName("Test save and load game (player inventory)")
-    public void testSaveLoadGameInventory(){
+    @DisplayName("Test save and load game (player inventory -- empty)")
+    public void testSaveLoadGameInventoryEmpty(){
         
         DungeonManiaController dmc = new DungeonManiaController();
         DungeonResponse initDungonRes = dmc.newGame("d_movementTest_testMovementDown", "c_movementTest_testMovementDown");
@@ -79,13 +79,13 @@ public class PersistenceTests {
         // assert after movement
         assertEquals(expectedPlayer, actualPlayer);        
         
-        dmc.saveGame("game1");
+        dmc.saveGame("game1.1");
         
         //load again
         dmc = new DungeonManiaController();
         initDungonRes = dmc.newGame("d_movementTest_testMovementDown", "c_movementTest_testMovementDown");
         initPlayer = getPlayer(initDungonRes).get();
-        DungeonResponse res = dmc.loadGame("game1");        
+        DungeonResponse res = dmc.loadGame("game1.1");        
         
         //test the play again
         EntityResponse savedPlayer = getPlayer(res).get();
@@ -99,7 +99,7 @@ public class PersistenceTests {
     public void testThrowsExceptionForNoLoadFile() {
         assertThrows(IllegalArgumentException.class, () -> {
             DungeonManiaController dmc = new DungeonManiaController();
-            dmc.loadGame("game2");
+            dmc.loadGame("gamewhatjusthappened");
         });
     }
 
@@ -280,11 +280,11 @@ public class PersistenceTests {
         res = dmc.tick(Direction.DOWN);
         assertEquals("", getGoals(res));
         
-        dmc.saveGame("game4");
+        dmc.saveGame("game5");
         
         //load again
         DungeonManiaController savedDMC = new DungeonManiaController();
-        DungeonResponse saveRes = savedDMC.loadGame("game4");
+        DungeonResponse saveRes = savedDMC.loadGame("game5");
         
         assertEquals("", getGoals(saveRes));
     }
