@@ -4,6 +4,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import dungeonmania.dynamic_entity.movement.ChaseMovement;
+import dungeonmania.dynamic_entity.movement.Movement;
+import dungeonmania.dynamic_entity.movement.RandomMovement;
+import dungeonmania.dynamic_entity.movement.RunAwayMovement;
 import org.json.JSONObject;
 
 import dungeonmania.Entity;
@@ -66,7 +70,6 @@ public class Mercenary extends DynamicEntity {
 
     @Override
     public EntityResponse getEntityResponse() {
-        
         if (status.equals("FRIENDLY")) {
             return new EntityResponse(getId(), getType(), getPosition(), false);
         }
@@ -95,41 +98,9 @@ public class Mercenary extends DynamicEntity {
      * @param l
      */
     private void chaseHostile(List <Entity> l) {
-        Entity p = l.stream().filter(x -> x instanceof Player).findFirst().orElse(null);
-        Position playerPos = p.getPosition();
-        int x1 = playerPos.getX();
-        int y1 = playerPos.getY();
-
-        Position current = this.getPosition();
-        int x2 = current.getX();
-        int y2 = current.getY();
-
-        List <Position> testPositions = new ArrayList<>();
-        
-        // Find positions to use
-        if (x1 > x2) {
-            testPositions.add(new Position(x2 + 1, y2));
-        } else if (x2 > x1) {
-            testPositions.add(new Position(x2 - 1, y2));
-        }
-
-        if (y1 > y2) {
-            testPositions.add(new Position(x2, y2 + 1));
-        } else if (y2 > y1) {
-            testPositions.add(new Position(x2, y2 - 1));
-        }
-
-        testPositions.stream().forEach(
-            position -> {
-                List <Entity> collides = l.stream().filter(entity -> entity.getPosition().equals(position)).collect(Collectors.toList());
-                if (collides.stream().allMatch(entity -> entity.collide(this))) {
-                    this.setPosition(position);
-                    return;
-                }
-            }
-        );
+        Movement m = new ChaseMovement();
+        setPosition(m.getNextPosition(this, l));
     }
-
 
     /**
      * Random movement of hostile
@@ -137,8 +108,17 @@ public class Mercenary extends DynamicEntity {
      */
     private void randomHostile(List<Entity> l) {
         RandomMovement move = new RandomMovement();
-        Position nextPosition = move.randPosition(this, l);
+        Position nextPosition = move.getNextPosition(this, l);
         this.setPosition(nextPosition);
+    }
+
+    /**
+     * Mercenary runs away from the player
+     * @param l - list of all entities
+     */
+    public void runAway(List<Entity> l) {
+        Movement m = new RunAwayMovement();
+        setPosition(m.getNextPosition(this, l));
     }
 
     /**
@@ -156,46 +136,5 @@ public class Mercenary extends DynamicEntity {
     @Override
     public String getType() {
         return "mercenary";
-    }
-
-    /**
-     * Runs away from player
-     * @param List <Entity> 
-     */
-    private void runAway(List <Entity> l) {
-        Entity p = l.stream().filter(x -> x instanceof Player).findFirst().orElse(null);
-        Position playerPos = p.getPosition();
-        int x1 = playerPos.getX();
-        int y1 = playerPos.getY();
-
-        Position current = this.getPosition();
-        int x2 = current.getX();
-        int y2 = current.getY();
-
-
-        List <Position> testPositions = new ArrayList<>();
-        
-        // Find positions to use
-        if (x1 > x2) {
-            testPositions.add(new Position(x2 - 1, y2));
-        } else if (x2 > x1) {
-            testPositions.add(new Position(x2 + 1, y2));
-        }
-
-        if (y1 > y2) {
-            testPositions.add(new Position(x2, y2 - 1));
-        } else if (y2 > y1) {
-            testPositions.add(new Position(x2, y2 + 1));
-        }
-
-        testPositions.stream().forEach(
-            position -> {
-                List <Entity> collides = l.stream().filter(entity -> entity.getPosition().equals(position)).collect(Collectors.toList());
-                if (collides.stream().allMatch(entity -> entity.collide(this))) {
-                    this.setPosition(position);
-                    return;
-                }
-            }
-        );
     }
 }
