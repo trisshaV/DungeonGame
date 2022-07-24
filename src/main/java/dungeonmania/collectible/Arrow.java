@@ -1,5 +1,6 @@
 package dungeonmania.collectible;
-import org.json.JSONObject;
+
+import dungeonmania.SerializableJSONObject;
 import dungeonmania.util.Position;
 
 /**
@@ -15,7 +16,7 @@ public class Arrow extends Collectible {
      * @param xy
      * @param config
      */
-    public Arrow(String id, Position xy, JSONObject config) {
+    public Arrow(String id, Position xy, SerializableJSONObject config) {
         super(id, "arrow", xy);
     }
 
