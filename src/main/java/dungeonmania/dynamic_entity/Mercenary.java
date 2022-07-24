@@ -4,10 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import dungeonmania.dynamic_entity.movement.ChaseMovement;
-import dungeonmania.dynamic_entity.movement.Movement;
-import dungeonmania.dynamic_entity.movement.RandomMovement;
-import dungeonmania.dynamic_entity.movement.RunAwayMovement;
+import dungeonmania.dynamic_entity.movement.*;
 import org.json.JSONObject;
 
 import dungeonmania.Entity;
@@ -33,6 +30,7 @@ public class Mercenary extends DynamicEntity {
     private String status = "HOSTILE";
     private int bribeRadius;
     private int bribeAmount;
+    private Movement move;
     /**
      * Mercenary Constrcutor
      * @param id
@@ -84,13 +82,16 @@ public class Mercenary extends DynamicEntity {
         if (status.equals("HOSTILE")) {
             Player p = (Player)l.stream().filter(x -> x instanceof Player).findFirst().orElse(null);
             if (p.getStatus().equals("INVISIBLE")) {
-                randomHostile(l);
+                move = new RandomMovement();
             } else if (p.getStatus().equals("INVINCIBLE")) {
-                runAway(l);
+                move = new RunAwayMovement();
             } else {
-                chaseHostile(l);
+                move = new ChaseMovement();
             }
+        } else {
+            move = new FollowMovement();
         }
+        setPosition(move.getNextPosition(this, l));
     }
     
     /**
