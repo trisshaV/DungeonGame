@@ -1,10 +1,10 @@
 package dungeonmania.collectible;
 
-import org.json.JSONObject;
+import java.io.Serializable;
 
 import dungeonmania.Inventory;
 
-public abstract class Buildable {
+public abstract class Buildable implements Serializable {
 	private final String id;
 	private String type;
 	public int durability;

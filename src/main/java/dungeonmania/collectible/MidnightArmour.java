@@ -2,9 +2,8 @@ package dungeonmania.collectible;
 import java.util.Arrays;
 import java.util.List;
 
-import org.json.JSONObject;
-
 import dungeonmania.Inventory;
+import dungeonmania.SerializableJSONObject;
 
 public class MidnightArmour extends Buildable{
     /**
@@ -12,7 +11,7 @@ public class MidnightArmour extends Buildable{
      * @param id
      * @param config
      */
-    public MidnightArmour(String id, JSONObject config) {
+    public MidnightArmour(String id, SerializableJSONObject config) {
         super(id, "midnight_armour");
     }
     
