@@ -1,10 +1,8 @@
 package dungeonmania.dynamic_entity;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
-import java.util.stream.Collectors;
 
 import dungeonmania.Entity;
 import dungeonmania.util.Direction;
@@ -19,11 +17,11 @@ public class RandomMovement {
      */
     public Position randPosition(Entity d, List<Entity> l) {
         Position middle = d.getPosition();
-        List <Position> newPositions = Arrays.asList(
+        List <Position> newPositions = new ArrayList<>(List.of(
             middle.translateBy(Direction.DOWN),
             middle.translateBy(Direction.UP),
             middle.translateBy(Direction.LEFT),
-            middle.translateBy(Direction.RIGHT));
+            middle.translateBy(Direction.RIGHT)));
 
         // Repeat until all directions are exhausted
         while (newPositions.size() > 0) {
