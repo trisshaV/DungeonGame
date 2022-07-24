@@ -1,5 +1,6 @@
 package dungeonmania.collectible;
-import org.json.JSONObject;
+
+import dungeonmania.SerializableJSONObject;
 import dungeonmania.util.Position;
 
 public class SunStone extends Collectible {
@@ -10,7 +11,7 @@ public class SunStone extends Collectible {
      * @param xy
      * @param config
      */
-    public SunStone(String id, Position xy, JSONObject config) {
+    public SunStone(String id, Position xy, SerializableJSONObject config) {
         super(id, "sun_stone", xy);
     }
 
