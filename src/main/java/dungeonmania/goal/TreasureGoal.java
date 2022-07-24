@@ -3,9 +3,10 @@ package dungeonmania.goal;
 import dungeonmania.Entity;
 import dungeonmania.dynamic_entity.Player;
 
+import java.io.Serializable;
 import java.util.List;
 
-public class TreasureGoal implements Goal {
+public class TreasureGoal implements Goal, Serializable {
     private final int treasure_required;
 
     /**
