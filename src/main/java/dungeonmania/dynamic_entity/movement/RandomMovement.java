@@ -1,4 +1,4 @@
-package dungeonmania.dynamic_entity;
+package dungeonmania.dynamic_entity.movement;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -8,14 +8,14 @@ import dungeonmania.Entity;
 import dungeonmania.util.Direction;
 import dungeonmania.util.Position;
 
-public class RandomMovement {
+public class RandomMovement implements Movement{
     /**
      * Random posiiton
      * @param d - entity that wants to move
      * @param l - all entities
      * @return Valid new position. Does not return null.
      */
-    public Position randPosition(Entity d, List<Entity> l) {
+    public Position getNextPosition(Entity d, List<Entity> l) {
         Position middle = d.getPosition();
         List <Position> newPositions = new ArrayList<>(List.of(
             middle.translateBy(Direction.DOWN),
@@ -32,7 +32,7 @@ public class RandomMovement {
                  .filter(e -> e.getPosition().equals(nextPosition))
                  .noneMatch(entity -> !entity.collide(d))) 
             {
-                return nextPosition;   
+                return nextPosition;
             }
         }
         // otherwise no change
