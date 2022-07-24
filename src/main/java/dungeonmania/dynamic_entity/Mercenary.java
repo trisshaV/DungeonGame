@@ -93,34 +93,6 @@ public class Mercenary extends DynamicEntity {
         }
         setPosition(move.getNextPosition(this, l));
     }
-    
-    /**
-     * Chases
-     * @param l
-     */
-    private void chaseHostile(List <Entity> l) {
-        Movement m = new ChaseMovement();
-        setPosition(m.getNextPosition(this, l));
-    }
-
-    /**
-     * Random movement of hostile
-     * @param l
-     */
-    private void randomHostile(List<Entity> l) {
-        RandomMovement move = new RandomMovement();
-        Position nextPosition = move.getNextPosition(this, l);
-        this.setPosition(nextPosition);
-    }
-
-    /**
-     * Mercenary runs away from the player
-     * @param l - list of all entities
-     */
-    public void runAway(List<Entity> l) {
-        Movement m = new RunAwayMovement();
-        setPosition(m.getNextPosition(this, l));
-    }
 
     /**
      * Gets status
