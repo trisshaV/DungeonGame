@@ -54,9 +54,9 @@ import java.util.stream.Collectors;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-public class DungeonManiaController implements Serializable{
+public class DungeonManiaController implements Serializable {
     private int id;
-    private JSONObject jsonConfig;
+    private SerializableJSONObject jsonConfig;
     private List<Portal> unpairedPortals;
     private List<Entity> entities;
     private Player player;
@@ -130,14 +130,14 @@ public class DungeonManiaController implements Serializable{
         JSONObject json = new JSONObject(dungeonContent);
         JSONObject jsonConfig = new JSONObject(confContent);
         JSONArray jsonEntities = json.getJSONArray("entities");
-        this.jsonConfig = jsonConfig;
+        this.jsonConfig = new SerializableJSONObject(jsonConfig);
 
         goalStrategy = new SuperGoal(json.getJSONObject("goal-condition"), jsonConfig);
         spiderspawner = new Spiderspawner(this, jsonConfig.getInt("spider_attack"), jsonConfig.getInt("spider_health"), jsonConfig.getInt("spider_spawn_rate"));
 
         for (int i = 0; i < jsonEntities.length(); i++) {
             JSONObject jsonEntity = jsonEntities.getJSONObject(i);
-            addEntity(String.valueOf(i), jsonEntity, jsonConfig);
+            addEntity(String.valueOf(i), new SerializableJSONObject(jsonEntity), this.jsonConfig);
         }
         id = entities.size();
 
@@ -157,7 +157,7 @@ public class DungeonManiaController implements Serializable{
      * @param jsonEntity
      * @param jsonConfig
      */
-    private void addEntity(String id, JSONObject jsonEntity, JSONObject jsonConfig) {
+    private void addEntity(String id, SerializableJSONObject jsonEntity, SerializableJSONObject jsonConfig) {
         String type = jsonEntity.getString("type");
         Position position = new Position(jsonEntity.getInt("x"), jsonEntity.getInt("y"));
         Entity newEntity = null;
@@ -235,7 +235,7 @@ public class DungeonManiaController implements Serializable{
                     newPortal.setLinkPosition(partner.getPosition());
                 }
                 break;
-            case "sun_stone":
+                case "sun_stone":
                 newEntity = new SunStone(id, position, jsonConfig);
                 break;
         default:
@@ -624,10 +624,19 @@ public class DungeonManiaController implements Serializable{
     public DungeonResponse saveGame(String name) throws IllegalArgumentException {
         
         
-        ArrayList<Object> objects = new ArrayList<>();
-        
-        objects.add(player.getPosition().getX());  
-        objects.add(player.getPosition().getY());  
+        ArrayList<Object> objects = new ArrayList<>();        
+
+    
+        objects.add(id); 
+        objects.add(jsonConfig); 
+        objects.add(unpairedPortals); 
+        objects.add(entities);
+        objects.add(player);  
+        objects.add(dungeonId); 
+        objects.add(goalStrategy); 
+        objects.add(dungeonName); 
+        objects.add(observer); 
+        objects.add(spiderspawner); 
         
         try {
             FileOutputStream f = new FileOutputStream(new File(name + ".game.dat"));
@@ -656,9 +665,17 @@ public class DungeonManiaController implements Serializable{
             
             ArrayList<Object> objects = (ArrayList<Object>) oi.readObject();
             
-            player.setPosition(new Position((Integer)objects.get(0),
-            (Integer)objects.get(1)));
-           
+            this.id = (Integer)objects.get(0);
+            this.jsonConfig = (SerializableJSONObject)objects.get(1);
+            this.unpairedPortals = (List<Portal>)objects.get(2);
+            this.entities = (List<Entity>)objects.get(3);
+            this.player = (Player)objects.get(4);
+            this.dungeonId = (String)objects.get(5);
+            this.goalStrategy = (Goal)objects.get(6);
+            this.dungeonName = (String)objects.get(7);
+            this.observer = (Observer)objects.get(8);
+            this.spiderspawner = (Spiderspawner)objects.get(9);            
+            
             oi.close();
                         
         }catch (Exception e) {
