@@ -7,8 +7,9 @@ import java.util.stream.Collectors;
 
 import dungeonmania.Entity;
 import dungeonmania.util.Position;
+import java.io.Serializable;
 
-public class RandomMovement {
+public class RandomMovement implements Serializable {
 
     /**
      * Constructor

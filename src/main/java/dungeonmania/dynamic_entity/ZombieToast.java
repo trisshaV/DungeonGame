@@ -2,9 +2,8 @@ package dungeonmania.dynamic_entity;
 
 import java.util.List;
 
-import org.json.JSONObject;
-
 import dungeonmania.Entity;
+import dungeonmania.SerializableJSONObject;
 import dungeonmania.util.Direction;
 import dungeonmania.util.Position;
 
@@ -21,7 +20,7 @@ public class ZombieToast extends DynamicEntity {
      * @param xy
      * @param config
      */
-    public ZombieToast(String id, Position xy, JSONObject config) {
+    public ZombieToast(String id, Position xy, SerializableJSONObject config) {
         super(id, "zombie_toast", xy);
         this.attack = config.getDouble("zombie_attack");
         this.health = config.getDouble("zombie_health");

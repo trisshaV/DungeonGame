@@ -4,9 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.json.JSONObject;
-
 import dungeonmania.Entity;
+import dungeonmania.SerializableJSONObject;
 import dungeonmania.exceptions.InvalidActionException;
 import dungeonmania.response.models.EntityResponse;
 import dungeonmania.util.Direction;
@@ -35,7 +34,7 @@ public class Mercenary extends DynamicEntity {
      * @param xy
      * @param config
      */
-    public Mercenary(String id, Position xy, JSONObject config) {
+    public Mercenary(String id, Position xy, SerializableJSONObject config) {
         super(id, "mercenary", xy);
         this.attack = config.getDouble("mercenary_attack");
         this.health = config.getDouble("mercenary_health");
@@ -71,7 +70,7 @@ public class Mercenary extends DynamicEntity {
             return new EntityResponse(getId(), getType(), getPosition(), false);
         }
         return new EntityResponse(getId(), getType(), getPosition(), true);
-	}
+    }
     /**
      * Updates position
      * @param d
