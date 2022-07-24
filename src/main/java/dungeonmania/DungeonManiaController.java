@@ -6,6 +6,7 @@ import dungeonmania.collectible.Collectible;
 import dungeonmania.collectible.InvincibilityPotion;
 import dungeonmania.collectible.InvisibilityPotion;
 import dungeonmania.collectible.Key;
+import dungeonmania.collectible.SunStone;
 import dungeonmania.collectible.Sword;
 import dungeonmania.collectible.Treasure;
 import dungeonmania.collectible.Wood;
@@ -226,6 +227,9 @@ public class DungeonManiaController {
                     partner.setLinkPosition(newPortal.getPosition());
                     newPortal.setLinkPosition(partner.getPosition());
                 }
+                break;
+            case "sun_stone":
+                newEntity = new SunStone(id, position, jsonConfig);
                 break;
         default:
             return;
@@ -456,7 +460,7 @@ public class DungeonManiaController {
     }
 
     public List<String> validBuildables() {
-        return Arrays.asList("bow", "shield");
+        return Arrays.asList("bow", "shield", "sceptre", "midnight_armour");
     }
 
     /**
@@ -476,9 +480,8 @@ public class DungeonManiaController {
             throw new InvalidActionException("Not enough materials!");
         }
 
-        if (playerInv.buildItem(buildable, String.valueOf(id))) {
-            id ++;
-        }
+        playerInv.buildItem(buildable, String.valueOf(id));
+        id ++;
         return getDungeonResponseModel();
     }
 

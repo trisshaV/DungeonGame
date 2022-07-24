@@ -39,6 +39,14 @@
         "zombie_toast_spawner": "images/tileset/entities/zombie_spawner.png",
         "zombie_toast": "images/tileset/entities/zombie.png",
         "boulders": "images/tileset/entities/boulder_00.png",
-        "enemies": "images/tileset/items/sword_silver.png"
+        "enemies": "images/tileset/items/sword_silver.png",
+        "sun_stone": "images/tileset/entities/sun_stone.png",
+        "midnight_armour": "images/tileset/entities/midnight_armour.png",
+        "sceptre": "images/tileset/entities/sceptre.png",
+        "portal_BLUE": "images/tileset/entities/portal_00.png",
+        "portal_RED": "images/tileset/entities/portal_05.png",
+        "portal_YELLOW": "images/tileset/entities/portal_09.png",
+        "portal_GREY": "images/tileset/entities/portal_12.png",
+        "portal_GREEN": "images/tileset/entities/portal_16.png"
     }
 }
