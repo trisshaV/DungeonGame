@@ -138,9 +138,7 @@ public class Mercenary extends DynamicEntity {
     private void randomHostile(List<Entity> l) {
         RandomMovement move = new RandomMovement();
         Position nextPosition = move.randPosition(this, l);
-        if (!nextPosition.equals(null)) {
-            this.setPosition(nextPosition);
-        }
+        this.setPosition(nextPosition);
     }
 
     /**

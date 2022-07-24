@@ -1,52 +1,43 @@
 package dungeonmania.dynamic_entity;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 import java.util.stream.Collectors;
 
 import dungeonmania.Entity;
+import dungeonmania.util.Direction;
 import dungeonmania.util.Position;
 
 public class RandomMovement {
-
-    /**
-     * Constructor
-     */
-    public RandomMovement() {
-    }
-    
     /**
      * Random posiiton
-     * @param d
-     * @param l
-     * @return the random position
+     * @param d - entity that wants to move
+     * @param l - all entities
+     * @return Valid new position. Does not return null.
      */
     public Position randPosition(Entity d, List<Entity> l) {
         Position middle = d.getPosition();
-        int x = middle.getX();
-        int y = middle.getY();
-        List <Position> newPositions = new ArrayList<>();
-        newPositions.add(new Position(x, y - 1));
-        newPositions.add(new Position(x, y + 1));
-        newPositions.add(new Position(x + 1, y));
-        newPositions.add(new Position(x - 1, y));
-        // Repeat until a direction is successful
-        while(true) {
-            if (newPositions.size() == 0) {
-                break;
-            } 
+        List <Position> newPositions = Arrays.asList(
+            middle.translateBy(Direction.DOWN),
+            middle.translateBy(Direction.UP),
+            middle.translateBy(Direction.LEFT),
+            middle.translateBy(Direction.RIGHT));
+
+        // Repeat until all directions are exhausted
+        while (newPositions.size() > 0) {
             Random rand = new Random();
             int result = rand.nextInt(newPositions.size());
-
-            List <Entity> temp = l.stream().filter(e -> e.getPosition().equals(newPositions.get(result))).collect(Collectors.toList());
             Position nextPosition = newPositions.remove(result);
-            if (temp.size() == 0) {
-                return nextPosition;
-            } else if (temp.stream().anyMatch(entity -> !entity.collide(d) && !entity.equals(null) == true) == false) {
-                return nextPosition;
+            if (l.stream()
+                 .filter(e -> e.getPosition().equals(nextPosition))
+                 .noneMatch(entity -> !entity.collide(d))) 
+            {
+                return nextPosition;   
             }
         }
-        return null;
+        // otherwise no change
+        return middle;
     }
 }
