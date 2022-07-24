@@ -1,6 +1,8 @@
 package dungeonmania;
 
-public class Spiderspawner {
+import java.io.Serializable;
+
+public class Spiderspawner implements Serializable {
     private DungeonManiaController dungeon;
     private int spiderAttack;
     private int spiderHealth;
