@@ -383,6 +383,10 @@ public class DungeonManiaController implements Serializable {
         );
         if (this.observer.checkBattle(entities) == true) {
             entities = removeDeadEntities();
+            if (entities.stream().filter(it -> it instanceof Player).findFirst().orElse(null) == null) {
+                // Player has died
+                return getDungeonResponseModel();
+            }
         }
 
         // check if the bomb will explode
@@ -425,9 +429,12 @@ public class DungeonManiaController implements Serializable {
             }
         );
         player.tickPotionEffects();
-        boolean battleOccured = this.observer.checkBattle(entities);
-        if (battleOccured) {
+        if (this.observer.checkBattle(entities)) {
             entities = removeDeadEntities();
+            if (entities.stream().filter(it -> it instanceof Player).findFirst().orElse(null) == null) {
+                // Player has died
+                return getDungeonResponseModel();
+            }
         }
         // move Dynamic entities except Player
         entities.stream().filter(it -> (it instanceof DynamicEntity) && (it instanceof Player == false)).forEach(
@@ -436,9 +443,12 @@ public class DungeonManiaController implements Serializable {
                 y.updatePos(movementDirection, entities);
             }
         );
-        battleOccured = this.observer.checkBattle(entities);
-        if (battleOccured) {
+        if (this.observer.checkBattle(entities)) {
             entities = removeDeadEntities();
+            if (entities.stream().filter(it -> it instanceof Player).findFirst().orElse(null) == null) {
+                // Player has died
+                return getDungeonResponseModel();
+            }
         }
         player.pickUp(entities);
         List <Entity> copy = new ArrayList<>();
