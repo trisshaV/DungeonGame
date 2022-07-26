@@ -8,23 +8,22 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.json.JSONObject;
-
 import dungeonmania.collectible.*;
+import java.io.Serializable;
 
-public class Inventory {
+public class Inventory implements Serializable{
     
     private Player player;
     private List<Collectible> entities; 
-    private List<String> buildable = Arrays.asList("bow", "shield");
+    private List<String> buildable = Arrays.asList("bow", "shield", "sceptre", "midnight_armour");
     private List<Buildable> builtItems;
-    private JSONObject config;
+    private SerializableJSONObject config;
 
     /**
      * Constructor for Inventory
      * @param player
      */
-    public Inventory(Player player, JSONObject config) {
+    public Inventory(Player player, SerializableJSONObject config) {
         this.setPlayer(player);
         entities = new ArrayList<>();
         builtItems = new ArrayList<>();
@@ -68,13 +67,9 @@ public class Inventory {
     }
 
     public int getNoItemType(String type) {
-        int number = 0;
-        for (Collectible item : entities) {
-            if (item.getType().equals(type)) {
-                number++;
-            }
-        }
-        return number;
+        return (int)entities.stream()
+                   .filter(e -> e.getType().equals(type))
+                   .count();
     }
 
     /**
@@ -83,12 +78,10 @@ public class Inventory {
      * @return the items
      */
     public Collectible getItem(String type) {
-        for (Collectible item : entities) {
-            if (item.getType().equals(type)) {
-                return item;
-            }
-        }
-        return null;
+        return entities.stream()
+                   .filter(e -> e.getType().equals(type))
+                   .findFirst()
+                   .orElse(null);
     }
 
     /**
@@ -97,26 +90,22 @@ public class Inventory {
      * @return collectibles according to id
      */
     public Collectible getItemById(String id) {
-        for (Collectible item : entities) {
-            if (item.getId().equals(id)) {
-                return item;
-            }
-        }
-        return null;
+        return entities.stream()
+                   .filter(e -> e.getId().equals(id))
+                   .findFirst()
+                   .orElse(null);
     }
 
     public boolean CheckMaterials(String buildable) {
         switch (buildable) {
             case "bow":
-                if (getNoItemType("wood") < 1 || getNoItemType("arrow") < 3) {
-                    return false;
-                }
-                return true;    
+                return Bow.checkMaterials(this);
             case "shield":
-                if (getNoItemType("wood") < 2 || (getNoItemType("treasure") < 1 && getNoItemType("key") < 1)) {
-                return false;
-                }
-                return true;
+                return Shield.checkMaterials(this);
+            case "sceptre":
+                return Sceptre.checkMaterials(this);
+            case "midnight_armour":
+                return MidnightArmour.checkMaterials(this);
             default:
                 return false;
         }
@@ -135,35 +124,37 @@ public class Inventory {
         }
     }
 
+    public void addBuiltItem(Buildable item) {
+        builtItems.add(item);
+    }
+
     /**
      * Build an item
      * @param buildable
      * @param id
      * @return item built
      */
-    public boolean buildItem(String buildable, String id) {
-        if (CheckMaterials(buildable) && buildable.equals("bow")) {
-            //make bow
-            builtItems.add(new Bow(id, config));
-            removeItem("wood");
-            removeItem("arrow");
-            removeItem("arrow");
-            removeItem("arrow");
-            return true;
+    public void buildItem(String buildable, String id) {
+        switch (buildable) {
+            case "bow":
+                removeItemComponents(Bow.requirements());
+                builtItems.add(new Bow(id, config));
+                break;
+            case "shield":
+                removeItemComponents(Shield.requirements(this));
+                builtItems.add(new Shield(id, config));
+                break;
+            case "midnight_armour":
+                removeItemComponents(MidnightArmour.requirements());
+                builtItems.add(new MidnightArmour(id, config));
+                break;
+            case "sceptre":
+                removeItemComponents(Sceptre.requirements(this));
+                builtItems.add(new Sceptre(id, config));
+                break;
+            default:
+                return;
         }
-        if (CheckMaterials(buildable) && buildable.equals("shield")) {
-            //make shield
-            builtItems.add(new Shield(id, config));
-            removeItem("wood");
-            removeItem("wood");
-            if (getNoItemType("treasure") >= 1) {
-                removeItem("treasure");
-            } else if (getNoItemType("key") >= 1) {
-                removeItem("key");
-            return true;
-            }
-        }
-        return false;
     }
 
     /**
@@ -204,5 +195,17 @@ public class Inventory {
         // Deleting broken shields and bows
         builtItems = builtItems.stream().filter(item -> item.getDurability() != 0).collect(Collectors.toList());
         entities = entities.stream().filter(item -> (item instanceof Sword) && (((Sword)item).getDurability() != 0)).collect(Collectors.toList());
+    }
+    
+    public List<String> getBuildables() {
+        return buildable.stream()
+                        .filter(b -> CheckMaterials(b))
+                        .collect(Collectors.toList());
+    }
+
+    void removeItemComponents(List<String> toRemove) {
+        for (String r : toRemove) {
+            removeItem(r);
+        }
     }
 }

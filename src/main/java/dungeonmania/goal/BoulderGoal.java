@@ -1,5 +1,6 @@
 package dungeonmania.goal;
 
+import java.io.Serializable;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -7,7 +8,7 @@ import dungeonmania.Boulder;
 import dungeonmania.Entity;
 import dungeonmania.static_entity.FloorSwitch;
 
-public class BoulderGoal implements Goal {
+public class BoulderGoal implements Goal, Serializable {
 
     /**
      * Checks completed

@@ -3,10 +3,11 @@ package dungeonmania.goal;
 import dungeonmania.Entity;
 import org.json.JSONObject;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class SuperGoal implements Goal {
+public class SuperGoal implements Goal, Serializable {
     private String relation = "";
     private List<Goal> goals = new ArrayList<>();
 

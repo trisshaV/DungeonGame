@@ -1,8 +1,9 @@
 package dungeonmania.dynamic_entity.player;
 
+import java.io.Serializable;
 import java.util.List;
 
-public class RoundRecord {
+public class RoundRecord implements Serializable {
     private double changePlayerHealth;
     private double changeEnemyHealth;
     List <ItemRecord> itemsUsed;
