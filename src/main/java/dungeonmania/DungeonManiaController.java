@@ -501,7 +501,7 @@ public class DungeonManiaController implements Serializable {
      * @throws InvalidActionException
      */
     public DungeonResponse interact(String entityId) throws IllegalArgumentException, InvalidActionException {
-        Entity target = entities.stream().filter(x -> x.getId() == entityId).findFirst().orElse(null);
+        Entity target = entities.stream().filter(x -> x.getId().equals(entityId)).findFirst().orElse(null);
         if (target == null) {
             throw new IllegalArgumentException();
         }
