@@ -3,9 +3,8 @@ package dungeonmania.static_entity;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.json.JSONObject;
-
 import dungeonmania.Entity;
+import dungeonmania.SerializableJSONObject;
 import dungeonmania.util.Position;
 
 public class ActiveBomb extends StaticEntity{
@@ -43,7 +42,7 @@ public class ActiveBomb extends StaticEntity{
      * @param config
      * @return update of current entities
      */
-    public List<Entity> explode(List<Entity> entities, JSONObject config) {
+    public List<Entity> explode(List<Entity> entities, SerializableJSONObject config) {
         int radius = config.getInt("bomb_radius");
         List<Entity> toRemove = new ArrayList<>();
         toRemove.add(this);

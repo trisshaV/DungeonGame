@@ -4,11 +4,13 @@ import dungeonmania.dynamic_entity.Player;
 import dungeonmania.exceptions.InvalidActionException;
 import dungeonmania.response.models.EntityResponse;
 import dungeonmania.util.Position;
+import java.io.Serializable;
 
 /**
  * The collection of all entities that are present in dungeon.
  */
-public abstract class Entity {
+public abstract class Entity implements Serializable{
+    
 	private final String id;
 	private Position position;
 	private String type;

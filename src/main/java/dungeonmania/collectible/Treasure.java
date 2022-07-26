@@ -1,6 +1,6 @@
 package dungeonmania.collectible;
 
-import org.json.JSONObject;
+import dungeonmania.SerializableJSONObject;
 import dungeonmania.util.Position;
 
 /**
@@ -17,7 +17,7 @@ public class Treasure extends Collectible {
      * @param xy
      * @param config
      */
-    public Treasure(String id, Position xy, JSONObject config) {
+    public Treasure(String id, Position xy, SerializableJSONObject config) {
         super(id, "treasure", xy);
     }
 

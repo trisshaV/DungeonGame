@@ -8,23 +8,22 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.json.JSONObject;
-
 import dungeonmania.collectible.*;
+import java.io.Serializable;
 
-public class Inventory {
+public class Inventory implements Serializable{
     
     private Player player;
     private List<Collectible> entities; 
     private List<String> buildable = Arrays.asList("bow", "shield", "sceptre", "midnight_armour");
     private List<Buildable> builtItems;
-    private JSONObject config;
+    private SerializableJSONObject config;
 
     /**
      * Constructor for Inventory
      * @param player
      */
-    public Inventory(Player player, JSONObject config) {
+    public Inventory(Player player, SerializableJSONObject config) {
         this.setPlayer(player);
         entities = new ArrayList<>();
         builtItems = new ArrayList<>();
@@ -197,7 +196,7 @@ public class Inventory {
         builtItems = builtItems.stream().filter(item -> item.getDurability() != 0).collect(Collectors.toList());
         entities = entities.stream().filter(item -> (item instanceof Sword) && (((Sword)item).getDurability() != 0)).collect(Collectors.toList());
     }
-
+    
     public List<String> getBuildables() {
         return buildable.stream()
                         .filter(b -> CheckMaterials(b))
@@ -208,5 +207,5 @@ public class Inventory {
         for (String r : toRemove) {
             removeItem(r);
         }
-    }  
+    }
 }

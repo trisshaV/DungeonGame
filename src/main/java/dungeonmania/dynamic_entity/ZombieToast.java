@@ -4,9 +4,9 @@ import java.util.List;
 
 import dungeonmania.dynamic_entity.movement.Movement;
 import dungeonmania.dynamic_entity.movement.RandomMovement;
-import org.json.JSONObject;
 
 import dungeonmania.Entity;
+import dungeonmania.SerializableJSONObject;
 import dungeonmania.util.Direction;
 import dungeonmania.util.Position;
 
@@ -24,7 +24,7 @@ public class ZombieToast extends DynamicEntity {
      * @param config
      */
     private static Movement move = new RandomMovement();
-    public ZombieToast(String id, Position xy, JSONObject config) {
+    public ZombieToast(String id, Position xy, SerializableJSONObject config) {
         super(id, "zombie_toast", xy);
         this.attack = config.getDouble("zombie_attack");
         this.health = config.getDouble("zombie_health");

@@ -2,9 +2,8 @@ package dungeonmania.collectible;
 import java.util.Arrays;
 import java.util.List;
 
-import org.json.JSONObject;
-
 import dungeonmania.Inventory;
+import dungeonmania.SerializableJSONObject;
 
 public class Shield extends Buildable{
     private int shieldDefense = 0;
@@ -14,7 +13,7 @@ public class Shield extends Buildable{
      * @param id
      * @param config
      */
-    public Shield(String id, JSONObject config) {
+    public Shield(String id, SerializableJSONObject config) {
         super(id, "shield");
         this.setDurability(config.getInt("shield_durability"));
         shieldDefense = config.getInt("shield_defence");
