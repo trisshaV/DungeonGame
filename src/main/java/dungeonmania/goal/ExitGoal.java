@@ -1,5 +1,6 @@
 package dungeonmania.goal;
 
+import java.io.Serializable;
 import java.util.List;
 import java.util.Optional;
 
@@ -8,7 +9,7 @@ import dungeonmania.dynamic_entity.Player;
 import dungeonmania.static_entity.Exit;
 import dungeonmania.util.Position;
 
-public class ExitGoal implements Goal {
+public class ExitGoal implements Goal, Serializable {
 
     /**
      * Checks completed

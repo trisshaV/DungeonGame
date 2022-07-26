@@ -1,7 +1,6 @@
 package dungeonmania.collectible;
 
-import org.json.JSONObject;
-
+import dungeonmania.SerializableJSONObject;
 import dungeonmania.util.Position;
 
 /**
@@ -21,7 +20,7 @@ public class InvisibilityPotion extends Collectible {
      * @param xy
      * @param config
      */
-    public InvisibilityPotion(String id, Position xy, JSONObject config) {
+    public InvisibilityPotion(String id, Position xy, SerializableJSONObject config) {
         super(id, "invisibility_potion", xy);
         duration = config.getInt("invisibility_potion_duration");
     }

@@ -23,7 +23,7 @@ public class Portal extends StaticEntity {
      * @param colour
      */
     public Portal(DungeonManiaController dungeon, String id, Position xy, String colour) {
-        super(id, "portal", xy);
+        super(id, String.format("portal_%s", colour), xy);
         this.dungeon = dungeon;
         this.colour = colour;
     }

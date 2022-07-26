@@ -1,5 +1,6 @@
 package dungeonmania;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -10,7 +11,7 @@ import dungeonmania.dynamic_entity.Player;
 import dungeonmania.dynamic_entity.player.BattleRecord;
 import dungeonmania.util.Position;
 
-public class Observer {
+public class Observer implements Serializable {
     
     public boolean playerDeceased = false;
     public List<BattleRecord> battleRecords = new ArrayList<>();

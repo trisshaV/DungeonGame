@@ -1,8 +1,9 @@
 package dungeonmania.static_entity.Door;
 
 import dungeonmania.Entity;
+import java.io.Serializable;
 
-public class OpenedState implements State {
+public class OpenedState implements State, Serializable {
     private Door door;
 
     /**

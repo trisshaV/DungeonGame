@@ -1,7 +1,6 @@
 package dungeonmania.collectible;
 
-import org.json.JSONObject;
-
+import dungeonmania.SerializableJSONObject;
 import dungeonmania.util.Position;
 
 /**
@@ -22,7 +21,7 @@ public class Sword extends Collectible {
      * @param xy
      * @param config
      */
-    public Sword(String id, Position xy, JSONObject config) {
+    public Sword(String id, Position xy, SerializableJSONObject config) {
         super(id, "sword", xy);
         attack = config.getInt("sword_attack");
         durability = config.getInt("sword_durability");

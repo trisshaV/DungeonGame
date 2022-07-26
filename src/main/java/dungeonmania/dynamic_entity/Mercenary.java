@@ -3,10 +3,11 @@ package dungeonmania.dynamic_entity;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
-
 import org.json.JSONObject;
 
+import dungeonmania.dynamic_entity.movement.*;
 import dungeonmania.Entity;
+import dungeonmania.SerializableJSONObject;
 import dungeonmania.exceptions.InvalidActionException;
 import dungeonmania.response.models.EntityResponse;
 import dungeonmania.util.Direction;
@@ -29,13 +30,14 @@ public class Mercenary extends DynamicEntity {
     private String status = "HOSTILE";
     private int bribeRadius;
     private int bribeAmount;
+    private Movement move;
     /**
      * Mercenary Constrcutor
      * @param id
      * @param xy
      * @param config
      */
-    public Mercenary(String id, Position xy, JSONObject config) {
+    public Mercenary(String id, Position xy, SerializableJSONObject config) {
         super(id, "mercenary", xy);
         this.attack = config.getDouble("mercenary_attack");
         this.health = config.getDouble("mercenary_health");
@@ -61,17 +63,17 @@ public class Mercenary extends DynamicEntity {
         }
         // set status to friendly 
         status = "FRIENDLY";
-        
+        // remove players coins
+        player.removeCoins(bribeAmount);
     }
 
     @Override
     public EntityResponse getEntityResponse() {
-        
         if (status.equals("FRIENDLY")) {
             return new EntityResponse(getId(), getType(), getPosition(), false);
         }
         return new EntityResponse(getId(), getType(), getPosition(), true);
-	}
+    }
     /**
      * Updates position
      * @param d
@@ -81,66 +83,16 @@ public class Mercenary extends DynamicEntity {
         if (status.equals("HOSTILE")) {
             Player p = (Player)l.stream().filter(x -> x instanceof Player).findFirst().orElse(null);
             if (p.getStatus().equals("INVISIBLE")) {
-                randomHostile(l);
+                move = new RandomMovement();
             } else if (p.getStatus().equals("INVINCIBLE")) {
-                runAway(l);
+                move = new RunAwayMovement();
             } else {
-                chaseHostile(l);
+                move = new ChaseMovement();
             }
+        } else {
+            move = new FollowMovement();
         }
-    }
-    
-    /**
-     * Chases
-     * @param l
-     */
-    private void chaseHostile(List <Entity> l) {
-        Entity p = l.stream().filter(x -> x instanceof Player).findFirst().orElse(null);
-        Position playerPos = p.getPosition();
-        int x1 = playerPos.getX();
-        int y1 = playerPos.getY();
-
-        Position current = this.getPosition();
-        int x2 = current.getX();
-        int y2 = current.getY();
-
-        List <Position> testPositions = new ArrayList<>();
-        
-        // Find positions to use
-        if (x1 > x2) {
-            testPositions.add(new Position(x2 + 1, y2));
-        } else if (x2 > x1) {
-            testPositions.add(new Position(x2 - 1, y2));
-        }
-
-        if (y1 > y2) {
-            testPositions.add(new Position(x2, y2 + 1));
-        } else if (y2 > y1) {
-            testPositions.add(new Position(x2, y2 - 1));
-        }
-
-        testPositions.stream().forEach(
-            position -> {
-                List <Entity> collides = l.stream().filter(entity -> entity.getPosition().equals(position)).collect(Collectors.toList());
-                if (collides.stream().allMatch(entity -> entity.collide(this))) {
-                    this.setPosition(position);
-                    return;
-                }
-            }
-        );
-    }
-
-
-    /**
-     * Random movement of hostile
-     * @param l
-     */
-    private void randomHostile(List<Entity> l) {
-        RandomMovement move = new RandomMovement();
-        Position nextPosition = move.randPosition(this, l);
-        if (!nextPosition.equals(null)) {
-            this.setPosition(nextPosition);
-        }
+        setPosition(move.getNextPosition(this, l));
     }
 
     /**
@@ -158,46 +110,5 @@ public class Mercenary extends DynamicEntity {
     @Override
     public String getType() {
         return "mercenary";
-    }
-
-    /**
-     * Runs away from player
-     * @param List <Entity> 
-     */
-    private void runAway(List <Entity> l) {
-        Entity p = l.stream().filter(x -> x instanceof Player).findFirst().orElse(null);
-        Position playerPos = p.getPosition();
-        int x1 = playerPos.getX();
-        int y1 = playerPos.getY();
-
-        Position current = this.getPosition();
-        int x2 = current.getX();
-        int y2 = current.getY();
-
-
-        List <Position> testPositions = new ArrayList<>();
-        
-        // Find positions to use
-        if (x1 > x2) {
-            testPositions.add(new Position(x2 - 1, y2));
-        } else if (x2 > x1) {
-            testPositions.add(new Position(x2 + 1, y2));
-        }
-
-        if (y1 > y2) {
-            testPositions.add(new Position(x2, y2 - 1));
-        } else if (y2 > y1) {
-            testPositions.add(new Position(x2, y2 + 1));
-        }
-
-        testPositions.stream().forEach(
-            position -> {
-                List <Entity> collides = l.stream().filter(entity -> entity.getPosition().equals(position)).collect(Collectors.toList());
-                if (collides.stream().allMatch(entity -> entity.collide(this))) {
-                    this.setPosition(position);
-                    return;
-                }
-            }
-        );
     }
 }

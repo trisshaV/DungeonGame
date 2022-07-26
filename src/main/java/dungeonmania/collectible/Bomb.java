@@ -1,7 +1,6 @@
 package dungeonmania.collectible;
 
-import org.json.JSONObject;
-
+import dungeonmania.SerializableJSONObject;
 import dungeonmania.util.Position;
 
 /**
@@ -23,7 +22,7 @@ public class Bomb extends Collectible {
      * @param xy
      * @param config
      */
-    public Bomb(String id, Position xy, JSONObject config) {
+    public Bomb(String id, Position xy, SerializableJSONObject config) {
         super(id, "bomb", xy);
         radius = config.getInt("bomb_radius");
     }
