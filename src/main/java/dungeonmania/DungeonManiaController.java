@@ -10,6 +10,7 @@ import dungeonmania.collectible.SunStone;
 import dungeonmania.collectible.Sword;
 import dungeonmania.collectible.Treasure;
 import dungeonmania.collectible.Wood;
+import dungeonmania.dynamic_entity.Assassin;
 import dungeonmania.dynamic_entity.DynamicEntity;
 import dungeonmania.dynamic_entity.Hydra;
 import dungeonmania.dynamic_entity.Mercenary;
@@ -239,9 +240,11 @@ public class DungeonManiaController implements Serializable {
             case "hydra":
                 newEntity = new Hydra(id, position, jsonConfig);
                 break;
-                case "sun_stone":
+            case "sun_stone":
                 newEntity = new SunStone(id, position, jsonConfig);
                 break;
+            case "assassin":
+                newEntity = new Assassin(id, position, jsonConfig);
         default:
             return;
         }
