@@ -1,6 +1,6 @@
 package dungeonmania.collectible;
 
-import org.json.JSONObject;
+import dungeonmania.SerializableJSONObject;
 import dungeonmania.util.Position;
 
 /**
@@ -16,7 +16,7 @@ public class Wood extends Collectible {
      * @param xy
      * @param config
      */
-    public Wood(String id, Position xy, JSONObject config) {
+    public Wood(String id, Position xy, SerializableJSONObject config) {
         super(id, "wood", xy);
     }
 

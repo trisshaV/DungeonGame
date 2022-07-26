@@ -1,5 +1,6 @@
 package dungeonmania.dynamic_entity.player;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -16,7 +17,7 @@ import dungeonmania.collectible.Sword;
 import dungeonmania.dynamic_entity.DynamicEntity;
 import dungeonmania.dynamic_entity.Player;
 
-public class BattleRecord {
+public class BattleRecord implements Serializable{
     private DynamicEntity enemy;
     private List <RoundRecord> rounds = new ArrayList<>();
     private double initialPlayerHealth;

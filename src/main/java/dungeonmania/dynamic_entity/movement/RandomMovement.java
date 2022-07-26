@@ -1,5 +1,6 @@
 package dungeonmania.dynamic_entity.movement;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -8,7 +9,7 @@ import dungeonmania.Entity;
 import dungeonmania.util.Direction;
 import dungeonmania.util.Position;
 
-public class RandomMovement implements Movement{
+public class RandomMovement implements Movement, Serializable {
     /**
      * Random posiiton
      * @param d - entity that wants to move
