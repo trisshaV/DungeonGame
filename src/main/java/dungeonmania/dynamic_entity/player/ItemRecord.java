@@ -1,6 +1,8 @@
 package dungeonmania.dynamic_entity.player;
 
-public class ItemRecord {
+import java.io.Serializable;
+
+public class ItemRecord implements Serializable {
     private String id;
     private String type;
 

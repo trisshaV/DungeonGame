@@ -5,8 +5,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.json.JSONObject;
-
 import dungeonmania.Entity;
 import dungeonmania.collectible.Collectible;
 import dungeonmania.collectible.InvincibilityPotion;
@@ -15,6 +13,7 @@ import dungeonmania.collectible.Key;
 import dungeonmania.util.Direction;
 import dungeonmania.util.Position;
 import dungeonmania.Inventory;
+import dungeonmania.SerializableJSONObject;
 /**
  * Entity that is controlled by the Player.
  */
@@ -34,7 +33,7 @@ public class Player extends DynamicEntity {
      * @param xy
      * @param config
      */
-    public Player(String id, Position xy, JSONObject config) {
+    public Player(String id, Position xy, SerializableJSONObject config) {
         super(id, "player", xy);
         this.attack = config.getDouble("player_attack");
         this.health = config.getDouble("player_health");
@@ -56,14 +55,7 @@ public class Player extends DynamicEntity {
      * @return the buildables
      */
     public List<String> getBuildables() {
-        List<String> buildables = new ArrayList<>();
-        if (inventory.CheckMaterials("bow")) {
-            buildables.add("bow");
-        }
-        if (inventory.CheckMaterials("shield")) {
-            buildables.add("shield");
-        }
-        return buildables;
+        return inventory.getBuildables();
     }
 
     /**

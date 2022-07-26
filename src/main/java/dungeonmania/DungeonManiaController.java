@@ -6,6 +6,7 @@ import dungeonmania.collectible.Collectible;
 import dungeonmania.collectible.InvincibilityPotion;
 import dungeonmania.collectible.InvisibilityPotion;
 import dungeonmania.collectible.Key;
+import dungeonmania.collectible.SunStone;
 import dungeonmania.collectible.Sword;
 import dungeonmania.collectible.Treasure;
 import dungeonmania.collectible.Wood;
@@ -35,6 +36,13 @@ import dungeonmania.static_entity.Portal;
 import dungeonmania.static_entity.StaticEntity;
 import dungeonmania.static_entity.Wall;
 import dungeonmania.static_entity.ZombieToastSpawner;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.FileWriter;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -46,15 +54,15 @@ import java.util.stream.Collectors;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-public class DungeonManiaController {
+public class DungeonManiaController implements Serializable {
     private int id;
-    private JSONObject jsonConfig;
+    private SerializableJSONObject jsonConfig;
     private List<Portal> unpairedPortals;
     private List<Entity> entities;
     private Player player;
-	private String dungeonId = "0";
+    private String dungeonId = "0";
     private Goal goalStrategy;
-	private String dungeonName;
+    private String dungeonName;
     private Observer observer;
     private Spiderspawner spiderspawner;
 
@@ -122,14 +130,14 @@ public class DungeonManiaController {
         JSONObject json = new JSONObject(dungeonContent);
         JSONObject jsonConfig = new JSONObject(confContent);
         JSONArray jsonEntities = json.getJSONArray("entities");
-        this.jsonConfig = jsonConfig;
+        this.jsonConfig = new SerializableJSONObject(jsonConfig);
 
         goalStrategy = new SuperGoal(json.getJSONObject("goal-condition"), jsonConfig);
         spiderspawner = new Spiderspawner(this, jsonConfig.getInt("spider_attack"), jsonConfig.getInt("spider_health"), jsonConfig.getInt("spider_spawn_rate"));
 
         for (int i = 0; i < jsonEntities.length(); i++) {
             JSONObject jsonEntity = jsonEntities.getJSONObject(i);
-            addEntity(String.valueOf(i), jsonEntity, jsonConfig);
+            addEntity(String.valueOf(i), new SerializableJSONObject(jsonEntity), this.jsonConfig);
         }
         id = entities.size();
 
@@ -149,7 +157,7 @@ public class DungeonManiaController {
      * @param jsonEntity
      * @param jsonConfig
      */
-    private void addEntity(String id, JSONObject jsonEntity, JSONObject jsonConfig) {
+    private void addEntity(String id, SerializableJSONObject jsonEntity, SerializableJSONObject jsonConfig) {
         String type = jsonEntity.getString("type");
         Position position = new Position(jsonEntity.getInt("x"), jsonEntity.getInt("y"));
         Entity newEntity = null;
@@ -226,6 +234,9 @@ public class DungeonManiaController {
                     partner.setLinkPosition(newPortal.getPosition());
                     newPortal.setLinkPosition(partner.getPosition());
                 }
+                break;
+                case "sun_stone":
+                newEntity = new SunStone(id, position, jsonConfig);
                 break;
         default:
             return;
@@ -407,7 +418,7 @@ public class DungeonManiaController {
      */
     public DungeonResponse tick(Direction movementDirection) {
         //move player
-    	entities.stream().filter(it -> it instanceof Player).forEach(
+        entities.stream().filter(it -> it instanceof Player).forEach(
             x -> {
                 Player p = (Player) x;
                 p.updatePos(movementDirection, entities);
@@ -456,7 +467,7 @@ public class DungeonManiaController {
     }
 
     public List<String> validBuildables() {
-        return Arrays.asList("bow", "shield");
+        return Arrays.asList("bow", "shield", "sceptre", "midnight_armour");
     }
 
     /**
@@ -476,9 +487,8 @@ public class DungeonManiaController {
             throw new InvalidActionException("Not enough materials!");
         }
 
-        if (playerInv.buildItem(buildable, String.valueOf(id))) {
-            id ++;
-        }
+        playerInv.buildItem(buildable, String.valueOf(id));
+        id ++;
         return getDungeonResponseModel();
     }
 
@@ -612,21 +622,85 @@ public class DungeonManiaController {
      * /game/save
      */
     public DungeonResponse saveGame(String name) throws IllegalArgumentException {
-        return null;
+        
+        
+        ArrayList<Object> objects = new ArrayList<>();        
+
+    
+        objects.add(id); 
+        objects.add(jsonConfig); 
+        objects.add(unpairedPortals); 
+        objects.add(entities);
+        objects.add(player);  
+        objects.add(dungeonId); 
+        objects.add(goalStrategy); 
+        objects.add(dungeonName); 
+        objects.add(observer); 
+        objects.add(spiderspawner); 
+        
+        try {
+            FileOutputStream f = new FileOutputStream(new File(name + ".game.dat"));
+            ObjectOutputStream o = new ObjectOutputStream(f);
+            
+            o.writeObject(objects);
+            
+            o.close();
+                        
+        }catch (Exception e) {
+            e.printStackTrace();
+        }         
+        
+       return getDungeonResponseModel();
     }
 
     /**
      * /game/load
      */
     public DungeonResponse loadGame(String name) throws IllegalArgumentException {
-        return null;
+        
+        try {
+            
+            FileInputStream fi = new FileInputStream(new File(name + ".game.dat"));
+            ObjectInputStream oi = new ObjectInputStream(fi);
+            
+            ArrayList<Object> objects = (ArrayList<Object>) oi.readObject();
+            
+            this.id = (Integer)objects.get(0);
+            this.jsonConfig = (SerializableJSONObject)objects.get(1);
+            this.unpairedPortals = (List<Portal>)objects.get(2);
+            this.entities = (List<Entity>)objects.get(3);
+            this.player = (Player)objects.get(4);
+            this.dungeonId = (String)objects.get(5);
+            this.goalStrategy = (Goal)objects.get(6);
+            this.dungeonName = (String)objects.get(7);
+            this.observer = (Observer)objects.get(8);
+            this.spiderspawner = (Spiderspawner)objects.get(9);            
+            
+            oi.close();
+                        
+        }catch (Exception e) {
+            e.printStackTrace();
+            // throws excpetion
+            throw new IllegalArgumentException();
+        }         
+        
+        return getDungeonResponseModel();
     }
 
     /**
      * /games/all
      */
     public List<String> allGames() {
-        return new ArrayList<>();
+        
+        List<String> games = new ArrayList<>();
+        
+        File f = new File(".");
+        for (String name: f.list()){
+            if (name.endsWith(".game.dat")){
+                games.add(name.substring(0, name.indexOf(".game.dat")));
+            }
+        }        
+        return games;
     }
 
 }
