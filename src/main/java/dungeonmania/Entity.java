@@ -82,4 +82,10 @@ public abstract class Entity {
 	 */
     public void interact(Player player) throws InvalidActionException {
     }
+
+	/**
+	 * TODO: unimplemented swamp tiles
+	 * @return the number of additional moves it takes to move across an entity
+	 */
+	public int moveCost() { return 0; }
 }
