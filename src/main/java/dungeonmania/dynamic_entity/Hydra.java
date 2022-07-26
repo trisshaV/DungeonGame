@@ -38,9 +38,11 @@ public class Hydra extends DynamicEntity {
     @Override
     public double newHealth(double PlayerDamage) {
         // If we hit the chance that a Hydra increases health
-        if (new Random().nextDouble() <= healthIncreaseRate) {
+        double random = new Random().nextDouble();
+        if (random < healthIncreaseRate) {
             return this.getHealth() + healthIncreaseAmnt;
         } else {
+            System.out.println(random);
             return this.getHealth() - PlayerDamage;
         }
     }
