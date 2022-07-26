@@ -72,6 +72,12 @@ public class Inventory implements Serializable{
                    .count();
     }
 
+    public void removeNoItemType(String type, int number) {
+        for (int i = 0; i < number; i++) {
+            removeItem(type);
+        }
+    }
+
     /**
      * Gets items
      * @param type
