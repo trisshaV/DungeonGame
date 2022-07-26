@@ -10,6 +10,7 @@ import dungeonmania.dynamic_entity.movement.FollowMovement;
 import dungeonmania.dynamic_entity.movement.Movement;
 import dungeonmania.dynamic_entity.movement.RunAwayMovement;
 import dungeonmania.exceptions.InvalidActionException;
+import dungeonmania.response.models.EntityResponse;
 import dungeonmania.util.Direction;
 import dungeonmania.util.Position;
 
@@ -60,6 +61,14 @@ public class Assassin extends DynamicEntity{
             status = "FRIENDLY";
         }
     }
+    
+    @Override
+    public EntityResponse getEntityResponse() {
+        if (status.equals("FRIENDLY")) {
+            return new EntityResponse(getId(), getType(), getPosition(), false);
+        }
+        return new EntityResponse(getId(), getType(), getPosition(), true);
+    }
 
 
     @Override
@@ -68,9 +77,10 @@ public class Assassin extends DynamicEntity{
             Player p = (Player)l.stream().filter(x -> x instanceof Player).findFirst().orElse(null);
             if (p.getStatus().equals("INVISIBLE")) {
                 // Check for Radius
+                // If player is within Recon Radius, Assassin will still chase after it
                 Position distance = Position.calculatePositionBetween(p.getPosition(), this.getPosition());
                 double radius = Math.sqrt(Math.pow(distance.getX(), 2) + Math.pow(distance.getY(), 2));
-                if (radius > bribeRadius) {
+                if (radius > reconRadius) {
                     move = new RandomMovement();
                 } else {
                     move = new ChaseMovement();

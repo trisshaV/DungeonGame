@@ -245,6 +245,7 @@ public class DungeonManiaController implements Serializable {
                 break;
             case "assassin":
                 newEntity = new Assassin(id, position, jsonConfig);
+                break;
         default:
             return;
         }
