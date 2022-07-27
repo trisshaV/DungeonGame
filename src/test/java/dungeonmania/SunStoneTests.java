@@ -1,6 +1,8 @@
 package dungeonmania;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static dungeonmania.TestUtils.getEntities;
 import static dungeonmania.TestUtils.getInventory;
 import org.junit.jupiter.api.DisplayName;
@@ -83,5 +85,15 @@ public class SunStoneTests {
         // check if the key is still in the inventory
         assertEquals(1, getInventory(res, "key").size());
         assertEquals(pos, getEntities(res, "player").get(0).getPosition());
+    }
+
+    @Test
+    @DisplayName("Test the treasure goal using a sun stone")
+    public void testSunStoneTreasureGoal() {
+        DungeonManiaController dmc = new DungeonManiaController();
+        DungeonResponse resp = dmc.newGame("d_sunStone_treasureGoal", "simple");
+        assertTrue(resp.getGoals().contains(":treasure"));
+        resp = dmc.tick(Direction.RIGHT);
+        assertFalse(resp.getGoals().contains(":treasure"));
     }
 }
