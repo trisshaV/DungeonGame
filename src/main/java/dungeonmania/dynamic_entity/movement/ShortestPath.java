@@ -10,6 +10,9 @@ import java.util.stream.Collectors;
 public class ShortestPath {
     public static Position getNextPosition(Entity start, Position dest, List<Entity> entities) {
         Position source = start.getPosition();
+        if (source.equals(dest) || Position.isAdjacent(source, dest)) {
+            return dest;
+        }
         Map<String, Integer> box = bounds(entities);
         List<Position> all = allPositions(box);
 
@@ -34,26 +37,45 @@ public class ShortestPath {
         while (!queue.isEmpty()) {
             Position u = queue.remove();
             for (Position v: adjacent(u)) {
-                // check collision
-                if (dist.get(u) + cost(map, v) < dist.get(v)) {
-
+                if (!valid(map, start) && dist.get(u) + cost(map, v) < dist.get(v)) {
+                    dist.put(v, dist.get(u) + cost(map, v));
+                    prev.put(v, u);
+                }
+                if (!queue.contains(v) && !visited.contains(v)) {
+                    queue.add(v);
                 }
             }
+            visited.add(u);
         }
 
-
-
-        return null;
+        return traceBack(prev, source, dest);
     }
 
-    public static int cost(Map<Position, List<Entity>> map, Position xy) {
-        return map.getOrDefault(xy, new ArrayList<>())
-                  .stream()
-                  .map(Entity::moveCost)
-                  .reduce(0, Integer::max);
+    private static Position traceBack(Map<Position, Position> prev, Position source, Position dest) {
+        Position next = prev.get(dest);
+        while (next != null && !next.equals(source)) {
+            next = prev.get(next);
+        }
+        return (next == null) ? source : next;
     }
 
-    public static List<Position> adjacent(Position xy) {
+    /** 
+     * returns true if no collision
+     */
+    private static boolean valid(Map<Position, List<Entity>> map, Entity entity) {
+        return map.getOrDefault(entity.getPosition(), new ArrayList<>())
+            .stream()
+            .noneMatch(e -> !e.collide(entity));
+    }
+
+    private static int cost(Map<Position, List<Entity>> map, Position xy) {
+        return 1 + map.getOrDefault(xy, new ArrayList<>())
+                    .stream()
+                    .map(Entity::moveCost)
+                    .reduce(0, Integer::max);
+    }
+
+    private static List<Position> adjacent(Position xy) {
         return new ArrayList<>(List.of(
             xy.translateBy(Direction.LEFT),
             xy.translateBy(Direction.RIGHT),
@@ -62,7 +84,7 @@ public class ShortestPath {
         ));
     }
 
-    public static List<Position> allPositions(Map<String, Integer> bounds) {
+    private static List<Position> allPositions(Map<String, Integer> bounds) {
         List<Position> all = new ArrayList<>();
         int lower_x = bounds.get("left");
         int upper_x = bounds.get("right");
@@ -76,7 +98,7 @@ public class ShortestPath {
         return all;
     }
 
-    public static Map<String, Integer> bounds(List<Entity> entities) {
+    private static Map<String, Integer> bounds(List<Entity> entities) {
         List<Position> positions = entities.stream().map(Entity::getPosition).collect(Collectors.toList());
         Map<String, Integer> m = new HashMap<>();
         Position leftMost = positions.stream()
