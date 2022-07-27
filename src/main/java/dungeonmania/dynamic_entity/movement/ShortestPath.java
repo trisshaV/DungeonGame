@@ -65,7 +65,7 @@ public class ShortestPath {
     private static boolean valid(Map<Position, List<Entity>> map, Entity entity) {
         return map.getOrDefault(entity.getPosition(), new ArrayList<>())
             .stream()
-            .noneMatch(e -> !e.collide(entity));
+            .noneMatch(e -> e.collide(entity));
     }
 
     private static int cost(Map<Position, List<Entity>> map, Position xy) {
