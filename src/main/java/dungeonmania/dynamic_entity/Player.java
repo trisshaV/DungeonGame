@@ -253,4 +253,8 @@ public class Player extends DynamicEntity {
     public int getCoins() {
         return inventory.getNoItemType("treasure");
     }
+
+    public void removeCoins(int number) {
+        inventory.removeNoItemType("treasure", number);
+    }
 }

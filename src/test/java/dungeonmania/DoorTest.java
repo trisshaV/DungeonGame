@@ -79,4 +79,19 @@ public class DoorTest {
         res = dmc.tick(Direction.LEFT);
         assertNotEquals(pos, getEntities(res, "player").get(0).getPosition());
     }
+
+    @Test
+    @DisplayName("Wrong key won't work")
+    public void wrongKey() {
+        DungeonManiaController dmc;
+        dmc = new DungeonManiaController();
+        DungeonResponse res = dmc.newGame("d_wrongKey", "c_DoorsKeysTest_useKeyWalkThroughOpenDoor");
+        res = dmc.tick(Direction.RIGHT);
+        assertEquals(1, getInventory(res, "key").size());
+        res = dmc.tick(Direction.RIGHT);
+        Position pos = getEntities(res, "player").get(0).getPosition();
+        res = dmc.tick(Direction.DOWN);
+        assertEquals(pos, getEntities(res, "player").get(0).getPosition());
+        assertEquals(1, getInventory(res, "key").size());
+    }
 }

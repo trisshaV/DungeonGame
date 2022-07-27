@@ -7,6 +7,8 @@ import org.json.JSONObject;
 
 import dungeonmania.Entity;
 import dungeonmania.SerializableJSONObject;
+import dungeonmania.dynamic_entity.movement.Movement;
+import dungeonmania.dynamic_entity.movement.RandomMovement;
 import dungeonmania.util.Direction;
 import dungeonmania.util.Position;
 
@@ -18,6 +20,7 @@ import dungeonmania.util.Position;
 public class Hydra extends DynamicEntity {
     private double healthIncreaseRate;
     private double healthIncreaseAmnt;
+    private final Movement move = new RandomMovement();
 
     /**
      * Hydra Constructor
@@ -39,12 +42,7 @@ public class Hydra extends DynamicEntity {
      * @param entities
      */
     public void updatePos(Direction d, List<Entity> entities) {
-        RandomMovement move = new RandomMovement();
-        Position nextPos = move.getNextPosition(this, entities);
-        if (nextPos != null) {
-            this.setPosition(nextPos);
-        }
-        
+        setPosition(move.getNextPosition(this, entities));
     }
 
     /**

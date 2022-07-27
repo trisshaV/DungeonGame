@@ -8,11 +8,25 @@ import dungeonmania.SerializableJSONObject;
 import dungeonmania.dynamic_entity.movement.ChaseMovement;
 import dungeonmania.dynamic_entity.movement.FollowMovement;
 import dungeonmania.dynamic_entity.movement.Movement;
+import dungeonmania.dynamic_entity.movement.RandomMovement;
 import dungeonmania.dynamic_entity.movement.RunAwayMovement;
 import dungeonmania.exceptions.InvalidActionException;
 import dungeonmania.response.models.EntityResponse;
 import dungeonmania.util.Direction;
 import dungeonmania.util.Position;
+
+
+/**
+ * Are among the enemy entities that will harm Player INITIALLY, however if bribed they will NOT. Has following properties:
+ *      - Initialised at dungeon creation
+ *      - Can be bribed if Player is within bribeRadius, and possesses enough coins
+ *              - A bribe has a percentage (initialised at dungeon creation) of failing, where the Assassin will remain hostile, and coins
+ *                will still be removed
+ *      - They have two states, HOSTILE (intially) and ALLY (if bribed successfully by Player). 
+ *                  - these follow the same movement details as a mercenary
+ *      - Unlike a mercenary, when the player is INVISIBLE, if within the Assassins recon radius, the Assassin will continue 
+ *        to chase after the player. If not within the recon radius, it will possess random movement.
+ */
 
 public class Assassin extends DynamicEntity{
     private String status = "HOSTILE";
@@ -22,6 +36,12 @@ public class Assassin extends DynamicEntity{
     private double bribeFailRate;
     private Movement move;
 
+    /**
+     * Assassin Constructor
+     * @param id
+     * @param xy
+     * @param config
+     */
     public Assassin(String id, Position xy, SerializableJSONObject jsonConfig) {
         super(id, "assassin", xy);
         this.attack = jsonConfig.getDouble("assassin_attack");
@@ -32,15 +52,28 @@ public class Assassin extends DynamicEntity{
         this.bribeFailRate = jsonConfig.getDouble("assassin_bribe_fail_rate");
     }
 
+    /**
+     * Gets type
+     * @return the type, i.e "mercenary"
+     */
     @Override
     public String getType() {
         return "assassin";
     }
 
+    /**
+     * Gets status
+     * @return the status
+     */
     public String getStatus() {
         return status;
     }
 
+    /**
+     * Assassin interact, allows player to bribe Assassin
+     * Bribes have a certain chance of failing.
+     * @param player
+     */
     @Override
     public void interact (Player player) throws InvalidActionException {
         // Check the radius
@@ -56,8 +89,10 @@ public class Assassin extends DynamicEntity{
         // Checks probability that bribe will fail:
         double random = new Random().nextDouble();
         if (random < bribeFailRate) {
+            player.removeCoins(bribeAmount);
             throw new InvalidActionException("Unlucky! The Assassin did not accept your bribe");
         } else {
+            player.removeCoins(bribeAmount);
             status = "FRIENDLY";
         }
     }
@@ -70,7 +105,11 @@ public class Assassin extends DynamicEntity{
         return new EntityResponse(getId(), getType(), getPosition(), true);
     }
 
-
+    /**
+     * Updates position
+     * @param d
+     * @param l
+     */
     @Override
     public void updatePos(Direction d, List<Entity> l) {
         if (status.equals("HOSTILE")) {

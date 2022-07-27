@@ -160,5 +160,32 @@ public class AssassinTest {
         assertThrows(InvalidActionException.class , () ->  dmc.interact(getEntities(dmc.tick(Direction.RIGHT), "assassin").get(0).getId()));
     }
 
+    @Test
+    @DisplayName("Bribe Assassin Valid")
+    public void testInteractAssasinValid() throws IllegalArgumentException, InvalidActionException {
+        DungeonManiaController dmc;
+        dmc = new DungeonManiaController();
+        DungeonResponse res = dmc.newGame("d_assassinSimple", "c_assassinFarRecon");
+        res = dmc.tick(Direction.RIGHT);
+        res = dmc.tick(Direction.RIGHT);
+        res = dmc.tick(Direction.RIGHT);
+        String id = getEntities(res, "assassin").get(0).getId();
+        res = dmc.interact(id);
+        assertEquals("FRIENDLY", dmc.getAssassinStatus());
+        assertEquals(0, getEntities(res, "treasure").size());
+    }
+
+    @Test
+    @DisplayName("Bribe Assassin with Far Bribe Radius")
+    public void testInteractAssasinValidRadius() throws IllegalArgumentException, InvalidActionException {
+        DungeonManiaController dmc;
+        dmc = new DungeonManiaController();
+        DungeonResponse res = dmc.newGame("d_assassinSimple", "c_assassinFarRecon");
+        res = dmc.tick(Direction.RIGHT);
+        String id = getEntities(res, "assassin").get(0).getId();
+        res = dmc.interact(id);
+        assertEquals("FRIENDLY", dmc.getAssassinStatus());
+        assertEquals(2, getEntities(res, "treasure").size());
+    }
 
 }

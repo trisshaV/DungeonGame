@@ -63,7 +63,8 @@ public class Mercenary extends DynamicEntity {
         }
         // set status to friendly 
         status = "FRIENDLY";
-        
+        // remove players coins
+        player.removeCoins(bribeAmount);
     }
 
     @Override
