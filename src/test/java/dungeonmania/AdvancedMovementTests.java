@@ -13,7 +13,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 public class AdvancedMovementTests {
     @Test
     @DisplayName("Test that the mercenary's is not greedy")
-    public static void testMercenaryDoesNotTakeGreedyPath() {
+    public void testMercenaryDoesNotTakeGreedyPath() {
         DungeonManiaController dmc = new DungeonManiaController();
         DungeonResponse resp = dmc.newGame("d_dijkstrasMaze_simple", "c_standard_movement");
         Position prev = getEntitiesStream(resp, "mercenary").findFirst().get().getPosition();
@@ -26,7 +26,7 @@ public class AdvancedMovementTests {
 
     @Test
     @DisplayName("Test mercenary takes shortest path A")
-    public static void testMercenaryTakesShortestA() {
+    public void testMercenaryTakesShortestA() {
         DungeonManiaController dmc = new DungeonManiaController();
         DungeonResponse resp = dmc.newGame("d_dijkstrasMaze_simple", "c_standard_movement");
         Position prev = getEntitiesStream(resp, "mercenary").findFirst().get().getPosition();
@@ -37,7 +37,7 @@ public class AdvancedMovementTests {
 
     @Test
     @DisplayName("Test mercenary takes shortest path B")
-    public static void testMercenaryTakesShortestB() {
+    public void testMercenaryTakesShortestB() {
         DungeonManiaController dmc = new DungeonManiaController();
         DungeonResponse resp = dmc.newGame("d_dijkstrasMaze_simple", "c_standard_movement");
         Position prev = getEntitiesStream(resp, "mercenary").findFirst().get().getPosition();
@@ -48,7 +48,7 @@ public class AdvancedMovementTests {
 
     @Test
     @DisplayName("Test that the mercenary takes the only available path")
-    public static void testMercenaryTakesOnlyPath() {
+    public void testMercenaryTakesOnlyPath() {
         DungeonManiaController dmc = new DungeonManiaController();
         dmc.newGame("d_dijkstrasMaze_simple", "c_standard_movement");
         DungeonResponse resp = dmc.tick(Direction.RIGHT);

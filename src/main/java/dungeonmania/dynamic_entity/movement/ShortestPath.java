@@ -31,13 +31,14 @@ public class ShortestPath {
         }
 
         Set<Position> visited = new HashSet<>();
-        Queue<Position> queue = new PriorityQueue<>();
+        Queue<Position> queue = new PriorityQueue<>((a, b) -> 0);
         queue.add(source);
 
         while (!queue.isEmpty()) {
             Position u = queue.remove();
-            for (Position v: adjacent(u)) {
-                if (!valid(map, start) && dist.get(u) + cost(map, v) < dist.get(v)) {
+            List<Position> adjacentPos = adjacent(u);
+            for (Position v: adjacentPos) {
+                if (valid(map, start) && dist.get(u) + cost(map, v) < dist.get(v)) {
                     dist.put(v, dist.get(u) + cost(map, v));
                     prev.put(v, u);
                 }
