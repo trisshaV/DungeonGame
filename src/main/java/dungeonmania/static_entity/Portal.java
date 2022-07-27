@@ -3,6 +3,7 @@ package dungeonmania.static_entity;
 import dungeonmania.DungeonManiaController;
 import dungeonmania.Entity;
 import dungeonmania.dynamic_entity.Player;
+import dungeonmania.response.models.EntityResponse;
 import dungeonmania.util.Position;
 
 /**
@@ -83,6 +84,14 @@ public class Portal extends StaticEntity {
         return "portal";
     }
 
+    @Override
+    /**
+	 * Portal entity response. 
+	 * @return always false for isInteractable unless overridden.
+	 */
+	public EntityResponse getEntityResponse() {
+		return new EntityResponse(getId(), "portal_" + colour, getPosition(), false);
+	}
     /**
      * Gets colour
      * @return the colour

@@ -40,6 +40,10 @@
         "zombie_toast": "images/tileset/entities/zombie.png",
         "boulders": "images/tileset/entities/boulder_00.png",
         "enemies": "images/tileset/items/sword_silver.png",
+<<<<<<< HEAD
+=======
+        "hydra": "images/tileset/entities/hydra.png",
+>>>>>>> 54a9a34cebc1ab63be3d1b7c522e5870d37584c8
         "sun_stone": "images/tileset/entities/sun_stone.png",
         "midnight_armour": "images/tileset/entities/midnight_armour.png",
         "sceptre": "images/tileset/entities/sceptre.png",

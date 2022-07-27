@@ -51,6 +51,13 @@ This specification is broken into four parts:
 - Fri 22 Jul 3pm - Add rewind buttons for `time_turner` to frontend
 - Fri 22 Jul 3pm - Add dungeon generation to frontend and fix method signature for `generateDungeon`
 - Fri 22 Jul 5pm - Clarify Sun Stone and Sceptre.
+- Sat 23 Jul 12pm - Time travel clarifications
+- Sat 23 Jul 9pm - Clarify dungeon generation and time travel behaviour
+- Sun 24 Jul 9am - Fix description for exceptions in `interact()` and description for sun stone
+- Sun 24 Jul 9pm - Clarify dungeon state after time travel
+- Sun 24 Jul 11pm - Revert bad spec update and clarify `hydra_health_increase_rate`
+- Tue 26 Jul 11pm - Clarify logical entity input
+- Wed 27 Jul 8am - (Important) Update exit location of player out of time portal
 
 ## 1. Aims
 
@@ -150,7 +157,7 @@ In Milestone 3, the following collectable entities have been added:
 
 | Entity    | Image         | Description |
 | --------- | --------------| ------------|
-| Sun Stone | <img src='images/sun_stone.png' /> | A special form of treasure, hard and treasuable. It can be picked up by the player. Can be used to open doors, and can be used interchangeably with treasure when building entities. But it cannot be used to bribe mercenaries or assassins. Since it is classed as treasure it counts towards the treasure goal. When used for opening doors, or when replacing another material such as a key or treasure in building entities, it is retained after use. |
+| Sun Stone | <img src='images/sun_stone.png' /> | A special form of treasure, hard and treasuable. It can be picked up by the player. Can be used to open doors, and can be used interchangeably with treasure or keys when building entities. But it cannot be used to bribe mercenaries or assassins. Since it is classed as treasure it counts towards the treasure goal. When used for opening doors, or when replacing another material such as a key or treasure in building entities, it is retained after use. |
 
 ### 3.5 Buildable Entities
 
@@ -308,7 +315,7 @@ This part of the extension includes the following new entity:
 | --------- | --------------|
 | Time Travelling Portal | <img src="images/time_portal.png" /> |
 
-If a player travels through a time travelling portal, they exit through the same portal, except the dungeon state is that of 30 ticks previously.
+If a player travels through a time travelling portal, they end up on the same square as the portal, except the dungeon state is that of 30 ticks previously. If less than 30 ticks have passed, then the dungeon state is simply the initial dungeon state.
 
 #### 3.11.3 Time Travel Rules
 
@@ -320,12 +327,16 @@ When a character has time travelled, either by the rewind buttons or via a time 
 
 Only the character can travel through time travel portals.
 
+The older player should still collect items and play out all `tick` and `interact` movements with those items as they did before. Time travel takes the player to *after* the tick takes place, e.g. if on tick 30 the player travels through a portal it arrives out of the other side after tick 0 has taken place.
+
 <details>
 <summary>
 Implementation Hint
 </summary>
 
-The design of this extension is up to you, however we recommend you treat time travel as moving backwards in a series of game states that are being stored (the state of the dungeon at tick X). When time travel occurs, the player is transported to that state, and all `tick` and `interact` functions are "played" out in the same order.
+The design of this extension is up to you, however we recommend you treat time travel as moving backwards in a series of game states that are being stored (the state of the dungeon at tick X). When time travel occurs, the player is transported to that state, and all `tick` and `interact` functions are "played" out in the same order *for the older player*, not the current player.
+
+This also means that when the older player reaches the tick during which they time travelled (either by using a time turner or through a portal), they should be removed from the map.
 
 </details>
 
@@ -497,7 +508,7 @@ Some entities will contain additional fields in their JSON entry, namely:
 
 #### 4.1.3 Further Extra Fields 💀
 
-- All logical entities will be created with the field `logic` which will be one of `and`, `or`, `xor`, or `co_and`.
+- All logical entities will be created with the field `logic` which will be one of `and`, `or`, `xor`, or `co_and`. Milestone 2 entities (bombs, switches) that do not have a logic field cannot be activated by wires and act as they did in Milestone 2. Milestone 3 logical entities (light bulbs, switch doors) will always be created with a logic field. Regular doors will never be created with a logic field.
 - All swamp tiles will be created with a field `movement_factor` which will be the tile's movement factor, an integer >= 0.
 - Switch doors will also have keys.
 
@@ -573,7 +584,7 @@ In Milestone 3, the following configuration fields have been added.
 | `assassin_recon_radius`        | The radius within which an assassin can see and move towards the player even when they are invisible. |
 | `hydra_attack`                 | Attack damage of the hydra. |
 | `hydra_health`                 | Health of the hydra. |
-| `hydra_health_increase_rate`   | The chance that the health of a Hydra increases when it gets attacked. The value of this field should be always inclusively between 0 and 1. |
+| `hydra_health_increase_rate`   | The chance that the health of a Hydra increases when it gets attacked each round. The value of this field should be always inclusively between 0 and 1. |
 | `hydra_health_increase_amount` | The increment on the health of a Hydra increases when it gets attacked. |
 | `mind_control_duration`        | The amount of time mind controlling via a sceptre lasts for. |
 | `midnight_armour_attack`       | Attack bonus wearing midnight armour gives to the player. |
@@ -861,7 +872,7 @@ IllegalArgumentException:
 </ul>
 InvalidActionException
 <ul>
-<li>💀 If the player is not within specified bribing radius to the mercenary, if they are bribing/mind-controlling</li>
+<li>💀 If the player is not within specified bribing radius to the mercenary, when they are bribing</li>
 <li>If the player is not cardinally adjacent to the spawner, if they are destroying a spawner</li>
 <li>💀 If the player does not have enough gold and does not have a sceptre and attempts to bribe/mind-control a mercenary</li>
 <li>If the player does not have a weapon and attempts to destroy a spawner</li>
@@ -978,7 +989,7 @@ public DungeonResponse generateDungeon(int xStart, int yStart, int xEnd, int yEn
 
 </td>
 <td>
-Generates a dungeon surrounded by walls in a rectangular grid from the start to the end position on the map. An exit will need to be at <code>(xEnd, yEnd)</code>
+Generates a dungeon surrounded by walls in a rectangular grid from the start to the end position on the map, where the start position is the top left corner and the exit is the bottom right corner. An exit will need to be at <code>(xEnd, yEnd)</code>
 </td>
 <td>
 IllegalArgumentException:

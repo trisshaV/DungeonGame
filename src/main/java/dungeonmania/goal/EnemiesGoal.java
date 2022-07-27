@@ -3,10 +3,11 @@ package dungeonmania.goal;
 import dungeonmania.Entity;
 import dungeonmania.dynamic_entity.Player;
 
+import java.io.Serializable;
 import java.util.List;
 import java.util.Optional;
 
-public class EnemiesGoal implements Goal {
+public class EnemiesGoal implements Goal, Serializable {
     private final int required;
 
     /**

@@ -4,9 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.json.JSONObject;
-
 import dungeonmania.Entity;
+import dungeonmania.SerializableJSONObject;
 import dungeonmania.util.Direction;
 import dungeonmania.util.Position;
 
@@ -31,7 +30,7 @@ public class Spider extends DynamicEntity {
      * @param xy
      * @param config
      */
-    public Spider(String id, Position xy, JSONObject config) {
+    public Spider(String id, Position xy, SerializableJSONObject config) {
         super(id, "spider", xy);
         this.attack = config.getDouble("spider_attack");
         this.health = config.getDouble("spider_health");

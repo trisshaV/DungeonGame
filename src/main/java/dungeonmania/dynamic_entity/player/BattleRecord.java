@@ -1,5 +1,6 @@
 package dungeonmania.dynamic_entity.player;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -16,7 +17,7 @@ import dungeonmania.collectible.Sword;
 import dungeonmania.dynamic_entity.DynamicEntity;
 import dungeonmania.dynamic_entity.Player;
 
-public class BattleRecord {
+public class BattleRecord implements Serializable{
     private DynamicEntity enemy;
     private List <RoundRecord> rounds = new ArrayList<>();
     private double initialPlayerHealth;
@@ -109,7 +110,7 @@ public class BattleRecord {
             }
             double modifiedPlayerDamage = ((bowModifier * (playerAttack + swordAdd))/5);
             double modifiedEnemyDamage = ((enemyAttack - shieldMinus) / 10);
-            newEnemyHealth = enemy.getHealth() - modifiedPlayerDamage;
+            newEnemyHealth = enemy.newHealth(modifiedPlayerDamage);
             newPlayerHealth = player.getHealth() - modifiedEnemyDamage;
             // Update durability of equipment
             updateDurability(itemsInRoundUsed, (Player)player);

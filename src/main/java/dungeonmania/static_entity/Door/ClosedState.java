@@ -2,8 +2,9 @@ package dungeonmania.static_entity.Door;
 
 import dungeonmania.Entity;
 import dungeonmania.dynamic_entity.Player;
+import java.io.Serializable;
 
-public class ClosedState implements State {
+public class ClosedState implements State, Serializable {
     Door door;
 
     /**

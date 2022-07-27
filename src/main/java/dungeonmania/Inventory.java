@@ -8,23 +8,22 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.json.JSONObject;
-
 import dungeonmania.collectible.*;
+import java.io.Serializable;
 
-public class Inventory {
+public class Inventory implements Serializable{
     
     private Player player;
     private List<Collectible> entities; 
     private List<String> buildable = Arrays.asList("bow", "shield", "sceptre", "midnight_armour");
     private List<Buildable> builtItems;
-    private JSONObject config;
+    private SerializableJSONObject config;
 
     /**
      * Constructor for Inventory
      * @param player
      */
-    public Inventory(Player player, JSONObject config) {
+    public Inventory(Player player, SerializableJSONObject config) {
         this.setPlayer(player);
         entities = new ArrayList<>();
         builtItems = new ArrayList<>();
@@ -71,6 +70,12 @@ public class Inventory {
         return (int)entities.stream()
                    .filter(e -> e.getType().equals(type))
                    .count();
+    }
+
+    public void removeNoItemType(String type, int number) {
+        for (int i = 0; i < number; i++) {
+            removeItem(type);
+        }
     }
 
     /**
@@ -195,7 +200,7 @@ public class Inventory {
     public void removeBrokenItems() {
         // Deleting broken shields and bows
         builtItems = builtItems.stream().filter(item -> item.getDurability() != 0).collect(Collectors.toList());
-        entities = entities.stream().filter(item -> (item instanceof Sword) && (((Sword)item).getDurability() != 0)).collect(Collectors.toList());
+        entities = entities.stream().filter(item -> !(item instanceof Sword) || ((item instanceof Sword) && (((Sword)item).getDurability() != 0))).collect(Collectors.toList());
     }
 
     public List<String> getBuildables() {

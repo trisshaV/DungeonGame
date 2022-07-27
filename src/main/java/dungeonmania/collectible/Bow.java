@@ -2,7 +2,8 @@ package dungeonmania.collectible;
 import java.util.Arrays;
 import java.util.List;
 
-import org.json.JSONObject;
+import dungeonmania.Inventory;
+import dungeonmania.SerializableJSONObject;
 
 import dungeonmania.Inventory;
 
@@ -13,7 +14,7 @@ public class Bow extends Buildable {
      * @param id
      * @param config
      */
-    public Bow(String id, JSONObject config) {
+    public Bow(String id, SerializableJSONObject config) {
         super(id, "bow");
         this.durability = config.getInt("bow_durability");
     }
