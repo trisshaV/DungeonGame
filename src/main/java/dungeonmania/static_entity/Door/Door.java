@@ -16,6 +16,7 @@ public class Door extends StaticEntity {
     private State opened;
     private State closed;
     private State state;
+    private int keyId;
 
     /**
      * Door Constructor
@@ -89,5 +90,13 @@ public class Door extends StaticEntity {
      */
     public void setState(State state) {
         this.state = state;
-    }  
+    }
+
+    public void setKeyId(int keyId) {
+        this.keyId = keyId;
+    } 
+
+    public int getKeyId() {
+        return keyId;
+    }
 }
