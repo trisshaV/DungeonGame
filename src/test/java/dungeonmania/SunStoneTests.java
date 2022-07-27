@@ -3,12 +3,18 @@ package dungeonmania;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import java.util.ArrayList;
+import java.util.List;
+
 import static dungeonmania.TestUtils.getEntities;
 import static dungeonmania.TestUtils.getInventory;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import dungeonmania.exceptions.InvalidActionException;
 import dungeonmania.response.models.DungeonResponse;
+import dungeonmania.response.models.ItemResponse;
 import dungeonmania.util.Direction;
 import dungeonmania.util.Position;
 
@@ -95,5 +101,86 @@ public class SunStoneTests {
         assertTrue(resp.getGoals().contains(":treasure"));
         resp = dmc.tick(Direction.RIGHT);
         assertFalse(resp.getGoals().contains(":treasure"));
+    }
+
+    @Test
+    @DisplayName("Player can build a shield using a sun stone")
+    public void testBuildShieldUsingSunStone() throws IllegalArgumentException, InvalidActionException {
+        DungeonManiaController dmc = new DungeonManiaController();
+        DungeonResponse res = dmc.newGame("d_buildUsingSunStone", "simple");
+        List<ItemResponse> inventory = new ArrayList<>();
+        inventory.add(new ItemResponse("0", "shield"));
+
+        res = dmc.tick(Direction.RIGHT);
+        assertEquals(1, getInventory(res, "sun_stone").size());
+        res = dmc.tick(Direction.UP);
+        res = dmc.tick(Direction.RIGHT);
+        res = dmc.tick(Direction.RIGHT);
+        res = dmc.tick(Direction.DOWN);
+        assertEquals(1, getInventory(res, "wood").size());
+        res = dmc.tick(Direction.DOWN);
+        assertEquals(2, getInventory(res, "wood").size());
+
+        res = dmc.build("shield");
+        List<ItemResponse> inven = getInventory(res, "shield");
+        // check if the shield was successfully built
+        assertEquals(inventory.get(0).getType(), inven.get(0).getType());
+        // check if the sun stone was retained after use
+        assertEquals(1, getInventory(res, "sun_stone").size());
+    }
+
+    @Test
+    @DisplayName("Player can build a Sceptre using two sun stones and one wood")
+    public void testBuildSceptreUsingTwoSunStonesOneWood() throws IllegalArgumentException, InvalidActionException {
+        DungeonManiaController dmc = new DungeonManiaController();
+        DungeonResponse res = dmc.newGame("d_buildUsingSunStone", "simple");
+        List<ItemResponse> inventory = new ArrayList<>();
+        inventory.add(new ItemResponse("0", "sceptre"));
+
+        res = dmc.tick(Direction.RIGHT);
+        assertEquals(1, getInventory(res, "sun_stone").size());
+        res = dmc.tick(Direction.DOWN);
+        assertEquals(2, getInventory(res, "sun_stone").size());
+        res = dmc.tick(Direction.RIGHT);
+        res = dmc.tick(Direction.RIGHT);
+        assertEquals(1, getInventory(res, "wood").size());
+
+        res = dmc.build("sceptre");
+        List<ItemResponse> inven = getInventory(res, "sceptre");
+        // check if the sceptre was successfully built
+        assertEquals(inventory.get(0).getType(), inven.get(0).getType());
+        // check if the sun stone was retained after use
+        assertEquals(1, getInventory(res, "sun_stone").size());
+    }
+
+    @Test
+    @DisplayName("Player can build a Sceptre using two sun stones and two arrows")
+    public void testBuildSceptreUsingTwoSunStonesTwoArrows() throws IllegalArgumentException, InvalidActionException {
+        DungeonManiaController dmc = new DungeonManiaController();
+        DungeonResponse res = dmc.newGame("d_buildUsingSunStone", "simple");
+        List<ItemResponse> inventory = new ArrayList<>();
+        inventory.add(new ItemResponse("0", "sceptre"));
+
+        res = dmc.tick(Direction.RIGHT);
+        assertEquals(1, getInventory(res, "sun_stone").size());
+        res = dmc.tick(Direction.DOWN);
+        assertEquals(2, getInventory(res, "sun_stone").size());
+        res = dmc.tick(Direction.RIGHT);
+        res = dmc.tick(Direction.DOWN);
+        res = dmc.tick(Direction.RIGHT);
+        res = dmc.tick(Direction.RIGHT);
+        res = dmc.tick(Direction.RIGHT);
+        res = dmc.tick(Direction.RIGHT);
+        res = dmc.tick(Direction.UP);
+        res = dmc.tick(Direction.UP);
+        assertEquals(1, getInventory(res, "arrow").size());
+        res = dmc.tick(Direction.RIGHT);
+        assertEquals(2, getInventory(res, "arrow").size());
+        res = dmc.build("sceptre");
+        List<ItemResponse> inven = getInventory(res, "sceptre");
+        // check if the sceptre was successfully built
+        assertEquals(inventory.get(0).getType(), inven.get(0).getType());
+        // check if the sun stone was retained after use
+        assertEquals(1, getInventory(res, "sun_stone").size());
     }
 }
