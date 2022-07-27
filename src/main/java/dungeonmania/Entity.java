@@ -29,6 +29,9 @@ public abstract class Entity implements Serializable{
 		position = xy;
 	} 
 
+	public int moveCost() {
+		return 0;
+	}
 	/**
 	 * default EntityResponse. 
 	 * @return always false for isInteractable unless overridden.

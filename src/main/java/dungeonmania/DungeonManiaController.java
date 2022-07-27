@@ -10,6 +10,7 @@ import dungeonmania.collectible.SunStone;
 import dungeonmania.collectible.Sword;
 import dungeonmania.collectible.Treasure;
 import dungeonmania.collectible.Wood;
+import dungeonmania.dynamic_entity.Assassin;
 import dungeonmania.dynamic_entity.DynamicEntity;
 import dungeonmania.dynamic_entity.Hydra;
 import dungeonmania.dynamic_entity.Mercenary;
@@ -35,6 +36,7 @@ import dungeonmania.static_entity.Exit;
 import dungeonmania.static_entity.FloorSwitch;
 import dungeonmania.static_entity.Portal;
 import dungeonmania.static_entity.StaticEntity;
+import dungeonmania.static_entity.SwampTile;
 import dungeonmania.static_entity.Wall;
 import dungeonmania.static_entity.ZombieToastSpawner;
 import java.io.File;
@@ -239,8 +241,14 @@ public class DungeonManiaController implements Serializable {
             case "hydra":
                 newEntity = new Hydra(id, position, jsonConfig);
                 break;
-                case "sun_stone":
+            case "sun_stone":
                 newEntity = new SunStone(id, position, jsonConfig);
+                break;
+            case "assassin":
+                newEntity = new Assassin(id, position, jsonConfig);
+                break;
+            case "swamp_tile":
+                newEntity = new SwampTile(id, position, Integer.valueOf(jsonEntity.getString("movement_factor")));
                 break;
         default:
             return;
@@ -385,6 +393,15 @@ public class DungeonManiaController implements Serializable {
                 y.updatePos(null, entities);
             }
         );
+
+        // check for swamp tiles
+        entities.stream().filter(it -> (it instanceof SwampTile)).forEach(
+            x -> {
+                SwampTile y = (SwampTile) x;
+                y.tick();
+            }
+        );
+
         if (this.observer.checkBattle(entities) == true) {
             entities = removeDeadEntities();
             if (entities.stream().filter(it -> it instanceof Player).findFirst().orElse(null) == null) {
@@ -447,6 +464,15 @@ public class DungeonManiaController implements Serializable {
                 y.updatePos(movementDirection, entities);
             }
         );
+        
+        // check for swamp tiles
+        entities.stream().filter(it -> (it instanceof SwampTile)).forEach(
+            x -> {
+                SwampTile y = (SwampTile) x;
+                y.tick();
+            }
+        );
+        
         if (this.observer.checkBattle(entities)) {
             entities = removeDeadEntities();
             if (entities.stream().filter(it -> it instanceof Player).findFirst().orElse(null) == null) {
@@ -626,6 +652,17 @@ public class DungeonManiaController implements Serializable {
         for (Entity entity : entities) {
             if (entity instanceof Mercenary) {
                 Mercenary check = (Mercenary) entity;
+                return check.getStatus();
+            }
+        }
+       return null;
+    }
+
+    
+    public String getAssassinStatus() {
+        for (Entity entity : entities) {
+            if (entity instanceof Assassin) {
+                Assassin check = (Assassin) entity;
                 return check.getStatus();
             }
         }
