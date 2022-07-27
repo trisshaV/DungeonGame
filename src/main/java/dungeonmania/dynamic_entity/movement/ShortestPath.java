@@ -42,7 +42,7 @@ public class ShortestPath {
                     dist.put(v, dist.get(u) + cost(map, v));
                     prev.put(v, u);
                 }
-                if (!queue.contains(v) && !visited.contains(v)) {
+                if (inBounds(box, v) && !queue.contains(v) && !visited.contains(v)) {
                     queue.add(v);
                 }
             }
@@ -58,6 +58,11 @@ public class ShortestPath {
             next = prev.get(next);
         }
         return (next == null) ? source : next;
+    }
+
+    private static boolean inBounds(Map<String, Integer> bounds, Position xy) {
+        return  (xy.getX() <= bounds.get("right") && xy.getX() >= bounds.get("left")) &&
+                (xy.getY() <= bounds.get("bottom") && xy.getY() >= bounds.get("top"));
     }
 
     /** 
