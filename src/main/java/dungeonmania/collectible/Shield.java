@@ -20,7 +20,7 @@ public class Shield extends Buildable{
     }
 
     public static boolean checkMaterials(Inventory i) {
-        if (i.getNoItemType("wood") < 2 || (i.getNoItemType("treasure") < 1 && i.getNoItemType("key") < 1)) {
+        if (i.getNoItemType("wood") < 2 || (i.getNoItemType("treasure") < 1 && i.getNoItemType("key") < 1 && i.getNoItemType("sun_stone") < 1)) {
             return false;
         }
         return true;
@@ -28,7 +28,9 @@ public class Shield extends Buildable{
 
     public static List<String> requirements(Inventory i) {
         List<String> list = Arrays.asList("wood", "wood");
-        if (i.getNoItemType("treasure") >= 1) {
+        if (i.getNoItemType("sun_stone") >= 1) {
+            list = Arrays.asList("wood", "wood");
+        } else if (i.getNoItemType("treasure") >= 1) {
             list = Arrays.asList("wood", "wood", "treasure");
         } else if (i.getNoItemType("key") >= 1) {
             list = Arrays.asList("wood", "wood", "key");
