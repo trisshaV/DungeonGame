@@ -36,6 +36,7 @@ import dungeonmania.static_entity.Exit;
 import dungeonmania.static_entity.FloorSwitch;
 import dungeonmania.static_entity.Portal;
 import dungeonmania.static_entity.StaticEntity;
+import dungeonmania.static_entity.SwampTile;
 import dungeonmania.static_entity.Wall;
 import dungeonmania.static_entity.ZombieToastSpawner;
 import java.io.File;
@@ -246,6 +247,9 @@ public class DungeonManiaController implements Serializable {
             case "assassin":
                 newEntity = new Assassin(id, position, jsonConfig);
                 break;
+            case "swamp_tile":
+                newEntity = new SwampTile(id, position, Integer.valueOf(jsonEntity.getString("movement_factor")));
+                break;
         default:
             return;
         }
@@ -389,6 +393,15 @@ public class DungeonManiaController implements Serializable {
                 y.updatePos(null, entities);
             }
         );
+
+        // check for swamp tiles
+        entities.stream().filter(it -> (it instanceof SwampTile)).forEach(
+            x -> {
+                SwampTile y = (SwampTile) x;
+                y.tick();
+            }
+        );
+
         if (this.observer.checkBattle(entities) == true) {
             entities = removeDeadEntities();
             if (entities.stream().filter(it -> it instanceof Player).findFirst().orElse(null) == null) {
@@ -451,6 +464,15 @@ public class DungeonManiaController implements Serializable {
                 y.updatePos(movementDirection, entities);
             }
         );
+        
+        // check for swamp tiles
+        entities.stream().filter(it -> (it instanceof SwampTile)).forEach(
+            x -> {
+                SwampTile y = (SwampTile) x;
+                y.tick();
+            }
+        );
+        
         if (this.observer.checkBattle(entities)) {
             entities = removeDeadEntities();
             if (entities.stream().filter(it -> it instanceof Player).findFirst().orElse(null) == null) {
