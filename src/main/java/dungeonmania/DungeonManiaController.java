@@ -6,6 +6,7 @@ import dungeonmania.collectible.Collectible;
 import dungeonmania.collectible.InvincibilityPotion;
 import dungeonmania.collectible.InvisibilityPotion;
 import dungeonmania.collectible.Key;
+import dungeonmania.collectible.MidnightArmour;
 import dungeonmania.collectible.SunStone;
 import dungeonmania.collectible.Sword;
 import dungeonmania.collectible.Treasure;
@@ -499,6 +500,13 @@ public class DungeonManiaController implements Serializable {
         Inventory playerInv = player.getInventory();
         if (!playerInv.CheckMaterials(buildable)) {
             throw new InvalidActionException("Not enough materials!");
+        }
+
+        // Midnight Armour, no zombies exist
+        if (buildable.equals("midnight_armour")) {
+            if (!entities.stream().filter(it -> it.getType().equals("zombie_toast")).findFirst().isEmpty()) {
+                throw new InvalidActionException("Zombies are present!");
+            }
         }
 
         playerInv.buildItem(buildable, String.valueOf(id));

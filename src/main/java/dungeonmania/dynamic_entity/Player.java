@@ -10,6 +10,7 @@ import dungeonmania.collectible.Collectible;
 import dungeonmania.collectible.InvincibilityPotion;
 import dungeonmania.collectible.InvisibilityPotion;
 import dungeonmania.collectible.Key;
+import dungeonmania.collectible.MidnightArmour;
 import dungeonmania.util.Direction;
 import dungeonmania.util.Position;
 import dungeonmania.Inventory;
