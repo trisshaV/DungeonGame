@@ -20,7 +20,11 @@ public class SwampTile extends StaticEntity{
         movementTick = 0;
         stuck = null;
     }
-
+    @Override
+    public int moveCost() {
+        return movementFactor;
+    }
+    
     @Override
     public boolean collide(Entity entity) {
         if (entity instanceof DynamicEntity && !entity.getType().equals("player")) {
