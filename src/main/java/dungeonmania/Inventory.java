@@ -200,7 +200,7 @@ public class Inventory implements Serializable{
     public void removeBrokenItems() {
         // Deleting broken shields and bows
         builtItems = builtItems.stream().filter(item -> item.getDurability() != 0).collect(Collectors.toList());
-        entities = entities.stream().filter(item -> (item instanceof Sword) && (((Sword)item).getDurability() != 0)).collect(Collectors.toList());
+        entities = entities.stream().filter(item -> !(item instanceof Sword) || ((item instanceof Sword) && (((Sword)item).getDurability() != 0))).collect(Collectors.toList());
     }
     
     public List<String> getBuildables() {
