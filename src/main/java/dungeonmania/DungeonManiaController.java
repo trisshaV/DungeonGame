@@ -175,6 +175,11 @@ public class DungeonManiaController implements Serializable {
                 break;
             case "key":
                 newEntity = new Key(id, position, jsonEntity.getInt("key"));
+                Key key = (Key) newEntity;
+                Door target = findDoor(jsonEntity.getInt("key"));
+                if (target != null) {
+                    target.setKey(key);
+                }
                 break;
             case "door":
                 newEntity = new Door(id, position);
@@ -182,6 +187,9 @@ public class DungeonManiaController implements Serializable {
                 Key newKey = findKey(jsonEntity.getInt("key"));
                 if (newKey != null) {
                     newDoor.setKey(newKey);
+                }
+                else if (newKey == null) {
+                    newDoor.setKeyId(jsonEntity.getInt("key"));
                 }
                 break;
             case "switch":
@@ -257,6 +265,18 @@ public class DungeonManiaController implements Serializable {
         entities.add(newEntity);
     }
     
+    private Door findDoor(int i) {
+        for (Entity entity: entities) {
+            if (entity instanceof Door) {
+                Door target = (Door) entity;
+                if (target.getKeyId() == i) {
+                    return target;
+                }
+            }
+        }
+        return null;
+    }
+
     /**
      * Spawn spiders in game
      * @param attack
