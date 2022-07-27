@@ -75,7 +75,7 @@ public class InteractTest {
         String id = getEntities(res, "mercenary").get(0).getId();
         res = dmc.interact(id);
         assertEquals("FRIENDLY", dmc.getMercStatus());
-        assertEquals(0, getEntities(res, "treausre").size());
+        assertEquals(0, getEntities(res, "treasure").size());
     }
 
     @Test
