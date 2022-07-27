@@ -5,8 +5,6 @@ import java.util.List;
 import dungeonmania.Inventory;
 import dungeonmania.SerializableJSONObject;
 
-import dungeonmania.Inventory;
-
 public class Bow extends Buildable {
     
     /**
