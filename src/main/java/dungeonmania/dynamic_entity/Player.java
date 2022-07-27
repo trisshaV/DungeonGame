@@ -88,6 +88,9 @@ public class Player extends DynamicEntity {
                     if (inventory.getNoItemType("key") > 0 && collectible instanceof Key) {
                         return;
                     }
+                    if (collectible.getType().equals("sun_stone")) {
+                        treasure_collected++;
+                    }
                     if (collectible.getType().equals("treasure")) {
                         treasure_collected++;
                     }

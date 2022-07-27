@@ -48,6 +48,7 @@
         "portal_RED": "images/tileset/entities/portal_05.png",
         "portal_YELLOW": "images/tileset/entities/portal_09.png",
         "portal_GREY": "images/tileset/entities/portal_12.png",
-        "portal_GREEN": "images/tileset/entities/portal_16.png"
+        "portal_GREEN": "images/tileset/entities/portal_16.png",
+        "assassin": "images/tileset/entities/assassin.png"
     }
 }
