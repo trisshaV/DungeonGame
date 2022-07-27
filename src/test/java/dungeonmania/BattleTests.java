@@ -120,6 +120,13 @@ public class BattleTests {
     public void testHealthBelowZeroSpider() {
         DungeonManiaController controller = new DungeonManiaController();
         DungeonResponse postBattleResponse = genericSpiderSequence(controller, "c_battleTests_basicSpiderPlayerDies");
+
+        int spiderCount = countEntityOfType(postBattleResponse, "spider");
+        
+        assertEquals(0, countEntityOfType(postBattleResponse, "player"));
+        assertEquals(1, spiderCount);
+
+        
         BattleResponse battle = postBattleResponse.getBattles().get(0);
         assertBattleCalculations("spider", battle, false, "c_battleTests_basicSpiderPlayerDies");
     }

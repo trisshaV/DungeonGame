@@ -11,6 +11,7 @@ import dungeonmania.collectible.Sword;
 import dungeonmania.collectible.Treasure;
 import dungeonmania.collectible.Wood;
 import dungeonmania.dynamic_entity.DynamicEntity;
+import dungeonmania.dynamic_entity.Hydra;
 import dungeonmania.dynamic_entity.Mercenary;
 import dungeonmania.dynamic_entity.Player;
 import dungeonmania.dynamic_entity.Spider;
@@ -235,6 +236,9 @@ public class DungeonManiaController implements Serializable {
                     newPortal.setLinkPosition(partner.getPosition());
                 }
                 break;
+            case "hydra":
+                newEntity = new Hydra(id, position, jsonConfig);
+                break;
                 case "sun_stone":
                 newEntity = new SunStone(id, position, jsonConfig);
                 break;
@@ -383,6 +387,10 @@ public class DungeonManiaController implements Serializable {
         );
         if (this.observer.checkBattle(entities) == true) {
             entities = removeDeadEntities();
+            if (entities.stream().filter(it -> it instanceof Player).findFirst().orElse(null) == null) {
+                // Player has died
+                return getDungeonResponseModel();
+            }
         }
 
         // check if the bomb will explode
@@ -425,9 +433,12 @@ public class DungeonManiaController implements Serializable {
             }
         );
         player.tickPotionEffects();
-        boolean battleOccured = this.observer.checkBattle(entities);
-        if (battleOccured) {
+        if (this.observer.checkBattle(entities)) {
             entities = removeDeadEntities();
+            if (entities.stream().filter(it -> it instanceof Player).findFirst().orElse(null) == null) {
+                // Player has died
+                return getDungeonResponseModel();
+            }
         }
         // move Dynamic entities except Player
         entities.stream().filter(it -> (it instanceof DynamicEntity) && (it instanceof Player == false)).forEach(
@@ -436,9 +447,12 @@ public class DungeonManiaController implements Serializable {
                 y.updatePos(movementDirection, entities);
             }
         );
-        battleOccured = this.observer.checkBattle(entities);
-        if (battleOccured) {
+        if (this.observer.checkBattle(entities)) {
             entities = removeDeadEntities();
+            if (entities.stream().filter(it -> it instanceof Player).findFirst().orElse(null) == null) {
+                // Player has died
+                return getDungeonResponseModel();
+            }
         }
         player.pickUp(entities);
         List <Entity> copy = new ArrayList<>();
