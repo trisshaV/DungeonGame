@@ -23,6 +23,10 @@ public class ClosedState implements State, Serializable {
     public boolean interact(Entity entity) {
         if (entity.getType().equals("player")) {
             Player player =  (Player) entity;
+            if (player.hasItem("sun_stone")) {
+                door.setState(door.getOpened());
+                return true;
+            }
             if (door.getKey().equals(player.getKey())) {
                 player.removeKey();
                 door.setState(door.getOpened());
