@@ -27,7 +27,7 @@ public class Assassin extends DynamicEntity{
         this.attack = jsonConfig.getDouble("assassin_attack");
         this.health = jsonConfig.getDouble("assassin_health");
         this.reconRadius = jsonConfig.getInt("assassin_recon_radius");
-        this.bribeRadius = jsonConfig.getInt("assassin_bribe_amount");
+        this.bribeRadius = jsonConfig.getInt("bribe_radius");
         this.bribeAmount = jsonConfig.getInt("assassin_bribe_amount");
         this.bribeFailRate = jsonConfig.getDouble("assassin_bribe_fail_rate");
     }
