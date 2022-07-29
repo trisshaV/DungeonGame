@@ -17,7 +17,7 @@ public class AdvancedMovementTests {
         DungeonManiaController dmc = new DungeonManiaController();
         DungeonResponse resp = dmc.newGame("d_dijkstrasMaze_simple", "c_standard_movement");
         Position prev = getEntitiesStream(resp, "mercenary").findFirst().get().getPosition();
-        dmc.tick(Direction.DOWN);
+        resp = dmc.tick(Direction.DOWN);
         Position pos = getEntitiesStream(resp, "mercenary").findFirst().get().getPosition();
         assertFalse(prev.translateBy(Direction.DOWN).equals(pos));
         // mercenary has two possible places since the distance is the same
@@ -30,7 +30,7 @@ public class AdvancedMovementTests {
         DungeonManiaController dmc = new DungeonManiaController();
         DungeonResponse resp = dmc.newGame("d_dijkstrasMaze_simple", "c_standard_movement");
         Position prev = getEntitiesStream(resp, "mercenary").findFirst().get().getPosition();
-        dmc.tick(Direction.LEFT);
+        resp = dmc.tick(Direction.LEFT);
         Position pos = getEntitiesStream(resp, "mercenary").findFirst().get().getPosition();
         assertTrue(pos.equals(prev.translateBy(Direction.UP)));
     }
@@ -41,7 +41,7 @@ public class AdvancedMovementTests {
         DungeonManiaController dmc = new DungeonManiaController();
         DungeonResponse resp = dmc.newGame("d_dijkstrasMaze_simple", "c_standard_movement");
         Position prev = getEntitiesStream(resp, "mercenary").findFirst().get().getPosition();
-        dmc.tick(Direction.RIGHT);
+        resp = dmc.tick(Direction.RIGHT);
         Position pos = getEntitiesStream(resp, "mercenary").findFirst().get().getPosition();
         assertTrue(pos.equals(prev.translateBy(Direction.RIGHT)));
     }
