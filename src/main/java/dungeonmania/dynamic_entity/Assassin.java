@@ -90,7 +90,6 @@ public class Assassin extends DynamicEntity{
         double random = new Random().nextDouble();
         if (random < bribeFailRate) {
             player.removeCoins(bribeAmount);
-            throw new InvalidActionException("Unlucky! The Assassin did not accept your bribe");
         } else {
             player.removeCoins(bribeAmount);
             status = "FRIENDLY";
