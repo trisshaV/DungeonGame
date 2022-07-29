@@ -31,6 +31,10 @@ public class Observer implements Serializable {
     public boolean checkBattle(List <Entity> entities) {
 
         Entity player = entities.stream().filter(x -> x.getType().equals("player")).findFirst().get();
+        if (((Player)player).getStatus().equals("INVISIBLE")) {
+            return false;
+        }
+
         Position playerPos = player.getPosition();
         int numBattles = battleRecords.size();  
         entities.stream().filter(x -> x instanceof DynamicEntity && !(x instanceof Player)).forEach(
