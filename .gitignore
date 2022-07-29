@@ -13,4 +13,3 @@ bin/
 .project
 .settings
 yarn.lock
-*game.dat
