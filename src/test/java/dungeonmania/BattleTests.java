@@ -401,6 +401,7 @@ public class BattleTests {
         ItemResponse potion = singleRound.getWeaponryUsed().get(0);
         assertEquals(potion.getId(), potionOne.getId());
         assertEquals(potion.getType(), potionOne.getType());
+        assertEquals(getEntities(postBattleResponse, "spider").size(), 0);
 
     }
 
