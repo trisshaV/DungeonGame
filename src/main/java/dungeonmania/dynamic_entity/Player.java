@@ -10,6 +10,7 @@ import dungeonmania.collectible.Collectible;
 import dungeonmania.collectible.InvincibilityPotion;
 import dungeonmania.collectible.InvisibilityPotion;
 import dungeonmania.collectible.Key;
+import dungeonmania.collectible.MidnightArmour;
 import dungeonmania.util.Direction;
 import dungeonmania.util.Position;
 import dungeonmania.Inventory;
@@ -86,6 +87,9 @@ public class Player extends DynamicEntity {
                 .forEach(collectible -> {
                     if (inventory.getNoItemType("key") > 0 && collectible instanceof Key) {
                         return;
+                    }
+                    if (collectible.getType().equals("sun_stone")) {
+                        treasure_collected++;
                     }
                     if (collectible.getType().equals("treasure")) {
                         treasure_collected++;
@@ -252,5 +256,9 @@ public class Player extends DynamicEntity {
      */
     public int getCoins() {
         return inventory.getNoItemType("treasure");
+    }
+
+    public void removeCoins(int number) {
+        inventory.removeNoItemType("treasure", number);
     }
 }

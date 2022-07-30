@@ -2,6 +2,7 @@ package dungeonmania.static_entity.Door;
 
 import dungeonmania.Entity;
 import dungeonmania.collectible.Key;
+import dungeonmania.response.models.EntityResponse;
 import dungeonmania.static_entity.StaticEntity;
 import dungeonmania.util.Position;
 
@@ -15,6 +16,7 @@ public class Door extends StaticEntity {
     private State opened;
     private State closed;
     private State state;
+    private int keyId;
 
     /**
      * Door Constructor
@@ -38,6 +40,10 @@ public class Door extends StaticEntity {
         return state.interact(entity);
     }
 
+    @Override 
+    public EntityResponse getEntityResponse() {
+        return new EntityResponse(getId(), (state == closed ? "door" : "door_open"), getPosition(), false);
+    }
     /**
      * Gets opened door
      * @return opened state
@@ -84,5 +90,13 @@ public class Door extends StaticEntity {
      */
     public void setState(State state) {
         this.state = state;
-    }  
+    }
+
+    public void setKeyId(int keyId) {
+        this.keyId = keyId;
+    } 
+
+    public int getKeyId() {
+        return keyId;
+    }
 }

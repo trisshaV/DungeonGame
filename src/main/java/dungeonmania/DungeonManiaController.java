@@ -6,11 +6,14 @@ import dungeonmania.collectible.Collectible;
 import dungeonmania.collectible.InvincibilityPotion;
 import dungeonmania.collectible.InvisibilityPotion;
 import dungeonmania.collectible.Key;
+import dungeonmania.collectible.MidnightArmour;
 import dungeonmania.collectible.SunStone;
 import dungeonmania.collectible.Sword;
 import dungeonmania.collectible.Treasure;
 import dungeonmania.collectible.Wood;
+import dungeonmania.dynamic_entity.Assassin;
 import dungeonmania.dynamic_entity.DynamicEntity;
+import dungeonmania.dynamic_entity.Hydra;
 import dungeonmania.dynamic_entity.Mercenary;
 import dungeonmania.dynamic_entity.Player;
 import dungeonmania.dynamic_entity.Spider;
@@ -34,6 +37,7 @@ import dungeonmania.static_entity.Exit;
 import dungeonmania.static_entity.FloorSwitch;
 import dungeonmania.static_entity.Portal;
 import dungeonmania.static_entity.StaticEntity;
+import dungeonmania.static_entity.SwampTile;
 import dungeonmania.static_entity.Wall;
 import dungeonmania.static_entity.ZombieToastSpawner;
 import java.io.File;
@@ -171,6 +175,11 @@ public class DungeonManiaController implements Serializable {
                 break;
             case "key":
                 newEntity = new Key(id, position, jsonEntity.getInt("key"));
+                Key key = (Key) newEntity;
+                Door target = findDoor(jsonEntity.getInt("key"));
+                if (target != null) {
+                    target.setKey(key);
+                }
                 break;
             case "door":
                 newEntity = new Door(id, position);
@@ -178,6 +187,9 @@ public class DungeonManiaController implements Serializable {
                 Key newKey = findKey(jsonEntity.getInt("key"));
                 if (newKey != null) {
                     newDoor.setKey(newKey);
+                }
+                else if (newKey == null) {
+                    newDoor.setKeyId(jsonEntity.getInt("key"));
                 }
                 break;
             case "switch":
@@ -235,8 +247,17 @@ public class DungeonManiaController implements Serializable {
                     newPortal.setLinkPosition(partner.getPosition());
                 }
                 break;
-                case "sun_stone":
+            case "hydra":
+                newEntity = new Hydra(id, position, jsonConfig);
+                break;
+            case "sun_stone":
                 newEntity = new SunStone(id, position, jsonConfig);
+                break;
+            case "assassin":
+                newEntity = new Assassin(id, position, jsonConfig);
+                break;
+            case "swamp_tile":
+                newEntity = new SwampTile(id, position, Integer.valueOf(jsonEntity.getString("movement_factor")));
                 break;
         default:
             return;
@@ -244,6 +265,18 @@ public class DungeonManiaController implements Serializable {
         entities.add(newEntity);
     }
     
+    private Door findDoor(int i) {
+        for (Entity entity: entities) {
+            if (entity instanceof Door) {
+                Door target = (Door) entity;
+                if (target.getKeyId() == i) {
+                    return target;
+                }
+            }
+        }
+        return null;
+    }
+
     /**
      * Spawn spiders in game
      * @param attack
@@ -381,8 +414,21 @@ public class DungeonManiaController implements Serializable {
                 y.updatePos(null, entities);
             }
         );
+
+        // check for swamp tiles
+        entities.stream().filter(it -> (it instanceof SwampTile)).forEach(
+            x -> {
+                SwampTile y = (SwampTile) x;
+                y.tick();
+            }
+        );
+
         if (this.observer.checkBattle(entities) == true) {
             entities = removeDeadEntities();
+            if (entities.stream().filter(it -> it instanceof Player).findFirst().orElse(null) == null) {
+                // Player has died
+                return getDungeonResponseModel();
+            }
         }
 
         // check if the bomb will explode
@@ -425,9 +471,12 @@ public class DungeonManiaController implements Serializable {
             }
         );
         player.tickPotionEffects();
-        boolean battleOccured = this.observer.checkBattle(entities);
-        if (battleOccured) {
+        if (this.observer.checkBattle(entities)) {
             entities = removeDeadEntities();
+            if (entities.stream().filter(it -> it instanceof Player).findFirst().orElse(null) == null) {
+                // Player has died
+                return getDungeonResponseModel();
+            }
         }
         // move Dynamic entities except Player
         entities.stream().filter(it -> (it instanceof DynamicEntity) && (it instanceof Player == false)).forEach(
@@ -436,9 +485,21 @@ public class DungeonManiaController implements Serializable {
                 y.updatePos(movementDirection, entities);
             }
         );
-        battleOccured = this.observer.checkBattle(entities);
-        if (battleOccured) {
+        
+        // check for swamp tiles
+        entities.stream().filter(it -> (it instanceof SwampTile)).forEach(
+            x -> {
+                SwampTile y = (SwampTile) x;
+                y.tick();
+            }
+        );
+        
+        if (this.observer.checkBattle(entities)) {
             entities = removeDeadEntities();
+            if (entities.stream().filter(it -> it instanceof Player).findFirst().orElse(null) == null) {
+                // Player has died
+                return getDungeonResponseModel();
+            }
         }
         player.pickUp(entities);
         List <Entity> copy = new ArrayList<>();
@@ -487,6 +548,13 @@ public class DungeonManiaController implements Serializable {
             throw new InvalidActionException("Not enough materials!");
         }
 
+        // Midnight Armour, no zombies exist
+        if (buildable.equals("midnight_armour")) {
+            if (!entities.stream().filter(it -> it.getType().equals("zombie_toast")).findFirst().isEmpty()) {
+                throw new InvalidActionException("Zombies are present!");
+            }
+        }
+
         playerInv.buildItem(buildable, String.valueOf(id));
         id ++;
         return getDungeonResponseModel();
@@ -501,7 +569,7 @@ public class DungeonManiaController implements Serializable {
      * @throws InvalidActionException
      */
     public DungeonResponse interact(String entityId) throws IllegalArgumentException, InvalidActionException {
-        Entity target = entities.stream().filter(x -> x.getId() == entityId).findFirst().orElse(null);
+        Entity target = entities.stream().filter(x -> x.getId().equals(entityId)).findFirst().orElse(null);
         if (target == null) {
             throw new IllegalArgumentException();
         }
@@ -612,6 +680,17 @@ public class DungeonManiaController implements Serializable {
         for (Entity entity : entities) {
             if (entity instanceof Mercenary) {
                 Mercenary check = (Mercenary) entity;
+                return check.getStatus();
+            }
+        }
+       return null;
+    }
+
+    
+    public String getAssassinStatus() {
+        for (Entity entity : entities) {
+            if (entity instanceof Assassin) {
+                Assassin check = (Assassin) entity;
                 return check.getStatus();
             }
         }

@@ -12,6 +12,7 @@ import dungeonmania.collectible.Buildable;
 import dungeonmania.collectible.Collectible;
 import dungeonmania.collectible.InvincibilityPotion;
 import dungeonmania.collectible.InvisibilityPotion;
+import dungeonmania.collectible.MidnightArmour;
 import dungeonmania.collectible.Shield;
 import dungeonmania.collectible.Sword;
 import dungeonmania.dynamic_entity.DynamicEntity;
@@ -89,7 +90,7 @@ public class BattleRecord implements Serializable{
         double newPlayerHealth = initialPlayerHealth;
         while (newEnemyHealth > 0 && newPlayerHealth > 0) {
 
-            // itemsInRoundUsed will have { List of Swords, List of Bows, List of Shields}
+            // itemsInRoundUsed will have { List of Swords, List of Bows, List of Shields, List of MidnightArmours}
             List <List<Object>> itemsInRoundUsed = itemsAvaliable(player);
             // Calculate modifiers
             if (itemsInRoundUsed.get(0).size() != 0) {
@@ -108,9 +109,16 @@ public class BattleRecord implements Serializable{
                 int shieldDefense = temp.getShieldDefense();
                 shieldMinus = itemsInRoundUsed.get(2).size() * shieldDefense;
             }
+            if (itemsInRoundUsed.get(3).size() != 0) {
+                List<Object> MidnightArmourUsed = itemsInRoundUsed.get(3);
+                MidnightArmour temp = (MidnightArmour)MidnightArmourUsed.get(0);
+                enemyAttack -= temp.getDefence() * MidnightArmourUsed.size();
+                playerAttack += temp.getAttack() * MidnightArmourUsed.size();
+            }
+
             double modifiedPlayerDamage = ((bowModifier * (playerAttack + swordAdd))/5);
             double modifiedEnemyDamage = ((enemyAttack - shieldMinus) / 10);
-            newEnemyHealth = enemy.getHealth() - modifiedPlayerDamage;
+            newEnemyHealth = enemy.newHealth(modifiedPlayerDamage);
             newPlayerHealth = player.getHealth() - modifiedEnemyDamage;
             // Update durability of equipment
             updateDurability(itemsInRoundUsed, (Player)player);
@@ -178,6 +186,7 @@ public class BattleRecord implements Serializable{
         listsOfItems.add(CollectableItems.stream().filter(item -> item instanceof Sword).collect(Collectors.toList()));
         listsOfItems.add(BuildableItems.stream().filter(item -> item instanceof Bow).collect(Collectors.toList()));
         listsOfItems.add(BuildableItems.stream().filter(item -> item instanceof Shield).collect(Collectors.toList()));
+        listsOfItems.add(BuildableItems.stream().filter(item -> item instanceof MidnightArmour).collect(Collectors.toList()));
         return listsOfItems;
     }
 

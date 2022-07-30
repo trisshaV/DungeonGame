@@ -67,12 +67,15 @@ public class InteractTest {
 
     @Test
     @DisplayName("Interact Merc Valid")
-    public void testInteractMercValid() {
+    public void testInteractMercValid() throws IllegalArgumentException, InvalidActionException {
         DungeonManiaController dmc;
         dmc = new DungeonManiaController();
         DungeonResponse res = dmc.newGame("d_interactMercValid", "c_DoorsKeysTest_useKeyWalkThroughOpenDoor");
-        assertDoesNotThrow(() ->  dmc.interact(getEntities(dmc.tick(Direction.RIGHT), "mercenary").get(0).getId()));
+        res = dmc.tick(Direction.RIGHT);
+        String id = getEntities(res, "mercenary").get(0).getId();
+        res = dmc.interact(id);
         assertEquals("FRIENDLY", dmc.getMercStatus());
+        assertEquals(0, getEntities(res, "treasure").size());
     }
 
     @Test

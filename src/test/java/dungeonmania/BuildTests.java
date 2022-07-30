@@ -116,7 +116,7 @@ public class BuildTests {
     @DisplayName("Player can build the midnight armour")
     public void testBuildArmour() throws IllegalArgumentException, InvalidActionException {
         DungeonManiaController dmc = new DungeonManiaController();
-        DungeonResponse res = dmc.newGame("test_new", "simple");
+        DungeonResponse res = dmc.newGame("test_new", "M3_config");
         List<ItemResponse> inventory = new ArrayList<>();
         inventory.add(new ItemResponse("0", "midnight_armour"));
 
