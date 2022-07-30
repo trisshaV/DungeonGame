@@ -562,6 +562,12 @@ public class DungeonManiaController implements Serializable {
         }
 
         playerInv.buildItem(buildable, String.valueOf(id));
+
+        //Sceptre, Mercs + Assassns become allies
+        if (buildable.equals("sceptre")) {
+            setStatus(player.tickSceptre());
+        }
+
         id ++;
         return getDungeonResponseModel();
     }
