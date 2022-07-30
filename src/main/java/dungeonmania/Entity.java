@@ -27,8 +27,11 @@ public abstract class Entity implements Serializable{
 		this.id = id;
 		this.type = type;
 		position = xy;
-	} 
+	}
 
+	/**
+	 * @return the number of additional moves it takes to move across an entity
+	 */
 	public int moveCost() {
 		return 0;
 	}
@@ -87,4 +90,5 @@ public abstract class Entity implements Serializable{
 	 */
     public void interact(Player player) throws InvalidActionException {
     }
+
 }
