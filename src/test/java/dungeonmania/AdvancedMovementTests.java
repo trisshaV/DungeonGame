@@ -50,7 +50,7 @@ public class AdvancedMovementTests {
     @DisplayName("Test that the mercenary takes the only available path")
     public void testMercenaryTakesOnlyPath() {
         DungeonManiaController dmc = new DungeonManiaController();
-        dmc.newGame("d_dijkstrasMaze_simple", "c_standard_movement");
+        dmc.newGame("d_dijkstrasMaze_boxed", "c_standard_movement");
         DungeonResponse resp = dmc.tick(Direction.RIGHT);
         Position pos = getEntitiesStream(resp, "mercenary").findFirst().get().getPosition();
         assertTrue(pos.equals(new Position(3, 1)));
