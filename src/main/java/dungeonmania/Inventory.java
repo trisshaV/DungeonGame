@@ -91,6 +91,19 @@ public class Inventory implements Serializable{
     }
 
     /**
+     * Gets items
+     * @param type
+     * @return the items
+     */
+    public Buildable getBuildableItem(String type) {
+        return builtItems.stream()
+                   .filter(e -> e.getType().equals(type))
+                   .findFirst()
+                   .orElse(null);
+    }
+
+
+    /**
      * Get collectibles by id
      * @param id
      * @return collectibles according to id

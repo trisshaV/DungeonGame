@@ -8,6 +8,8 @@ import org.json.JSONObject;
 import dungeonmania.dynamic_entity.movement.*;
 import dungeonmania.Entity;
 import dungeonmania.SerializableJSONObject;
+import dungeonmania.collectible.Buildable;
+import dungeonmania.collectible.Sceptre;
 import dungeonmania.exceptions.InvalidActionException;
 import dungeonmania.response.models.EntityResponse;
 import dungeonmania.util.Direction;
@@ -51,6 +53,13 @@ public class Mercenary extends DynamicEntity {
      */
     @Override
     public void interact(Player player) throws InvalidActionException {
+        if (player.getBuildables().contains("sceptre")) {
+            Sceptre sceptre = (Sceptre) player.getInventory().getBuildableItem("sceptre");
+            if (sceptre.duration()) {
+                status = "FRIENDLY";
+                return;
+            }
+        }
         // check radius
         Position distance = Position.calculatePositionBetween(player.getPosition(), this.getPosition());
         double radius = Math.sqrt(Math.pow(distance.getX(), 2) + Math.pow(distance.getY(), 2));

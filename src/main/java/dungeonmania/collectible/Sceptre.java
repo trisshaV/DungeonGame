@@ -6,7 +6,7 @@ import dungeonmania.Inventory;
 import dungeonmania.SerializableJSONObject;
 
 public class Sceptre extends Buildable {
-    private int duration;
+
     /**
      * Bow Constructor
      * @param id
@@ -14,7 +14,7 @@ public class Sceptre extends Buildable {
      */
     public Sceptre(String id, SerializableJSONObject config) {
         super(id, "sceptre");
-        duration = config.getInt("mind_control_duration");
+        super.setDuration(config.getInt("mind_control_duration"));
     }
     
     /**
@@ -31,14 +31,15 @@ public class Sceptre extends Buildable {
      * @return how long more a sceptre will last
      */
     public boolean duration() {
-        if (duration != 0) {
-            duration = duration - 1;
+        if (this.getDuration() != 0) {
+            this.setDuration(this.getDuration() - 1);
             return true;
         }
         else {
             return false;
         }
     }
+
 
     public static boolean checkMaterials(Inventory i) {
         if (i.getNoItemType("sun_stone") < 1 || (i.getNoItemType("wood") < 1 && i.getNoItemType("arrow") < 2) || (i.getNoItemType("key") < 1 && i.getNoItemType("treasure") < 1 && i.getNoItemType("sun_stone") < 2)) {
