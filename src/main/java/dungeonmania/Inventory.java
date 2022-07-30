@@ -143,6 +143,19 @@ public class Inventory implements Serializable{
         }
     }
 
+    /**
+     * Remove FIRST instance of buildable item
+     * @param itemToRemove
+     */
+    public void removeBuildableItem(String itemToRemove) {
+        for (Buildable item : builtItems) {
+            if (item.getType().equals(itemToRemove)) {
+                builtItems.remove(item);
+                return;
+            }
+        }
+    }
+
     public void addBuiltItem(Buildable item) {
         builtItems.add(item);
     }

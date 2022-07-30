@@ -5,6 +5,7 @@ import java.util.Random;
 
 import dungeonmania.Entity;
 import dungeonmania.SerializableJSONObject;
+import dungeonmania.collectible.Sceptre;
 import dungeonmania.dynamic_entity.movement.ChaseMovement;
 import dungeonmania.dynamic_entity.movement.FollowMovement;
 import dungeonmania.dynamic_entity.movement.Movement;
@@ -67,6 +68,14 @@ public class Assassin extends DynamicEntity{
      */
     public String getStatus() {
         return status;
+    }
+
+    /**
+     * Set status
+     * @param status
+     */
+    public void setStatus(String STATUS) {
+        status = STATUS;
     }
 
     /**

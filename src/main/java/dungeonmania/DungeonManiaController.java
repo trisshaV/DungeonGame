@@ -471,6 +471,12 @@ public class DungeonManiaController implements Serializable {
             }
         );
         player.tickPotionEffects();
+
+        //Check for sceptre, then reduce duration + apply mind control
+        if (player.hasBuildableItem("sceptre")) {
+            setStatus(player.tickSceptre());
+        }
+
         if (this.observer.checkBattle(entities)) {
             entities = removeDeadEntities();
             if (entities.stream().filter(it -> it instanceof Player).findFirst().orElse(null) == null) {
@@ -695,6 +701,20 @@ public class DungeonManiaController implements Serializable {
             }
         }
        return null;
+    }
+
+
+    public void setStatus(boolean status) {
+        // If TRUE: sceptre is still active
+        if (status) {
+            entities.stream().filter(e -> (e instanceof Assassin)).forEach(e -> {((Assassin)e).setStatus("FRIENDLY");});
+            entities.stream().filter(e -> (e instanceof Mercenary)).forEach(e -> {((Mercenary)e).setStatus("FRIENDLY");});
+        // If FALSE: sceptre is inactive (stops mind controlling)
+        } else {
+            entities.stream().filter(e -> (e instanceof Assassin)).forEach(e -> {((Assassin)e).setStatus("HOSTILE");});
+            entities.stream().filter(e -> (e instanceof Mercenary)).forEach(e -> {((Mercenary)e).setStatus("HOSTILE");});
+            player.removeBuildableItem("sceptre");
+        }
     }
 
     /**

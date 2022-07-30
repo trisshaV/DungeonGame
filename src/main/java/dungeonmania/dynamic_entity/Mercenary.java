@@ -46,6 +46,14 @@ public class Mercenary extends DynamicEntity {
         this.bribeRadius = config.getInt("bribe_radius");
         this.bribeAmount = config.getInt("bribe_amount");
     }
+    
+    /**
+     * Set status
+     * @param status
+     */
+    public void setStatus(String STATUS) {
+        status = STATUS;
+    }
 
     /**
      * Mercenary interact, allows player to bribe mercenary
@@ -53,13 +61,6 @@ public class Mercenary extends DynamicEntity {
      */
     @Override
     public void interact(Player player) throws InvalidActionException {
-        if (player.getBuildables().contains("sceptre")) {
-            Sceptre sceptre = (Sceptre) player.getInventory().getBuildableItem("sceptre");
-            if (sceptre.duration()) {
-                status = "FRIENDLY";
-                return;
-            }
-        }
         // check radius
         Position distance = Position.calculatePositionBetween(player.getPosition(), this.getPosition());
         double radius = Math.sqrt(Math.pow(distance.getX(), 2) + Math.pow(distance.getY(), 2));
