@@ -39,14 +39,15 @@ public class SwampTile extends StaticEntity{
     }
 
     public void tick() {
-        System.out.print("hi");
         if (movementTick == movementFactor) {
             stuck = null;
+            return;
         }
-        else if (!stuck.getPosition().equals(getPosition())) {
-            stuck.setPosition(getPosition());
-            movementTick += 1;
+        else if (stuck != null) {
+            if (!stuck.getPosition().equals(getPosition())) {
+                stuck.setPosition(getPosition());
+                movementTick += 1;
+            }  
         }
     }
-    
 }
