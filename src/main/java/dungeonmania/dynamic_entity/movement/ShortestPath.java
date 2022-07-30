@@ -102,18 +102,22 @@ public class ShortestPath {
     private static Map<String, Integer> bounds(List<Entity> entities) {
         List<Position> positions = entities.stream().map(Entity::getPosition).collect(Collectors.toList());
         Map<String, Integer> m = new HashMap<>();
-        Position leftMost = positions.stream()
-                .reduce(new Position(0, 0), (a, b) -> a.getX() < b.getX() ? a : b);
-        Position rightMost = positions.stream()
-                .reduce(new Position(0, 0), (a, b) -> a.getX() > b.getX() ? a : b);
-        Position topMost = positions.stream()
-                .reduce(new Position(0, 0), (a, b) -> a.getY() < b.getY() ? a : b);
-        Position bottomMost = positions.stream()
-                .reduce(new Position(0, 0), (a, b) -> a.getY() > b.getY() ? a : b);
-        m.put("left",   leftMost.getX() - 1);
-        m.put("right",  rightMost.getX() + 1);
-        m.put("top",    topMost.getY() - 1);
-        m.put("bottom", bottomMost.getY() + 1);
+        int leftMost = positions.stream()
+                .map(Position::getX)
+                .reduce(0, Integer::min);
+        int rightMost = positions.stream()
+                .map(Position::getX)
+                .reduce(0, Integer::max);
+        int topMost = positions.stream()
+                .map(Position::getY)
+                .reduce(0, Integer::min);
+        int bottomMost = positions.stream()
+                .map(Position::getY)
+                .reduce(0, Integer::max);
+        m.put("left",   leftMost - 1);
+        m.put("right",  rightMost + 1);
+        m.put("top",    topMost - 1);
+        m.put("bottom", bottomMost + 1);
         return m;
     }
 }
