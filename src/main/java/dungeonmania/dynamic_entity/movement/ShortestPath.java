@@ -14,50 +14,59 @@ public class ShortestPath {
             return dest;
         }
         Map<String, Integer> box = bounds(entities);
-        List<Position> all = allPositions(box);
 
+        // default to infinity (Integer.MAX_VALUE)
         Map<Position, Integer> dist = new HashMap<>();
-        all.stream().forEach(pos -> dist.put(pos, Integer.MAX_VALUE));
         dist.put(source, 0);
 
+        // default to null
         Map<Position, Position> prev = new HashMap<>();
-        all.stream().forEach(pos -> prev.put(pos, null));
 
-        Map<Position, List<Entity>> map = new HashMap<>();
-        for (Entity e : entities) {
-            Position xy = e.getPosition();
-            map.putIfAbsent(xy, new ArrayList<>());
-            map.get(xy).add(e);
-        }
+        Map<Position, List<Entity>> map = getMap(entities);
 
         Set<Position> visited = new HashSet<>();
-        Queue<Position> queue = new PriorityQueue<>((a, b) -> 0);
+        List<Position> queue = new ArrayList<>();
         queue.add(source);
-
         while (!queue.isEmpty()) {
-            Position u = queue.remove();
+            Position u = queue.remove(0);
             List<Position> adjacentPos = adjacent(u);
             for (Position v: adjacentPos) {
-                if (valid(map, start) && dist.get(u) + cost(map, v) < dist.get(v)) {
-                    dist.put(v, dist.get(u) + cost(map, v));
+                boolean isValid = valid(map, start, v);
+                if (isValid && dist.get(u) + cost(map, v) < dist.getOrDefault(v, Integer.MAX_VALUE)) {
+                    dist.put(v, dist.get(u)+ cost(map, v));
                     prev.put(v, u);
                 }
-                if (inBounds(box, v) && !queue.contains(v) && !visited.contains(v)) {
+                if (isValid && inBounds(box, v) && !queue.contains(v) && !visited.contains(v)) {
                     queue.add(v);
                 }
             }
             visited.add(u);
         }
-
         return traceBack(prev, source, dest);
     }
 
     private static Position traceBack(Map<Position, Position> prev, Position source, Position dest) {
-        Position next = prev.get(dest);
+        Position curr = dest;
+        Position next = prev.getOrDefault(curr, null);
         while (next != null && !next.equals(source)) {
-            next = prev.get(next);
+            curr = next;
+            next = prev.get(curr);
         }
-        return (next == null) ? source : next;
+        return (next == null) ? source : curr;
+    }
+
+    /**
+     * Convert list of entities to hashmap of positions.
+     * Multiple entities can be present on one position, so get(...) returns a list
+     */
+    private static Map<Position, List<Entity>> getMap(List<Entity> entities) {
+        Map<Position, List<Entity>> map = new HashMap<>();
+        entities.forEach((e) -> {
+            Position xy = e.getPosition();
+            map.putIfAbsent(xy, new ArrayList<>());
+            map.get(xy).add(e);
+        });
+        return map;
     }
 
     private static boolean inBounds(Map<String, Integer> bounds, Position xy) {
@@ -68,10 +77,10 @@ public class ShortestPath {
     /** 
      * returns true if no collision
      */
-    private static boolean valid(Map<Position, List<Entity>> map, Entity entity) {
-        return map.getOrDefault(entity.getPosition(), new ArrayList<>())
+    private static boolean valid(Map<Position, List<Entity>> map, Entity entity, Position xy) {
+        return map.getOrDefault(xy, new ArrayList<>())
             .stream()
-            .noneMatch(e -> e.collide(entity));
+            .allMatch(e -> e.collide(entity));
     }
 
     private static int cost(Map<Position, List<Entity>> map, Position xy) {
@@ -88,20 +97,6 @@ public class ShortestPath {
             xy.translateBy(Direction.UP),
             xy.translateBy(Direction.DOWN)
         ));
-    }
-
-    private static List<Position> allPositions(Map<String, Integer> bounds) {
-        List<Position> all = new ArrayList<>();
-        int lower_x = bounds.get("left");
-        int upper_x = bounds.get("right");
-        int lower_y = bounds.get("top");
-        int upper_y = bounds.get("bottom");
-        for (int x = lower_x; x < upper_x; x++) {
-            for (int y = lower_y; y < upper_y; y++) {
-                all.add(new Position(x, y));
-            }
-        }
-        return all;
     }
 
     private static Map<String, Integer> bounds(List<Entity> entities) {
