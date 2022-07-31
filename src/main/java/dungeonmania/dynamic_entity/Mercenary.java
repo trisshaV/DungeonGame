@@ -5,6 +5,9 @@ import java.util.List;
 import dungeonmania.SerializableJSONObject;
 import dungeonmania.dynamic_entity.movement.*;
 import dungeonmania.Entity;
+import dungeonmania.SerializableJSONObject;
+import dungeonmania.collectible.Buildable;
+import dungeonmania.collectible.Sceptre;
 import dungeonmania.exceptions.InvalidActionException;
 import dungeonmania.response.models.EntityResponse;
 import dungeonmania.util.Direction;
@@ -25,6 +28,7 @@ import dungeonmania.util.Position;
 public class Mercenary extends DynamicEntity {
 
     private String status = "HOSTILE";
+    private boolean mindctrl = false;
     private int bribeRadius;
     private int bribeAmount;
     private Movement move;
@@ -41,6 +45,14 @@ public class Mercenary extends DynamicEntity {
         this.bribeRadius = config.getInt("bribe_radius");
         this.bribeAmount = config.getInt("bribe_amount");
     }
+    
+    /**
+     * Set status
+     * @param status
+     */
+    public void setStatus(String STATUS) {
+        status = STATUS;
+    }
 
     /**
      * Mercenary interact, allows player to bribe mercenary
@@ -48,6 +60,14 @@ public class Mercenary extends DynamicEntity {
      */
     @Override
     public void interact(Player player) throws InvalidActionException {
+        // check sceptre
+        if (player.hasBuildableItem("sceptre")) {
+            Sceptre sceptre = (Sceptre) player.getInventory().getBuildableItem("sceptre");
+            sceptre.setisActive(true);
+            mindctrl = true;
+            status = "FRIENDLY";
+            return;
+        }
         // check radius
         Position distance = Position.calculatePositionBetween(player.getPosition(), this.getPosition());
         double radius = Math.sqrt(Math.pow(distance.getX(), 2) + Math.pow(distance.getY(), 2));
@@ -107,5 +127,13 @@ public class Mercenary extends DynamicEntity {
     @Override
     public String getType() {
         return "mercenary";
+    }
+
+    public void setMindCtrl(boolean status) {
+        mindctrl = status;
+    }
+    
+    public boolean getMindCtrl() {
+        return mindctrl;
     }
 }

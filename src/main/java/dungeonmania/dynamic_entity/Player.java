@@ -11,6 +11,7 @@ import dungeonmania.collectible.InvincibilityPotion;
 import dungeonmania.collectible.InvisibilityPotion;
 import dungeonmania.collectible.Key;
 import dungeonmania.collectible.MidnightArmour;
+import dungeonmania.collectible.Sceptre;
 import dungeonmania.util.Direction;
 import dungeonmania.util.Position;
 import dungeonmania.Inventory;
@@ -139,6 +140,11 @@ public class Player extends DynamicEntity {
         }
     }
 
+    public boolean tickSceptre() {
+            Sceptre sceptre = (Sceptre) this.getInventory().getBuildableItem("sceptre");
+            return sceptre.duration();
+    }
+
     /**
      * Gets status
      * @return the status
@@ -155,6 +161,16 @@ public class Player extends DynamicEntity {
      */
     public boolean hasItem(String item) {
         return !(inventory.getItem(item) == null);
+    }
+
+    /**
+     * Given an item name, check if the player has the 
+     * buildable item in inventory or not.
+     * @param item (Buildable entity)
+     * @return True if player has item, and false otherwise.
+     */
+    public boolean hasBuildableItem(String item) {
+        return !(inventory.getBuildableItem(item) == null);
     }
 
     /**
@@ -214,11 +230,21 @@ public class Player extends DynamicEntity {
     }
 
     /**
+     * Remove FIRST instance of buildable item
+     * @param item
+     */
+    public void removeBuildableItem(String item) {
+        inventory.removeBuildableItem(item);
+    }
+
+    /**
      * Remove the broken items
      */
     public void removeBrokenItems() {
         inventory.removeBrokenItems();
     }
+
+
     
     /**
      * Gets key

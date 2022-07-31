@@ -5,6 +5,7 @@ import java.util.Random;
 
 import dungeonmania.Entity;
 import dungeonmania.SerializableJSONObject;
+import dungeonmania.collectible.Sceptre;
 import dungeonmania.dynamic_entity.movement.ChaseMovement;
 import dungeonmania.dynamic_entity.movement.FollowMovement;
 import dungeonmania.dynamic_entity.movement.Movement;
@@ -30,6 +31,7 @@ import dungeonmania.util.Position;
 
 public class Assassin extends DynamicEntity{
     private String status = "HOSTILE";
+    private boolean mindctrl = false;
     private int reconRadius;
     private int bribeRadius;
     private int bribeAmount;
@@ -70,12 +72,28 @@ public class Assassin extends DynamicEntity{
     }
 
     /**
+     * Set status
+     * @param status
+     */
+    public void setStatus(String STATUS) {
+        status = STATUS;
+    }
+
+    /**
      * Assassin interact, allows player to bribe Assassin
      * Bribes have a certain chance of failing.
      * @param player
      */
     @Override
     public void interact (Player player) throws InvalidActionException {
+        // check sceptre
+        if (player.hasBuildableItem("sceptre")) {
+            Sceptre sceptre = (Sceptre) player.getInventory().getBuildableItem("sceptre");
+            sceptre.setisActive(true);
+            mindctrl = true;
+            status = "FRIENDLY";
+            return;
+        }
         // Check the radius
         Position distance = Position.calculatePositionBetween(player.getPosition(), this.getPosition());
         double radius = Math.sqrt(Math.pow(distance.getX(), 2) + Math.pow(distance.getY(), 2));
@@ -90,7 +108,6 @@ public class Assassin extends DynamicEntity{
         double random = new Random().nextDouble();
         if (random < bribeFailRate) {
             player.removeCoins(bribeAmount);
-            throw new InvalidActionException("Unlucky! The Assassin did not accept your bribe");
         } else {
             player.removeCoins(bribeAmount);
             status = "FRIENDLY";
@@ -134,6 +151,14 @@ public class Assassin extends DynamicEntity{
             move = new FollowMovement();
         }
         setPosition(move.getNextPosition(this, l));
+    }
+
+    public void setMindCtrl(boolean status) {
+        mindctrl = status;
+    }
+    
+    public boolean getMindCtrl() {
+        return mindctrl;
     }
 
 }
