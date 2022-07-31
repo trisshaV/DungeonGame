@@ -813,8 +813,160 @@ public class DungeonManiaController implements Serializable {
     }
 
     public DungeonResponse generateDungeon(int xStart, int yStart, int xEnd, int yEnd, String configName) {
-        return null;
+        int width = xEnd - xStart;
+        int height = yEnd - yStart;
+        boolean [][] maze = new boolean [width][height];
+        for(int i = 0; i < width; i++){
+            for(int j = 0; i < height; j++){
+                Arrays.fill(maze[i], false);
+            }
+        }
+        maze[xStart][yStart] = true;
+        List<Position> options = new ArrayList<>();
+        options.add(new Position(xStart  , yStart-2));
+        options.add(new Position(xStart+2, yStart));
+        options.add(new Position(xStart  , yStart+2));
+        options.add(new Position(xStart-2, yStart));
+        for (Position start : options) {
+            if (checkBorder(start.getX(), start.getY(), xStart, xEnd, yStart, yEnd) == false) {
+                options.remove(start);
+            }
+        }
+        for (Position wall : options) {
+            if (maze[wall.getX()][wall.getY()]) {
+                options.remove(wall);
+            }
+        }
+
+        while (!options.isEmpty()) {
+            Random random = new Random();
+            Position next = options.remove(random.nextInt(options.size()));
+            List<Position> neighbours = new ArrayList<>();
+            neighbours.add(new Position(next.getX()  , next.getY()-2));
+            neighbours.add(new Position(next.getX()+2, next.getY()));
+            neighbours.add(new Position(next.getX()  , next.getY()+2));
+            neighbours.add(new Position(next.getX()-2, next.getY()));
+            for (Position start : neighbours) {
+                if (checkBorder(start.getX(), start.getY(), xStart, xEnd, yStart, yEnd) == false) {
+                    neighbours.remove(start);
+                }
+            }
+            for (Position wall : neighbours) {
+                if (!maze[wall.getX()][wall.getY()]) {
+                    neighbours.remove(wall);
+                }
+            }
+            if (!neighbours.isEmpty()) {
+                Random randomNeighbour = new Random();
+                Position neighbour = neighbours.remove(randomNeighbour.nextInt(neighbours.size()));
+                maze[next.getX()][next.getY()] = true;
+                maze[(next.getX() + neighbour.getX())/2][(next.getY() + neighbour.getY())/2] = true;
+                maze[neighbour.getX()][neighbour.getY()] = true;
+            }
+            options.add(new Position(next.getX()  , next.getY()-2));
+            options.add(new Position(next.getX()+2, next.getY()));
+            options.add(new Position(next.getX()  , next.getY()+2));
+            options.add(new Position(next.getX()-2, next.getY()));
+            for (Position start : options) {
+                if (checkBorder(start.getX(), start.getY(), xStart, xEnd, yStart, yEnd) == false) {
+                    options.remove(start);
+                }
+            }
+            for (Position wall : options) {
+                if (maze[wall.getX()][wall.getY()]) {
+                    options.remove(wall);
+                }
+            }
+        }
+        
+        if (!maze[xEnd][yEnd]) {
+            maze[xEnd][yEnd] = true;
+            List<Position> endNeighbours = new ArrayList<>();
+            endNeighbours.add(new Position(xEnd  , yEnd-1));
+            endNeighbours.add(new Position(xEnd+1, yEnd));
+            endNeighbours.add(new Position(xEnd  , yEnd+1));
+            endNeighbours.add(new Position(xEnd-1, yEnd));
+            for (Position start : endNeighbours) {
+                if (checkBorder(start.getX(), start.getY(), xStart, xEnd, yStart, yEnd) == false) {
+                    options.remove(start);
+                }
+            }
+            boolean allWall = true;
+            for (Position endNeighbour : endNeighbours) {
+                if (maze[endNeighbour.getX()][endNeighbour.getY()]) {
+                    allWall = false;
+                }
+            }
+            if (allWall) {
+                Random endNeighbourRandom = new Random();
+                Position endNeighbourWall = endNeighbours.get(endNeighbourRandom.nextInt(endNeighbours.size()));
+                maze[endNeighbourWall.getX()][endNeighbourWall.getY()] = true;
+            }
+        }
+
+        return generateDungeonResponse(maze, width, height, configName);
     }
 
+    private DungeonResponse generateDungeonResponse(boolean[][] maze, int width, int height, String configName) {
+        dungeonName = "Generated Dungeon";
+        unpairedPortals = new ArrayList<>();
+        entities = new ArrayList<>();
+        player = null;
+        dungeonId = String.valueOf(Integer.parseInt(dungeonId) + 1);
+
+        String confContent;
+        try {
+            confContent = FileLoader.loadResourceFile("/configs/" + configName + ".json");
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new IllegalArgumentException();
+        }
+
+        JSONObject jsonConfig = new JSONObject(confContent);
+        this.jsonConfig = new SerializableJSONObject(jsonConfig);
+        String string = "{\"goal\": \"exit\"}";  
+        JSONObject goal = new JSONObject(string);  
+        goalStrategy = new SuperGoal(goal, jsonConfig);
+        spiderspawner = new Spiderspawner(this, jsonConfig.getInt("spider_attack"), jsonConfig.getInt("spider_health"), jsonConfig.getInt("spider_spawn_rate"));
+
+        int id = 0;
+        for(int i = 0; i < width; i++){
+            for(int j = 0; i < height; j++){
+                if (maze[i][j] == false) {
+                    addWall(id, i, j);
+                }
+            }
+        }
+
+        // Create observer
+        for (Entity entity : entities) {
+            if (entity.getType().equals("player")) {
+                player = (Player)entity;
+            }
+        }
+        this.observer = new Observer();
+        return getDungeonResponseModel();
+    }
+
+    private void addWall(int id2, int i, int j) {
+        Entity newEntity = new Wall(String.valueOf(id2), new Position(i, j));
+        entities.add(newEntity);
+    }
+
+    private boolean checkBorder(int x, int y, int xStart, int xEnd, int yStart, int yEnd) {
+        if (y == yStart && x >= xStart && x <= xEnd) {
+            return false;
+        } 
+        else if (y == yEnd && x >= xStart && x <= xEnd) {
+            return false;
+        }
+        else if (x == xStart && y >= yStart && y <= yEnd) {
+            return false;
+        }
+        else if (x == xEnd && y >= yStart && y <= yEnd) {
+            return false;
+        }
+        return true;
+    }
 
 }
