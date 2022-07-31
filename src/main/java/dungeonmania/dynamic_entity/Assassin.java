@@ -98,17 +98,18 @@ public class Assassin extends DynamicEntity{
         Position distance = Position.calculatePositionBetween(player.getPosition(), this.getPosition());
         double radius = Math.sqrt(Math.pow(distance.getX(), 2) + Math.pow(distance.getY(), 2));
         if (radius > bribeRadius) {
+            System.out.println("Radius");
             throw new InvalidActionException("Too far from Assassin");
         }
         // check coins
         if (player.getCoins() < bribeAmount) {
+            System.out.println("bribeamnt");
             throw new InvalidActionException("Not enough coins");
         }
         // Checks probability that bribe will fail:
         double random = new Random().nextDouble();
         if (random < bribeFailRate) {
             player.removeCoins(bribeAmount);
-            throw new InvalidActionException("Unlucky! The Assassin did not accept your bribe");
         } else {
             player.removeCoins(bribeAmount);
             status = "FRIENDLY";
