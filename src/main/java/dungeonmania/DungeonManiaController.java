@@ -725,14 +725,6 @@ public class DungeonManiaController implements Serializable {
             .forEach(e -> {((Mercenary)e).setStatus("HOSTILE"); ((Mercenary)e).setMindCtrl(false);});
             player.removeBuildableItem("sceptre");
         }
-            // entities.stream().filter(e -> (e instanceof Assassin)).forEach(e -> {((Assassin)e).setStatus("FRIENDLY");});
-            // entities.stream().filter(e -> (e instanceof Mercenary)).forEach(e -> {((Mercenary)e).setStatus("FRIENDLY");});
-        // If FALSE: sceptre is inactive (stops mind controlling)
-        // } else {
-        //     entities.stream().filter(e -> (e instanceof Assassin)).forEach(e -> {((Assassin)e).setStatus("HOSTILE");});
-        //     entities.stream().filter(e -> (e instanceof Mercenary)).forEach(e -> {((Mercenary)e).setStatus("HOSTILE");});
-        //     player.removeBuildableItem("sceptre");
-        // }
     }
 
     /**
