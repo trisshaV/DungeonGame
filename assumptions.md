@@ -19,6 +19,7 @@
 - When bribe radius is 0 cannot be bribed
 - If a bomb explodes the portal, the portal still functions from one end only
 - When spawning zombie from zombie spawner, do not initiate combat with player even if player is there
+- **Milestone 3** Swamp tile when there is a movement factor of 0 will allow entities to move through it as usual
 
 ## Dynamic Entities
 - Two or more dynamic entities can exist on the same tile (eg, if two spiders move into the same tile)
@@ -29,12 +30,19 @@
 - Mercenaries are able to move onto portals but have no effect
 - Zombies are able to move onto portals but have no effect
 - **Milestone 3** Mercenaries do not move if there is no path to the player.
+- **Milestone 3** Assassins run away from the player if player is invincible
+- **Milestone 3** When a player tries to mind control a mercenary/assassin already mindcontrolled, they remain mindcontrolled for the duration of the current sceptre used upon them. No time is added onto their mind control period. 
+- **Milestone 3** Hydras cannot push boulders
 
 ## Buildable
 - The materials used when building an item is undefined/no specific order
 - Buildable items used after battle which have broken (durability == 0) should be removed from Inventory
 - You can only build one bow or shield at a time (cannot build multiple bows all at once)
 - If a itemUsedId is undefined for building, the tick for entities moving (aside from player) is still executed
+- **Milestone 3** An infinite number of Midnight Armour can be created and used
+- **Milestone 3** Sceptre’s are removed from the player inventory once it’s duration is finished.
+- **Milestone 3** A player with a sceptre can mind control multiple enemies at the same time, as long as the sceptre is still active (within its duration period).
+- **Milestone 3** Sceptre’s are not weapons to destroy toasters.
 
 ## Battle
 - Order of battle has no specific order (is undefined)
