@@ -106,4 +106,26 @@ public class BombTests {
         assertEquals(1, count_exit);
         assertEquals(1, count_bomb);
     }
+
+    @Test
+    @DisplayName("Player can detonate the bomb of radius 10 when bomb is used next an active switch")
+    public void testLargeRadius() throws IllegalArgumentException, InvalidActionException {
+        DungeonManiaController dmc = new DungeonManiaController();
+        DungeonResponse res = dmc.newGame("d_bombExplode", "c_bombExplode");
+        EntityResponse Bomb = getEntities(res, "bomb").get(0);
+
+        res = dmc.tick(Direction.RIGHT);
+        res = dmc.tick(Direction.DOWN);
+        res = dmc.tick(Direction.RIGHT);
+        res = dmc.tick(Bomb.getId());
+
+        int count_wall = countEntityOfType(res, "wall");
+        int count_treasure = countEntityOfType(res, "treasure");
+        // check to see if the bomb dissapears after exploding
+        int count_bomb = countEntityOfType(res, "bomb");
+
+        assertEquals(0, count_wall);
+        assertEquals(1, count_treasure);
+        assertEquals(0, count_bomb);
+    }
 }
