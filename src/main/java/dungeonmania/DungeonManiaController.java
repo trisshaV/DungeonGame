@@ -7,6 +7,7 @@ import dungeonmania.collectible.InvincibilityPotion;
 import dungeonmania.collectible.InvisibilityPotion;
 import dungeonmania.collectible.Key;
 import dungeonmania.collectible.MidnightArmour;
+import dungeonmania.collectible.Sceptre;
 import dungeonmania.collectible.SunStone;
 import dungeonmania.collectible.Sword;
 import dungeonmania.collectible.Treasure;
@@ -406,7 +407,14 @@ public class DungeonManiaController implements Serializable {
             player.removeItem(item);
         }
         player.tickPotionEffects();
-        
+
+        if (player.hasBuildableItem("sceptre")) {
+            Sceptre sceptre = (Sceptre) player.getInventory().getBuildableItem("sceptre");
+            if (sceptre.getisActive() == true) {
+                setStatus(player.tickSceptre());
+            }
+        }
+
         // move Dynamic entities except Player
         entities.stream().filter(it -> (it instanceof DynamicEntity) && (it instanceof Player == false)).forEach(
             x -> {
@@ -471,6 +479,15 @@ public class DungeonManiaController implements Serializable {
             }
         );
         player.tickPotionEffects();
+
+        //Check for sceptre, then reduce duration + apply mind control
+        if (player.hasBuildableItem("sceptre")) {
+            Sceptre sceptre = (Sceptre) player.getInventory().getBuildableItem("sceptre");
+            if (sceptre.getisActive() == true) {
+                setStatus(player.tickSceptre());
+            }
+        }
+
         if (this.observer.checkBattle(entities)) {
             entities = removeDeadEntities();
             if (entities.stream().filter(it -> it instanceof Player).findFirst().orElse(null) == null) {
@@ -556,6 +573,7 @@ public class DungeonManiaController implements Serializable {
         }
 
         playerInv.buildItem(buildable, String.valueOf(id));
+
         id ++;
         return getDungeonResponseModel();
     }
@@ -695,6 +713,18 @@ public class DungeonManiaController implements Serializable {
             }
         }
        return null;
+    }
+
+
+    public void setStatus(boolean status) {
+        // If TRUE: sceptre is still active
+        if (!status) {
+            entities.stream().filter(e -> (e instanceof Assassin) && ((Assassin)e).getMindCtrl() == true)
+            .forEach(e -> {((Assassin)e).setStatus("HOSTILE"); ((Assassin)e).setMindCtrl(false);});
+            entities.stream().filter(e -> (e instanceof Mercenary) && ((Mercenary)e).getMindCtrl() == true)
+            .forEach(e -> {((Mercenary)e).setStatus("HOSTILE"); ((Mercenary)e).setMindCtrl(false);});
+            player.removeBuildableItem("sceptre");
+        }
     }
 
     /**

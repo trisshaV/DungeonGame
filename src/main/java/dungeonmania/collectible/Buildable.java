@@ -8,6 +8,7 @@ public abstract class Buildable implements Serializable {
 	private final String id;
 	private String type;
 	public int durability;
+	private int duration;
 
 	/**
 	 * Buildable Constructor
@@ -56,6 +57,23 @@ public abstract class Buildable implements Serializable {
 	 */
     public void setDurability(int num) {
         this.durability = num;
+    }
+
+	
+	/**
+	 * Sets duration of active buildable
+	 * @param num
+	 */
+    public void setDuration(int num) {
+        this.duration = num;
+    }
+
+	/**
+	 * Returns duration left
+	 * @param num
+	 */
+    public int getDuration() {
+        return duration;
     }
 
 	static boolean checkMaterials(Inventory i) {
