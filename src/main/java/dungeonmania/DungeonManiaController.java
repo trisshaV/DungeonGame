@@ -813,49 +813,23 @@ public class DungeonManiaController implements Serializable {
     }
 
     public DungeonResponse generateDungeon(int xStart, int yStart, int xEnd, int yEnd, String configName) {
+        System.out.print("running");
         int width = xEnd - xStart;
         int height = yEnd - yStart;
         boolean [][] maze = new boolean [width][height];
         for(int i = 0; i < width; i++){
-            for(int j = 0; i < height; j++){
-                Arrays.fill(maze[i], false);
+            for(int j = 0; j < height; j++){
+                maze[i][j] = false;
             }
         }
         maze[xStart][yStart] = true;
-        List<Position> options = new ArrayList<>();
-        options.add(new Position(xStart  , yStart-2));
-        options.add(new Position(xStart+2, yStart));
-        options.add(new Position(xStart  , yStart+2));
-        options.add(new Position(xStart-2, yStart));
-        for (Position start : options) {
-            if (checkBorder(start.getX(), start.getY(), xStart, xEnd, yStart, yEnd) == false) {
-                options.remove(start);
-            }
-        }
-        for (Position wall : options) {
-            if (maze[wall.getX()][wall.getY()]) {
-                options.remove(wall);
-            }
-        }
+        List<Position> options = returnOptions(xStart, yStart, xEnd, yEnd, maze);
 
         while (!options.isEmpty()) {
+            System.out.print(options);
             Random random = new Random();
             Position next = options.remove(random.nextInt(options.size()));
-            List<Position> neighbours = new ArrayList<>();
-            neighbours.add(new Position(next.getX()  , next.getY()-2));
-            neighbours.add(new Position(next.getX()+2, next.getY()));
-            neighbours.add(new Position(next.getX()  , next.getY()+2));
-            neighbours.add(new Position(next.getX()-2, next.getY()));
-            for (Position start : neighbours) {
-                if (checkBorder(start.getX(), start.getY(), xStart, xEnd, yStart, yEnd) == false) {
-                    neighbours.remove(start);
-                }
-            }
-            for (Position wall : neighbours) {
-                if (!maze[wall.getX()][wall.getY()]) {
-                    neighbours.remove(wall);
-                }
-            }
+            List<Position> neighbours = returnNeighbours(next, xStart, xEnd, yStart, yEnd, maze);
             if (!neighbours.isEmpty()) {
                 Random randomNeighbour = new Random();
                 Position neighbour = neighbours.remove(randomNeighbour.nextInt(neighbours.size()));
@@ -863,34 +837,23 @@ public class DungeonManiaController implements Serializable {
                 maze[(next.getX() + neighbour.getX())/2][(next.getY() + neighbour.getY())/2] = true;
                 maze[neighbour.getX()][neighbour.getY()] = true;
             }
-            options.add(new Position(next.getX()  , next.getY()-2));
-            options.add(new Position(next.getX()+2, next.getY()));
-            options.add(new Position(next.getX()  , next.getY()+2));
-            options.add(new Position(next.getX()-2, next.getY()));
-            for (Position start : options) {
-                if (checkBorder(start.getX(), start.getY(), xStart, xEnd, yStart, yEnd) == false) {
-                    options.remove(start);
-                }
-            }
-            for (Position wall : options) {
-                if (maze[wall.getX()][wall.getY()]) {
-                    options.remove(wall);
-                }
-            }
+            options = returnOptions2(options, next, xStart, xEnd, yStart, yEnd, maze);
         }
         
-        if (!maze[xEnd][yEnd]) {
-            maze[xEnd][yEnd] = true;
+        if (!maze[xEnd-1][yEnd-1]) {
+            maze[xEnd-1][yEnd-1] = true;
             List<Position> endNeighbours = new ArrayList<>();
             endNeighbours.add(new Position(xEnd  , yEnd-1));
             endNeighbours.add(new Position(xEnd+1, yEnd));
             endNeighbours.add(new Position(xEnd  , yEnd+1));
             endNeighbours.add(new Position(xEnd-1, yEnd));
+            List<Position> removeNeighbours = new ArrayList<>(endNeighbours);
             for (Position start : endNeighbours) {
                 if (checkBorder(start.getX(), start.getY(), xStart, xEnd, yStart, yEnd) == false) {
-                    options.remove(start);
+                    removeNeighbours.add(start);
                 }
             }
+            endNeighbours.removeAll(removeNeighbours);
             boolean allWall = true;
             for (Position endNeighbour : endNeighbours) {
                 if (maze[endNeighbour.getX()][endNeighbour.getY()]) {
@@ -954,19 +917,85 @@ public class DungeonManiaController implements Serializable {
     }
 
     private boolean checkBorder(int x, int y, int xStart, int xEnd, int yStart, int yEnd) {
-        if (y == yStart && x >= xStart && x <= xEnd) {
+        
+        if (y <= yStart && x >= xStart && x <= xEnd) {
             return false;
         } 
-        else if (y == yEnd && x >= xStart && x <= xEnd) {
+        else if (y >= yEnd && x >= xStart && x <= xEnd) {
             return false;
         }
-        else if (x == xStart && y >= yStart && y <= yEnd) {
+        else if (x <= xStart && y >= yStart && y <= yEnd) {
             return false;
         }
-        else if (x == xEnd && y >= yStart && y <= yEnd) {
+        else if (x >= xEnd && y >= yStart && y <= yEnd) {
             return false;
         }
         return true;
     }
 
+    private List<Position> returnOptions(int xStart, int yStart, int xEnd, int yEnd, boolean[][] maze) {
+        List<Position> options = new ArrayList<>();
+        options.add(new Position(xStart  , yStart-2));
+        options.add(new Position(xStart+2, yStart));
+        options.add(new Position(xStart  , yStart+2));
+        options.add(new Position(xStart-2, yStart));
+        List<Position> remove = new ArrayList<>();
+        for (Position start : options) {
+            if (checkBorder(start.getX(), start.getY(), xStart, xEnd, yStart, yEnd) == false) {
+                remove.add(start);
+            }
+        }
+        options.removeAll(remove);
+        List<Position> removeWall = new ArrayList<>();
+        for (Position wall : options) {
+            if (maze[wall.getX()][wall.getY()]) {
+                removeWall.add(wall);
+            }
+        }
+        options.removeAll(removeWall);
+        return options;
+    }
+
+    private List<Position> returnNeighbours(Position next, int xStart, int xEnd, int yStart, int yEnd, boolean[][] maze) {
+        List<Position> neighbours = new ArrayList<>();
+            neighbours.add(new Position(next.getX()  , next.getY()-2));
+            neighbours.add(new Position(next.getX()+2, next.getY()));
+            neighbours.add(new Position(next.getX()  , next.getY()+2));
+            neighbours.add(new Position(next.getX()-2, next.getY()));
+            List<Position> remove = new ArrayList<>();
+            for (Position start : neighbours) {
+                if (checkBorder(start.getX(), start.getY(), xStart, xEnd, yStart, yEnd) == false) {
+                    remove.add(start);
+                }
+            }
+            neighbours.removeAll(remove);
+            for (Position wall : neighbours) {
+                if (!maze[wall.getX()][wall.getY()]) {
+                    neighbours.remove(wall);
+                }
+            }
+            return neighbours;
+    }
+
+    private List<Position> returnOptions2(List<Position> options, Position next, int xStart, int xEnd, int yStart, int yEnd, boolean[][] maze) {
+        options.add(new Position(next.getX()  , next.getY()-2));
+        options.add(new Position(next.getX()+2, next.getY()));
+        options.add(new Position(next.getX()  , next.getY()+2));
+        options.add(new Position(next.getX()-2, next.getY()));
+        List<Position> remove = new ArrayList<>();
+        for (Position start : options) {
+            if (checkBorder(start.getX(), start.getY(), xStart, xEnd, yStart, yEnd) == false) {
+                remove.add(start);
+            }
+        }
+        options.removeAll(remove);
+        List<Position> removeWall = new ArrayList<>();
+        for (Position wall : options) {
+            if (maze[wall.getX()][wall.getY()]) {
+                removeWall.add(wall);
+            }
+        }
+        options.removeAll(removeWall);
+        return options;
+    }
 }
