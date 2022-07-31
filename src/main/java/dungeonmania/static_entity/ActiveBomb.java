@@ -1,7 +1,9 @@
 package dungeonmania.static_entity;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import dungeonmania.Entity;
 import dungeonmania.SerializableJSONObject;
@@ -46,27 +48,25 @@ public class ActiveBomb extends StaticEntity{
         int radius = config.getInt("bomb_radius");
         List<Entity> toRemove = new ArrayList<>();
         toRemove.add(this);
-        List<Position> positions = getPosition().getAdjacentPositions();
-        List<Position> copy = new ArrayList<>();
+        Map<Position, Boolean> copy = new HashMap<Position, Boolean>();
+        Position a = getPosition();
+        Position Top_Left = new Position(a.getX() - radius,a.getY() + radius);
+        Position Pointer = Top_Left;
 
-        for (int i = 1; i < radius; i++ ) {
-            for (Position position : positions) {
-                List<Position> adjacentPositions = position.getAdjacentPositions();
-                for (Position pos : adjacentPositions) {
-                    if (!positions.contains(pos)) {
-                        copy.add(pos);
-                    }
-                }
+        for (int y = 0; y <= 2*radius; y++) {
+            for (int x = 0; x <= 2*radius; x++) {
+                copy.put(new Position(Pointer.getX(),Pointer.getY()), true);
+                Pointer = new Position(Pointer.getX() + 1,Pointer.getY());
             }
-            positions.addAll(copy);
+            Pointer = new Position(Top_Left.getX(),Pointer.getY() - 1);
         }
-        for (Position position : positions) {
-            for (Entity entity : entities) {
-                if (!entity.getType().equals("player") && positions.contains(entity.getPosition())) {
-                    toRemove.add(entity);
-                }
+
+        for (Entity entity : entities) {
+            if (!entity.getType().equals("player") && copy.containsKey(entity.getPosition())) {
+                toRemove.add(entity);
             }
         }
+
         return toRemove;
     }
 }
