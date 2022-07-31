@@ -32,8 +32,9 @@ public class SceptreTests {
         assertEquals(1, inven.size());
         assertEquals(inventory.get(0).getType(), inven.get(0).getType());
 
-        assertEquals("FRIENDLY", dmc.getAssassinStatus());
+        res = dmc.interact(getEntities(res, "mercenary").get(0).getId());
         assertEquals("FRIENDLY", dmc.getMercStatus());
+        assertEquals("HOSTILE", dmc.getAssassinStatus());
     }
 
     @Test
@@ -53,13 +54,16 @@ public class SceptreTests {
         assertEquals(1, inven.size());
         assertEquals(inventory.get(0).getType(), inven.get(0).getType());
 
-        assertEquals("FRIENDLY", dmc.getAssassinStatus());
+        res = dmc.interact(getEntities(res, "mercenary").get(0).getId());
+        res = dmc.interact(getEntities(res, "assassin").get(0).getId());
         assertEquals("FRIENDLY", dmc.getMercStatus());
+        assertEquals("FRIENDLY", dmc.getAssassinStatus());
 
-        // Mindcontrol has ended on the THIRD movement tick
+        // Mindcontrol has ended at the END of the THIRD movement tick
         res = dmc.tick(Direction.RIGHT); //active
         res = dmc.tick(Direction.RIGHT); //active
-        res = dmc.tick(Direction.RIGHT); //inactive
+        res = dmc.tick(Direction.RIGHT); //active
+        res = dmc.tick(Direction.RIGHT); // inactive
         assertEquals("HOSTILE", dmc.getAssassinStatus());
         assertEquals("HOSTILE", dmc.getMercStatus());
         // Sceptre is removed from invent
@@ -67,5 +71,65 @@ public class SceptreTests {
         assertEquals(0, inven.size());
     }
 
+    @Test
+    @DisplayName("Mindcontrol but only one out of two entities become allies")
+    public void testMindControlwithTwoEntities() throws IllegalArgumentException, InvalidActionException {
+        DungeonManiaController dmc = new DungeonManiaController();
+        DungeonResponse res = dmc.newGame("sceptre", "M3_config");
+        List<ItemResponse> inventory = new ArrayList<>();
+        inventory.add(new ItemResponse("0", "sceptre"));
+
+        res = dmc.tick(Direction.RIGHT);
+        res = dmc.tick(Direction.RIGHT);
+        res = dmc.tick(Direction.RIGHT);
+        res = dmc.tick(Direction.RIGHT);
+        res = dmc.build("sceptre");
+        List<ItemResponse> inven = getInventory(res, "sceptre");
+        assertEquals(1, inven.size());
+        assertEquals(inventory.get(0).getType(), inven.get(0).getType());
+        
+        res = dmc.tick(Direction.UP); //inactive
+        res = dmc.interact(getEntities(res, "assassin").get(0).getId());
+        assertEquals("HOSTILE", dmc.getMercStatus());
+        assertEquals("FRIENDLY", dmc.getAssassinStatus());
+
+        // Mindcontrol has ended at the END of the THIRD movement tick
+        res = dmc.tick(Direction.UP); //active
+        res = dmc.tick(Direction.UP); //active
+        res = dmc.tick(Direction.UP); //active
+        res = dmc.tick(Direction.UP); //inactive
+        assertEquals("HOSTILE", dmc.getAssassinStatus());
+        assertEquals("HOSTILE", dmc.getMercStatus());
+
+    }
+
+
+    @Test
+    @DisplayName("Test that enemies aren't mindcontrolled until interacted with")
+    public void testMindControlonlywithInteract() throws IllegalArgumentException, InvalidActionException {
+        DungeonManiaController dmc = new DungeonManiaController();
+        DungeonResponse res = dmc.newGame("sceptre", "M3_config");
+        List<ItemResponse> inventory = new ArrayList<>();
+        inventory.add(new ItemResponse("0", "sceptre"));
+
+        res = dmc.tick(Direction.RIGHT);
+        res = dmc.tick(Direction.RIGHT);
+        res = dmc.tick(Direction.RIGHT);
+        res = dmc.tick(Direction.RIGHT);
+        res = dmc.build("sceptre");
+        List<ItemResponse> inven = getInventory(res, "sceptre");
+        assertEquals(1, inven.size());
+        assertEquals(inventory.get(0).getType(), inven.get(0).getType());
+
+        for (int i=0; i < 5; i++) {
+            res = dmc.tick(Direction.UP); //inactive
+            assertEquals("HOSTILE", dmc.getMercStatus());
+            assertEquals("HOSTILE", dmc.getAssassinStatus());
+        }
+
+        res = dmc.interact(getEntities(res, "assassin").get(0).getId());
+        assertEquals("HOSTILE", dmc.getMercStatus());
+        assertEquals("FRIENDLY", dmc.getAssassinStatus());
+    }
     
 }

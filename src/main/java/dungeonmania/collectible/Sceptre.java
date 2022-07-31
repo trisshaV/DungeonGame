@@ -6,6 +6,7 @@ import dungeonmania.Inventory;
 import dungeonmania.SerializableJSONObject;
 
 public class Sceptre extends Buildable {
+    private boolean isActive;
 
     /**
      * Bow Constructor
@@ -15,6 +16,7 @@ public class Sceptre extends Buildable {
     public Sceptre(String id, SerializableJSONObject config) {
         super(id, "sceptre");
         super.setDuration(config.getInt("mind_control_duration"));
+        this.isActive = false;
     }
     
     /**
@@ -69,5 +71,22 @@ public class Sceptre extends Buildable {
             }
         }
         return list;
+    }
+
+    
+    /**
+     * Sets whether or not Sceptre is currently in use
+     * @param state indicating if sceptre is active
+     */
+    public void setisActive(boolean state) {
+        isActive = state;
+    }
+
+    /**
+     * Gets true/false value is sceptre is active
+     * @return boolean if sceptre is active
+     */
+    public boolean getisActive() {
+        return isActive;
     }
 }

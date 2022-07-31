@@ -30,6 +30,7 @@ import dungeonmania.util.Position;
 public class Mercenary extends DynamicEntity {
 
     private String status = "HOSTILE";
+    private boolean mindctrl = false;
     private int bribeRadius;
     private int bribeAmount;
     private Movement move;
@@ -61,6 +62,14 @@ public class Mercenary extends DynamicEntity {
      */
     @Override
     public void interact(Player player) throws InvalidActionException {
+        // check sceptre
+        if (player.hasBuildableItem("sceptre")) {
+            Sceptre sceptre = (Sceptre) player.getInventory().getBuildableItem("sceptre");
+            sceptre.setisActive(true);
+            mindctrl = true;
+            status = "FRIENDLY";
+            return;
+        }
         // check radius
         Position distance = Position.calculatePositionBetween(player.getPosition(), this.getPosition());
         double radius = Math.sqrt(Math.pow(distance.getX(), 2) + Math.pow(distance.getY(), 2));
@@ -120,5 +129,13 @@ public class Mercenary extends DynamicEntity {
     @Override
     public String getType() {
         return "mercenary";
+    }
+
+    public void setMindCtrl(boolean status) {
+        mindctrl = status;
+    }
+    
+    public boolean getMindCtrl() {
+        return mindctrl;
     }
 }
