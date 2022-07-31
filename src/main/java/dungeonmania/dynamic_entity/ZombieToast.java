@@ -24,6 +24,7 @@ public class ZombieToast extends DynamicEntity {
      * @param config
      */
     private static Movement move = new RandomMovement();
+
     public ZombieToast(String id, Position xy, SerializableJSONObject config) {
         super(id, "zombie_toast", xy);
         this.attack = config.getDouble("zombie_attack");

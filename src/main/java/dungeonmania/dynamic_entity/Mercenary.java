@@ -1,10 +1,8 @@
 package dungeonmania.dynamic_entity;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
-import org.json.JSONObject;
 
+import dungeonmania.SerializableJSONObject;
 import dungeonmania.dynamic_entity.movement.*;
 import dungeonmania.Entity;
 import dungeonmania.SerializableJSONObject;
