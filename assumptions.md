@@ -1,7 +1,5 @@
 # Assumptions
 
----
-
 ## Player
 - The inventory of the Player remains after the Player dying
 - The Player’s health is always greater than 0 (If not, the player will be removed from the list of entities)
@@ -30,7 +28,7 @@
 - Mercenaries will move away from the player with an invincibility potion active in the player’s new portal position rather than the portal position the player walked into
 - Mercenaries are able to move onto portals but have no effect
 - Zombies are able to move onto portals but have no effect
-- Mercenaries do not move if there is no path to the player.
+- **Milestone 3** Mercenaries do not move if there is no path to the player.
 
 ## Buildable
 - The materials used when building an item is undefined/no specific order
@@ -41,10 +39,10 @@
 ## Battle
 - Order of battle has no specific order (is undefined)
 - Multiple copies of the same weapon can be used at the same time (2 swords)
-- However, the durability of all weapons used should be updated
+    - However, the durability of all weapons used should be updated
 - Mercenaries run away from players who have consumed an Invincibility potion on the same tick
 - Having an invincibility potion during battle will not decrease the durability of weapons used
-- The only weapon used is the invincibility potion itself
+    - The only weapon used is the invincibility potion itself
 - If the defence buff is greater than the enemy’s attack, the player will heal (can be thought of as absorption of damage into health)
 
 ## Bombs
