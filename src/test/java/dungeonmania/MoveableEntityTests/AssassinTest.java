@@ -4,6 +4,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import dungeonmania.DungeonManiaController;
+import dungeonmania.dynamic_entity.Player;
 import dungeonmania.exceptions.InvalidActionException;
 import dungeonmania.response.models.DungeonResponse;
 import dungeonmania.response.models.EntityResponse;
@@ -153,11 +154,16 @@ public class AssassinTest {
     // Good Test for Frontend
     @Test
     @DisplayName("Interact Assassin Impossible Bribe")
-    public void testInteractAssassinImpossibleBribe() {
+    public void testInteractAssassinImpossibleBribe() throws IllegalArgumentException, InvalidActionException {
         DungeonManiaController dmc;
         dmc = new DungeonManiaController();
         DungeonResponse res = dmc.newGame("d_assassinSimple", "c_assassin_never_bribed");
-        assertThrows(InvalidActionException.class , () ->  dmc.interact(getEntities(dmc.tick(Direction.RIGHT), "assassin").get(0).getId()));
+        res = dmc.tick(Direction.RIGHT);
+        res = dmc.tick(Direction.RIGHT);
+        res = dmc.tick(Direction.RIGHT);
+        String id = getEntities(res, "assassin").get(0).getId();
+        res = dmc.interact(id);
+        assertEquals("HOSTILE", dmc.getAssassinStatus());
     }
 
     @Test
