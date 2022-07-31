@@ -762,4 +762,9 @@ public class DungeonManiaController implements Serializable {
         return games;
     }
 
+    public DungeonResponse generateDungeon(int xStart, int yStart, int xEnd, int yEnd, String configName) {
+        return null;
+    }
+
+
 }
