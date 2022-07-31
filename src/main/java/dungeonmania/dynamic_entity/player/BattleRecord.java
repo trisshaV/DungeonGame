@@ -39,6 +39,7 @@ public class BattleRecord implements Serializable{
             List<Object> itemUsed = new ArrayList<>();
             itemUsed.add(currentPotion);
             addRoundRecord(0, -1 * enemy.getHealth(), itemUsed);
+            enemy.setHealth(0);
         } else {
             startBattle(player);
         }

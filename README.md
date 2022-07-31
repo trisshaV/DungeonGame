@@ -50,6 +50,7 @@ This specification is broken into four parts:
 - Fri 22 Jul 8am - Remove stale `gameMode` parameter from `generateDungeon`
 - Fri 22 Jul 3pm - Add rewind buttons for `time_turner` to frontend
 - Fri 22 Jul 3pm - Add dungeon generation to frontend and fix method signature for `generateDungeon`
+- Tue 26 Jul 5pm - Remove `switch_door` from logic images
 - Fri 22 Jul 5pm - Clarify Sun Stone and Sceptre.
 - Sat 23 Jul 12pm - Time travel clarifications
 - Sat 23 Jul 9pm - Clarify dungeon generation and time travel behaviour
@@ -58,6 +59,7 @@ This specification is broken into four parts:
 - Sun 24 Jul 11pm - Revert bad spec update and clarify `hydra_health_increase_rate`
 - Tue 26 Jul 11pm - Clarify logical entity input
 - Wed 27 Jul 8am - (Important) Update exit location of player out of time portal
+- Thu 28 Jul 9am - Clarify time turner vs time portal travelling back
 
 ## 1. Aims
 
@@ -327,7 +329,7 @@ When a character has time travelled, either by the rewind buttons or via a time 
 
 Only the character can travel through time travel portals.
 
-The older player should still collect items and play out all `tick` and `interact` movements with those items as they did before. Time travel takes the player to *after* the tick takes place, e.g. if on tick 30 the player travels through a portal it arrives out of the other side after tick 0 has taken place.
+The older player should still collect items and play out all `tick` and `interact` movements with those items as they did before. Time travel takes the player to *after* the tick takes place, e.g. if on tick 30 the player travels through a portal it arrives out of the other side after tick 0 has taken place. Note that for time turners, this isn't the same as `rewind` operations do not class as a `tick`.
 
 <details>
 <summary>

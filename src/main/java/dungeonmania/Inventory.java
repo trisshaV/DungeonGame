@@ -91,6 +91,19 @@ public class Inventory implements Serializable{
     }
 
     /**
+     * Gets items
+     * @param type
+     * @return the items
+     */
+    public Buildable getBuildableItem(String type) {
+        return builtItems.stream()
+                   .filter(e -> e.getType().equals(type))
+                   .findFirst()
+                   .orElse(null);
+    }
+
+
+    /**
      * Get collectibles by id
      * @param id
      * @return collectibles according to id
@@ -126,6 +139,19 @@ public class Inventory implements Serializable{
             if (item.getType().equals(itemToRemove)) {
                 entities.remove(item);
                 break;
+            }
+        }
+    }
+
+    /**
+     * Remove FIRST instance of buildable item
+     * @param itemToRemove
+     */
+    public void removeBuildableItem(String itemToRemove) {
+        for (Buildable item : builtItems) {
+            if (item.getType().equals(itemToRemove)) {
+                builtItems.remove(item);
+                return;
             }
         }
     }
