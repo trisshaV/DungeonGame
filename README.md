@@ -1,2 +1,2 @@
 # Dungeon Game
-Project for comp UNSW
+Project for comp2511 UNSW
